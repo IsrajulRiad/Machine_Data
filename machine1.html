@@ -9,10 +9,16 @@
     :root {
       --bg: #f9f9f9;
       --text: #333;
-      --header: #004080;
+      --header: #004080;           /* Sidebar & header background */
       --table-header: #dbeeff;
       --highlight: #e6f0fa;
-      --text-line-height: 1.4;
+
+      /* Text sizes */
+      --text-size-sidebar-h2: 20px;
+      --text-size-sidebar-links: 16px;
+      --text-size-header-h1: 28px;
+      --text-size-table: 14px;
+      --text-size-footer: 13px;
     }
 
     body.dark {
@@ -30,9 +36,9 @@
       margin: 0;
       display: flex;
       transition: background 0.3s, color 0.3s;
-      line-height: var(--text-line-height);
     }
 
+    /* Sidebar */
     .sidebar {
       width: 200px;
       background: var(--header);
@@ -55,7 +61,7 @@
     }
 
     .sidebar h2 {
-      font-size: 20px;
+      font-size: var(--text-size-sidebar-h2);
       margin-top: 0;
       white-space: nowrap;
     }
@@ -67,14 +73,16 @@
       text-decoration: none;
       font-weight: bold;
       white-space: nowrap;
+      font-size: var(--text-size-sidebar-links);
     }
 
     .sidebar.minimized .sidebar-content {
       display: none;
     }
 
+    /* Toggle button */
     .toggle-btn {
-      background: var(--header);  /* same as sidebar */
+      background: var(--header);
       color: white;
       border: none;
       width: 100%;
@@ -83,33 +91,34 @@
       margin-bottom: 20px;
       border-radius: 4px;
       font-size: 20px;
-      box-shadow: none;
-    }
-    .toggle-btn:focus {
-      outline: none;
-      box-shadow: none;
+      box-shadow: none; /* removed shadow */
     }
 
+    /* Main content */
     .main-content {
       flex: 1;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
+      padding: 0 20px 20px 20px;
+      box-sizing: border-box;
+      background: var(--bg);
     }
 
+    /* Header */
     header {
       background: var(--header);
       color: white;
       padding: 15px 20px;
       border-radius: 0 0 8px 8px;
-      margin-bottom: 20px;
+      margin: 0 0 20px 0;
       user-select: none;
+      box-sizing: border-box;
+      text-align: center; /* center header text */
     }
 
     header h1 {
       margin: 0;
-      font-size: 28px;
-      line-height: var(--text-line-height);
+      font-size: var(--text-size-header-h1);
+      line-height: 1.2;
+      /* text-align: center; no need, inherited from header */
     }
 
     .controls {
@@ -117,40 +126,27 @@
       flex-wrap: wrap;
       gap: 10px;
       margin-bottom: 20px;
-      align-items: center;
     }
 
-    .controls input[type="text"],
+    .controls input,
     .controls select,
     .controls button {
       padding: 10px;
-      font-size: 14px;
+      font-size: var(--text-size-table);
       border: 1px solid #ccc;
       border-radius: 6px;
       flex: 1;
-      line-height: var(--text-line-height);
     }
 
     .controls button {
-      background-color: #004080;
+      background-color: var(--header);
       color: white;
       cursor: pointer;
-      flex: none;
-    }
-
-    /* New slider style for text height */
-    .controls label {
-      font-weight: bold;
-      white-space: nowrap;
-      color: var(--text);
-      flex: none;
-      margin-right: 5px;
-      user-select: none;
+      border: none;
     }
 
     .table-container {
       overflow-x: auto;
-      flex: 1;
     }
 
     table {
@@ -160,7 +156,7 @@
       border-radius: 8px;
       overflow: hidden;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-      line-height: var(--text-line-height);
+      font-size: var(--text-size-table);
     }
 
     thead {
@@ -172,7 +168,6 @@
       padding: 14px;
       text-align: center;
       border-bottom: 1px solid #ccc;
-      line-height: var(--text-line-height);
     }
 
     tbody tr:hover {
@@ -181,11 +176,10 @@
 
     footer {
       text-align: center;
-      font-size: 13px;
+      font-size: var(--text-size-footer);
       color: #999;
       margin-top: 30px;
       user-select: none;
-      line-height: var(--text-line-height);
     }
 
     @media (max-width: 600px) {
@@ -219,23 +213,9 @@
       </select>
       <button onclick="exportTable()">⬇ Excel</button>
       <button onclick="toggleDark()">🌓 Dark<>Light</button>
-
-      <!-- New control to adjust text height -->
-      <label for="textHeightRange">Text Height:</label>
-      <input
-        type="range"
-        id="textHeightRange"
-        min="1"
-        max="3"
-        step="0.1"
-        value="1.4"
-        title="Adjust text line height"
-        oninput="updateTextHeight(this.value)"
-      />
     </div>
 
     <div class="table-container">
-
       <!-- MACHINE DATA START -->
       <table id="machineTable">
         <thead>
@@ -271,7 +251,6 @@
         </tbody>
       </table>
       <!-- MACHINE DATA END -->
-
     </div>
 
     <footer>&copy; 2025 Israjul Riad | Machine Insights Dashboard</footer>
@@ -304,10 +283,6 @@
 
     function toggleSidebar() {
       document.getElementById("sidebar").classList.toggle("minimized");
-    }
-
-    function updateTextHeight(value) {
-      document.documentElement.style.setProperty("--text-line-height", value);
     }
   </script>
 
