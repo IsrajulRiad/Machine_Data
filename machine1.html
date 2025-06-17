@@ -1,53 +1,72 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
   <title>Machine Data</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f5f7fa;
+      background-color: #f4f4f4;
       padding: 20px;
     }
-    h2 {
-      text-align: center;
-      color: #333;
-    }
     table {
-      width: 100%;
       border-collapse: collapse;
-      background-color: #e1ecf4;
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: #dbeeff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
     th, td {
-      border: 1px solid #999;
-      padding: 8px 12px;
+      border: 1px solid #444;
+      padding: 10px;
       text-align: center;
     }
     th {
-      background-color: #d3e2ef;
-      font-weight: bold;
+      background-color: #bdd7ee;
+    }
+    td:last-child {
+      background-color: #b0c4de;
     }
   </style>
 </head>
 <body>
-  <h2>Machine Batch Data</h2>
+
+  <h2 style="text-align:center;">Machine Info</h2>
+
   <table>
-    <tr>
-      <th>#</th>
-      <th>ID</th>
-      <th>Code</th>
-      <th></th>
-      <th></th>
-      <th>Line</th>
-      <th>Date</th>
-    </tr>
-    <tr><td>1</td><td>794622</td><td>A100M18985</td><td></td><td></td><td>NPI</td><td>2-Jan</td></tr>
-    <tr><td>2</td><td>799392</td><td>A100M18867</td><td></td><td></td><td>NPI</td><td>2-Jan</td></tr>
-    <tr><td>3</td><td>2LIFA01983</td><td>A100M01590</td><td></td><td></td><td>BD108</td><td>2-Jan</td></tr>
-    <tr><td>4</td><td>868677</td><td>A100M19001</td><td></td><td></td><td>BD056</td><td>2-Jan</td></tr>
-    <tr><td>5</td><td>273062</td><td>A100M18925</td><td></td><td></td><td>BD032</td><td>2-Jan</td></tr>
-    <tr><td>6</td><td>393025</td><td>A100M00475</td><td></td><td></td><td>BD099</td><td>2-Jan</td></tr>
-    <tr><td>7</td><td>483101</td><td>A100M00681</td><td></td><td></td><td>BD092</td><td>2-Jan</td></tr>
-    <tr><td>8</td><td>465091</td><td>A100M00624</td><td></td><td></td><td>BD033</td><td>2-Jan</td></tr>
+    <thead>
+      <tr>
+        <th>Sl</th>
+        <th>ID</th>
+        <th>Style</th>
+        <th>Col 4</th>
+        <th>Col 5</th>
+        <th>Status</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>794622</td>
+        <td>A100M18985</td>
+        <td></td>
+        <td></td>
+        <td>NPI</td>
+        <td>2-Jan</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>799392</td>
+        <td>A100M18867</td>
+        <td></td>
+        <td></td>
+        <td>NPI</td>
+        <td>2-Jan</td>
+      </tr>
+    </tbody>
   </table>
+
 </body>
 </html>
