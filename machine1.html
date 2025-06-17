@@ -18,6 +18,9 @@
       --highlight: #e6f0fa;
       --toggle-btn-top-margin: 120px;
       --toggle-btn-horizontal-pos: 0px;
+      --logo-width: 100px;
+      --logo-margin-top: 10px;
+      --logo-margin-left: 10px;
     }
 
     body.dark {
@@ -58,6 +61,14 @@
 
     .sidebar.minimized {
       width: 70px;
+    }
+
+    .logo {
+      width: var(--logo-width);
+      height: auto;
+      margin-top: var(--logo-margin-top);
+      margin-left: var(--logo-margin-left);
+      margin-bottom: 20px;
     }
 
     .toggle-btn {
@@ -170,6 +181,7 @@
       overflow: hidden;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
       font-size: var(--table-font-size);
+      color: var(--text);
     }
 
     thead {
@@ -199,27 +211,12 @@
         flex-direction: column;
       }
     }
-
-    /* ✅ Fix: Make table text visible in dark mode */
-    body.dark table,
-    body.dark th,
-    body.dark td {
-      color: white;
-      background-color: #1e1e1e;
-    }
-
-    body.dark thead {
-      background-color: #333;
-    }
-
-    body.dark tbody tr:hover {
-      background-color: #2a2a2a;
-    }
   </style>
 </head>
 <body>
 
   <div class="sidebar" id="sidebar">
+    <img src="logo.png" alt="Logo" class="logo" />
     <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
     <div class="sidebar-content" id="sidebarContent">
       <h2>Machines</h2>
@@ -240,7 +237,7 @@
         <option value="NPI">NPI</option>
       </select>
       <button onclick="exportTable()">⬇ Excel</button>
-      <button onclick="toggleDark()">🌓 Dark&lt;&gt;Light</button>
+      <button onclick="toggleDark()">🌓 Dark<>Light</button>
     </div>
 
     <div class="table-container">
