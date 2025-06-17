@@ -7,43 +7,38 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
     :root {
-      /* === Text size variables === */
-      --header-font-size: 28px;
-      --sidebar-font-size: 18px;
-      --controls-font-size: 16px;
-      --table-font-size: 14px;
-
-      /* === Colors === */
-      --bg: #f9f9f9;
-      --text: #333;
-      --header: #004080;
-      --table-header: #dbeeff;
-      --highlight: #e6f0fa;
+      --sidebar-width: 150px;      /* sidebar width */
+      --header-bg-color: #004080;  /* sidebar & header bg */
+      --toggle-btn-top: 35px;      /* vertical position of toggle button inside sidebar */
+      --toggle-btn-left: 10px;     /* horizontal position of toggle button inside sidebar */
+      
+      --font-size-header: 28px;
+      --font-size-sidebar-title: 20px;
+      --font-size-sidebar-links: 16px;
+      --font-size-main-text: 14px;
     }
 
     body.dark {
-      --bg: #121212;
-      --text: #f0f0f0;
-      --header: #1a1a1a;
-      --table-header: #333;
-      --highlight: #1e2b40;
+      --header-bg-color: #1a1a1a;
+      background-color: #121212;
+      color: #f0f0f0;
     }
 
     body {
       font-family: "Segoe UI", Roboto, Arial, sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
+      background-color: var(--bg, #f9f9f9);
+      color: var(--text, #333);
       margin: 0;
       display: flex;
       transition: background 0.3s, color 0.3s;
     }
 
-    /* Sidebar fixed left */
+    /* SIDEBAR */
     .sidebar {
-      width: 200px;
-      background: var(--header);
+      width: var(--sidebar-width);
+      background: var(--header-bg-color);
       color: white;
-      padding: 20px;
+      padding: 20px 10px 20px 20px;
       box-sizing: border-box;
       min-height: 100vh;
       transition: width 0.3s ease;
@@ -51,35 +46,49 @@
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 20;
-      font-size: var(--sidebar-font-size);
+      position: relative;
+      flex-shrink: 0;
     }
 
-    .sidebar.minimized {
-      width: 50px;
-    }
-
+    /* Toggle button positioned inside sidebar */
     .toggle-btn {
-      background: var(--header);
+      position: absolute;
+      top: var(--toggle-btn-top);
+      left: var(--toggle-btn-left);
+      background: var(--header-bg-color);
       color: white;
       border: none;
-      width: 40px;
-      padding: 10px;
+      padding: 10px 15px;
       cursor: pointer;
-      margin-top: 80px;
       border-radius: 4px;
-      font-size: 20px;
-      box-shadow: none; /* remove shadow */
+      font-size: 18px;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       user-select: none;
+      box-shadow: none; /* remove shadow */
+      transition: background 0.3s;
+    }
+    .toggle-btn:hover {
+      background: #003060;
+    }
+
+    /* Sidebar minimized style */
+    .sidebar.minimized {
+      width: 50px;
+      padding-left: 10px;
+    }
+    .sidebar.minimized .sidebar-content {
+      display: none;
     }
 
     .sidebar h2 {
-      font-size: 1.2em; /* relative to sidebar font-size */
-      margin-top: 0;
+      font-size: var(--font-size-sidebar-title);
+      margin-top: 60px; /* Leave space for toggle button */
       white-space: nowrap;
+      user-select: none;
     }
 
     .sidebar a {
@@ -89,80 +98,71 @@
       text-decoration: none;
       font-weight: bold;
       white-space: nowrap;
-    }
-
-    .sidebar.minimized .sidebar-content {
-      display: none;
-    }
-
-    /* Header fixed top, thick */
-    header {
-      background: var(--header);
-      color: white;
-      padding: 20px 20px;
-      margin: 0;
+      font-size: var(--font-size-sidebar-links);
       user-select: none;
-      box-sizing: border-box;
-      position: fixed;
-      top: 0;
-      left: 150px;         /* after sidebar */
-      right: 0;
-      z-index: 10;
-      box-shadow: none;
-      font-size: var(--header-font-size);
-      display: flex;
-      align-items: center;   /* vertical center */
-      justify-content: center;
-      height: 120px;         /* thick */
-      transition: left 0.3s ease, width 0.3s ease;
-      white-space: nowrap;
     }
 
-    /* Main content with margin left and padding top to avoid header overlap */
-    .main-content {
-      padding: 20px;
-      padding-top: 160px;  /* header height (120px) + extra spacing */
-      margin-left: 200px;  /* sidebar width */
+    /* HEADER */
+    header {
+      background-color: var(--header-bg-color);
+      color: white;
+      padding: 30px 0; /* thicker header */
+      text-align: center;
       flex: 1;
-      transition: margin-left 0.3s ease;
+      margin-left: var(--sidebar-width);
+      box-sizing: border-box;
+      user-select: none;
     }
 
-    /* When sidebar minimized */
-    .sidebar.minimized ~ header {
-      left: 50px;
+    header h1 {
+      margin: 0;
+      font-size: var(--font-size-header);
+      line-height: 1.2;
     }
 
-    .sidebar.minimized ~ .main-content {
-      margin-left: 50px;
+    /* MAIN CONTENT */
+    .main-content {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      padding: 20px;
+      box-sizing: border-box;
     }
 
-    /* Controls styling */
+    /* CONTROLS */
     .controls {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
+      align-items: center; /* vertically align controls */
       margin-bottom: 20px;
-      font-size: var(--controls-font-size);
+      margin-top: 10px;
     }
 
-    .controls input,
+    .controls input[type="text"],
     .controls select,
     .controls button {
       padding: 10px;
-      font-size: inherit;
+      font-size: var(--font-size-main-text);
       border: 1px solid #ccc;
       border-radius: 6px;
       flex: 1;
       min-width: 120px;
+      box-sizing: border-box;
     }
 
     .controls button {
-      background-color: #004080;
+      background-color: var(--header-bg-color);
       color: white;
       cursor: pointer;
       user-select: none;
+      border: none;
+      transition: background 0.3s;
+    }
+    .controls button:hover {
+      background-color: #003060;
     }
 
+    /* TABLE */
     .table-container {
       overflow-x: auto;
     }
@@ -174,11 +174,10 @@
       border-radius: 8px;
       overflow: hidden;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-      font-size: var(--table-font-size);
     }
 
     thead {
-      background-color: var(--table-header);
+      background-color: #dbeeff;
     }
 
     th,
@@ -186,10 +185,12 @@
       padding: 14px;
       text-align: center;
       border-bottom: 1px solid #ccc;
+      font-size: var(--font-size-main-text);
+      user-select: text;
     }
 
     tbody tr:hover {
-      background-color: var(--highlight);
+      background-color: #e6f0fa;
     }
 
     footer {
@@ -197,6 +198,7 @@
       font-size: 13px;
       color: #999;
       margin-top: 30px;
+      user-select: none;
     }
 
     @media (max-width: 600px) {
@@ -204,6 +206,7 @@
         flex-direction: column;
       }
     }
+
   </style>
 </head>
 <body>
@@ -217,11 +220,11 @@
     </div>
   </div>
 
-  <header>
-    <h1>SPECIAL MACHINE DATA</h1>
-  </header>
-
   <div class="main-content">
+    <header>
+      <h1>SPECIAL MACHINE DATA</h1>
+    </header>
+
     <div class="controls">
       <input type="text" id="search" placeholder="Search..." oninput="filterTable()" />
       <select id="statusFilter" onchange="filterTable()">
@@ -297,9 +300,18 @@
     }
 
     function toggleSidebar() {
-      document.getElementById("sidebar").classList.toggle("minimized");
+      const sidebar = document.getElementById("sidebar");
+      sidebar.classList.toggle("minimized");
+      // Optionally adjust main content margin when sidebar minimized
+      const mainContent = document.querySelector(".main-content");
+      if (sidebar.classList.contains("minimized")) {
+        mainContent.style.marginLeft = '50px';
+        document.querySelector('header').style.marginLeft = '50px';
+      } else {
+        mainContent.style.marginLeft = getComputedStyle(document.documentElement).getPropertyValue('--sidebar-width');
+        document.querySelector('header').style.marginLeft = getComputedStyle(document.documentElement).getPropertyValue('--sidebar-width');
+      }
     }
   </script>
-
 </body>
 </html>
