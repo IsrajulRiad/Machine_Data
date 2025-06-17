@@ -9,16 +9,9 @@
     :root {
       --bg: #f9f9f9;
       --text: #333;
-      --header: #004080;           /* Sidebar & header background */
+      --header: #004080;
       --table-header: #dbeeff;
       --highlight: #e6f0fa;
-
-      /* Text sizes */
-      --text-size-sidebar-h2: 20px;
-      --text-size-sidebar-links: 16px;
-      --text-size-header-h1: 28px;
-      --text-size-table: 14px;
-      --text-size-footer: 13px;
     }
 
     body.dark {
@@ -36,9 +29,10 @@
       margin: 0;
       display: flex;
       transition: background 0.3s, color 0.3s;
+      min-height: 100vh;
+      overflow-x: hidden;
     }
 
-    /* Sidebar */
     .sidebar {
       width: 200px;
       background: var(--header);
@@ -52,16 +46,20 @@
       flex-direction: column;
       align-items: flex-start;
       justify-content: flex-start;
-      position: relative;
+      position: fixed;
+      top: 0;
+      left: 0;
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      z-index: 20;
     }
 
     .sidebar.minimized {
       width: 50px;
-      overflow: hidden;
     }
 
     .sidebar h2 {
-      font-size: var(--text-size-sidebar-h2);
+      font-size: 20px;
       margin-top: 0;
       white-space: nowrap;
     }
@@ -73,14 +71,12 @@
       text-decoration: none;
       font-weight: bold;
       white-space: nowrap;
-      font-size: var(--text-size-sidebar-links);
     }
 
     .sidebar.minimized .sidebar-content {
       display: none;
     }
 
-    /* Toggle button */
     .toggle-btn {
       background: var(--header);
       color: white;
@@ -91,34 +87,45 @@
       margin-bottom: 20px;
       border-radius: 4px;
       font-size: 20px;
-      box-shadow: none; /* removed shadow */
+      box-shadow: none; /* Remove shadow */
     }
 
-    /* Main content */
-    .main-content {
-      flex: 1;
-      padding: 0 20px 20px 20px;
-      box-sizing: border-box;
-      background: var(--bg);
-    }
-
-    /* Header */
     header {
       background: var(--header);
       color: white;
       padding: 15px 20px;
-      border-radius: 0 0 8px 8px;
-      margin: 0 0 20px 0;
+      border-radius: 0;
+      margin: 0;
       user-select: none;
       box-sizing: border-box;
-      text-align: center; /* center header text */
+      text-align: center;
+      width: calc(100% - 200px);
+      height: 60px;
+      line-height: 60px;
+      position: fixed;
+      top: 0;
+      left: 200px;
+      z-index: 10;
+      box-shadow: none;
+      font-size: 24px; /* Adjust header text size here */
     }
 
-    header h1 {
-      margin: 0;
-      font-size: var(--text-size-header-h1);
-      line-height: 1.2;
-      /* text-align: center; no need, inherited from header */
+    .main-content {
+      padding: 20px;
+      padding-top: 80px; /* extra padding so content is below fixed header */
+      margin-left: 200px;
+      transition: margin-left 0.3s ease;
+      flex: 1;
+    }
+
+    /* When sidebar is minimized, adjust header and main content */
+    .sidebar.minimized ~ header {
+      left: 50px;
+      width: calc(100% - 50px);
+    }
+
+    .sidebar.minimized ~ .main-content {
+      margin-left: 50px;
     }
 
     .controls {
@@ -132,17 +139,16 @@
     .controls select,
     .controls button {
       padding: 10px;
-      font-size: var(--text-size-table);
+      font-size: 14px;
       border: 1px solid #ccc;
       border-radius: 6px;
       flex: 1;
     }
 
     .controls button {
-      background-color: var(--header);
+      background-color: #004080;
       color: white;
       cursor: pointer;
-      border: none;
     }
 
     .table-container {
@@ -156,7 +162,6 @@
       border-radius: 8px;
       overflow: hidden;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-      font-size: var(--text-size-table);
     }
 
     thead {
@@ -176,10 +181,9 @@
 
     footer {
       text-align: center;
-      font-size: var(--text-size-footer);
+      font-size: 13px;
       color: #999;
       margin-top: 30px;
-      user-select: none;
     }
 
     @media (max-width: 600px) {
@@ -200,11 +204,11 @@
     </div>
   </div>
 
-  <div class="main-content">
-    <header>
-      <h1>SPECIAL MACHINE DATA</h1>
-    </header>
+  <header>
+    SPECIAL MACHINE DATA
+  </header>
 
+  <div class="main-content">
     <div class="controls">
       <input type="text" id="search" placeholder="Search..." oninput="filterTable()" />
       <select id="statusFilter" onchange="filterTable()">
@@ -282,7 +286,8 @@
     }
 
     function toggleSidebar() {
-      document.getElementById("sidebar").classList.toggle("minimized");
+      const sidebar = document.getElementById("sidebar");
+      sidebar.classList.toggle("minimized");
     }
   </script>
 
