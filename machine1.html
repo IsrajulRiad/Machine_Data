@@ -1,72 +1,224 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Machine Data</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
+    :root {
+      --bg: #f9f9f9;
+      --text: #333;
+      --header: #004080;
+      --table-header: #dbeeff;
+      --highlight: #e6f0fa;
+    }
+
+    body.dark {
+      --bg: #121212;
+      --text: #f0f0f0;
+      --header: #1a1a1a;
+      --table-header: #333;
+      --highlight: #1e2b40;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
       padding: 20px;
+      transition: background 0.3s, color 0.3s;
     }
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      max-width: 800px;
-      margin: 0 auto;
-      background-color: #dbeeff;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    th, td {
-      border: 1px solid #444;
-      padding: 10px;
+
+    header {
+      background-color: var(--header);
+      color: white;
+      padding: 20px 0;
       text-align: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
     }
-    th {
-      background-color: #bdd7ee;
+
+    header h1 {
+      margin: 0;
+      font-size: 28px;
     }
+
+    nav {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    nav a {
+      margin: 0 10px;
+      color: var(--text);
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .controls {
+      max-width: 1000px;
+      margin: auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .controls input, .controls select, .controls button {
+      padding: 10px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      flex: 1;
+    }
+
+    .controls button {
+      background-color: #004080;
+      color: white;
+      cursor: pointer;
+    }
+
+    .table-container {
+      max-width: 1000px;
+      margin: auto;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+
+    thead {
+      background-color: var(--table-header);
+    }
+
+    th, td {
+      padding: 14px;
+      text-align: center;
+      border-bottom: 1px solid #ccc;
+    }
+
+    tbody tr:hover {
+      background-color: var(--highlight);
+    }
+
     td:last-child {
-      background-color: #b0c4de;
+      font-weight: bold;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 13px;
+      color: #999;
+      margin-top: 50px;
+    }
+
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 22px;
+      }
+      .controls {
+        flex-direction: column;
+      }
     }
   </style>
 </head>
 <body>
 
-  <h2 style="text-align:center;">Machine Info</h2>
+  <header>
+    <h1>Machine Performance Data</h1>
+  </header>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Sl</th>
-        <th>ID</th>
-        <th>Style</th>
-        <th>Col 4</th>
-        <th>Col 5</th>
-        <th>Status</th>
-        <th>Date</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>1</td>
-        <td>794622</td>
-        <td>A100M18985</td>
-        <td></td>
-        <td></td>
-        <td>NPI</td>
-        <td>2-Jan</td>
-      </tr>
-      <tr>
-        <td>2</td>
-        <td>799392</td>
-        <td>A100M18867</td>
-        <td></td>
-        <td></td>
-        <td>NPI</td>
-        <td>2-Jan</td>
-      </tr>
-    </tbody>
-  </table>
+  <nav>
+    <a href="machine1.html">Machine 1</a>
+    <a href="machine2.html">Machine 2</a>
+    <a href="#" onclick="toggleDark()">🌓 Toggle Dark Mode</a>
+  </nav>
+
+  <div class="controls">
+    <input type="text" id="search" placeholder="Search anything..." oninput="filterTable()">
+    <select id="statusFilter" onchange="filterTable()">
+      <option value="">Filter by Status</option>
+      <option value="NPI">NPI</option>
+      <!-- Add more options if needed -->
+    </select>
+    <button onclick="exportTable()">⬇ Download Excel</button>
+  </div>
+
+  <div class="table-container">
+    <table id="machineTable">
+      <thead>
+        <tr>
+          <th>Sl</th>
+          <th>ID</th>
+          <th>Style</th>
+          <th>Col 4</th>
+          <th>Col 5</th>
+          <th>Status</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>794622</td>
+          <td>A100M18985</td>
+          <td></td>
+          <td></td>
+          <td>NPI</td>
+          <td>2-Jan</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>799392</td>
+          <td>A100M18867</td>
+          <td></td>
+          <td></td>
+          <td>NPI</td>
+          <td>2-Jan</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <footer>
+    &copy; 2025 Israjul Riad | Machine Insights Dashboard
+  </footer>
+
+  <script>
+    function filterTable() {
+      const search = document.getElementById("search").value.toLowerCase();
+      const status = document.getElementById("statusFilter").value.toLowerCase();
+      const rows = document.querySelectorAll("#machineTable tbody tr");
+
+      rows.forEach(row => {
+        const cells = Array.from(row.getElementsByTagName("td"));
+        const rowText = cells.map(cell => cell.textContent.toLowerCase()).join(" ");
+        const statusMatch = status === "" || cells[5].textContent.toLowerCase() === status;
+        const searchMatch = rowText.includes(search);
+
+        row.style.display = (statusMatch && searchMatch) ? "" : "none";
+      });
+    }
+
+    function exportTable() {
+      const table = document.getElementById("machineTable");
+      const wb = XLSX.utils.table_to_book(table, {sheet:"Sheet1"});
+      XLSX.writeFile(wb, "machine_data.xlsx");
+    }
+
+    function toggleDark() {
+      document.body.classList.toggle("dark");
+    }
+  </script>
 
 </body>
 </html>
