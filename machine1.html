@@ -7,25 +7,18 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
     :root {
-      /* === Text size variables === */
       --header-font-size: 22px; 
       --sidebar-font-size: 16px;
       --controls-font-size: 14px;
       --table-font-size: 14px;
-
-      /* === Colors === */
       --bg: #f9f9f9;
       --text: #333;
       --header: #004080;
       --table-header: #dbeeff;
       --highlight: #e6f0fa;
-
-      /* === Toggle button position options === */
-      --toggle-btn-top-margin: 122px;       /* distance from top inside sidebar */
-      --toggle-btn-horizontal-pos: 0px;   /* distance from left inside sidebar */
-
-      /* === Sidebar content display option === */
-      --sidebar-content-display: block;    /* "block" to show, "none" to hide */
+      --toggle-btn-top-margin: 120px;
+      --toggle-btn-horizontal-pos: 0px;
+      --sidebar-content-display: block;
     }
 
     body.dark {
@@ -45,7 +38,6 @@
       transition: background 0.3s, color 0.3s;
     }
 
-    /* Sidebar fixed left */
     .sidebar {
       width: 150px;
       background: var(--header);
@@ -63,7 +55,6 @@
       left: 0;
       z-index: 20;
       font-size: var(--sidebar-font-size);
-      position: fixed;
     }
 
     .sidebar.minimized {
@@ -79,16 +70,13 @@
       cursor: pointer;
       border-radius: 4px;
       font-size: 20px;
-      box-shadow: none; /* remove shadow */
       user-select: none;
-
-      /* Position control */
       margin-top: var(--toggle-btn-top-margin);
       margin-left: var(--toggle-btn-horizontal-pos);
     }
 
     .sidebar h2 {
-      font-size: 1.2em; /* relative to sidebar font-size */
+      font-size: 1.2em;
       margin-top: 20px;
       white-space: nowrap;
     }
@@ -102,7 +90,6 @@
       white-space: nowrap;
     }
 
-    /* Show/hide sidebar content (links under toggle) */
     .sidebar-content {
       display: var(--sidebar-content-display);
       width: 100%;
@@ -112,7 +99,6 @@
       display: none;
     }
 
-    /* Header fixed top, thick */
     header {
       background: var(--header);
       color: white;
@@ -122,39 +108,35 @@
       box-sizing: border-box;
       position: fixed;
       top: 0;
-      left: 150px;         /* after sidebar */
+      left: 150px;
       right: 0;
       z-index: 10;
-      box-shadow: none;
       font-size: var(--header-font-size);
       display: flex;
-      align-items: center;   /* vertical center */
+      align-items: center;
       justify-content: center;
-      height: 120px;         /* thick */
+      height: 120px;
       transition: left 0.3s ease, width 0.3s ease;
       white-space: nowrap;
     }
 
-    /* Main content with margin left and padding top to avoid header overlap */
     .main-content {
       padding: 20px;
-      padding-top: 160px;  /* header height (120px) + extra spacing */
-      margin-left: 200px;  /* sidebar width */
+      padding-top: 160px;
+      margin-left: 200px;
       flex: 1;
       transition: margin-left 0.3s ease;
     }
 
-/* When sidebar minimized */
-.sidebar.minimized ~ header {
-  left: 50px;
-}
+    .sidebar.minimized ~ header {
+      left: 50px;
+    }
 
-.sidebar.minimized ~ .main-content {
-  margin-left: 50px;
-  padding-left: 20px; /* Maintain equal gap on the left side */
-}
+    .sidebar.minimized ~ .main-content {
+      margin-left: 50px;
+      padding-left: 20px; /* Maintain same gap as right side */
+    }
 
-    /* Controls styling */
     .controls {
       display: flex;
       flex-wrap: wrap;
