@@ -8,7 +8,7 @@
   <style>
     :root {
       /* === Text size variables === */
-      --header-font-size: 36px;
+      --header-font-size: 28px; 
       --sidebar-font-size: 18px;
       --controls-font-size: 16px;
       --table-font-size: 14px;
@@ -19,6 +19,13 @@
       --header: #004080;
       --table-header: #dbeeff;
       --highlight: #e6f0fa;
+
+      /* === Toggle button position options === */
+      --toggle-btn-top-margin: 60px;       /* distance from top inside sidebar */
+      --toggle-btn-horizontal-pos: 10px;   /* distance from left inside sidebar */
+
+      /* === Sidebar content display option === */
+      --sidebar-content-display: block;    /* "block" to show, "none" to hide */
     }
 
     body.dark {
@@ -56,6 +63,7 @@
       left: 0;
       z-index: 20;
       font-size: var(--sidebar-font-size);
+      position: fixed;
     }
 
     .sidebar.minimized {
@@ -69,16 +77,19 @@
       width: 20px;
       padding: 10px;
       cursor: pointer;
-      margin-top: 60px;
       border-radius: 4px;
       font-size: 20px;
       box-shadow: none; /* remove shadow */
       user-select: none;
+
+      /* Position control */
+      margin-top: var(--toggle-btn-top-margin);
+      margin-left: var(--toggle-btn-horizontal-pos);
     }
 
     .sidebar h2 {
       font-size: 1.2em; /* relative to sidebar font-size */
-      margin-top: 0;
+      margin-top: 20px;
       white-space: nowrap;
     }
 
@@ -89,6 +100,12 @@
       text-decoration: none;
       font-weight: bold;
       white-space: nowrap;
+    }
+
+    /* Show/hide sidebar content (links under toggle) */
+    .sidebar-content {
+      display: var(--sidebar-content-display);
+      width: 100%;
     }
 
     .sidebar.minimized .sidebar-content {
