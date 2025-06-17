@@ -7,11 +7,25 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
     :root {
+      /* === Text size variables === */
+      --header-font-size: 22px; 
+      --sidebar-font-size: 16px;
+      --controls-font-size: 14px;
+      --table-font-size: 14px;
+
+      /* === Colors === */
       --bg: #f9f9f9;
       --text: #333;
       --header: #004080;
       --table-header: #dbeeff;
       --highlight: #e6f0fa;
+
+      /* === Toggle button position options === */
+      --toggle-btn-top-margin: 122px;       /* distance from top inside sidebar */
+      --toggle-btn-horizontal-pos: 0px;   /* distance from left inside sidebar */
+
+      /* === Sidebar content display option === */
+      --sidebar-content-display: block;    /* "block" to show, "none" to hide */
     }
 
     body.dark {
@@ -31,8 +45,9 @@
       transition: background 0.3s, color 0.3s;
     }
 
+    /* Sidebar fixed left */
     .sidebar {
-      width: 200px;
+      width: 150px;
       background: var(--header);
       color: white;
       padding: 20px;
@@ -43,18 +58,38 @@
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      justify-content: flex-start;
-      position: relative;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 20;
+      font-size: var(--sidebar-font-size);
+      position: fixed;
     }
 
     .sidebar.minimized {
-      width: 80px;
-      overflow: hidden;
+      width: 70px;
+    }
+
+    .toggle-btn {
+      background: var(--header);
+      color: white;
+      border: none;
+      width: 20px;
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 20px;
+      box-shadow: none; /* remove shadow */
+      user-select: none;
+
+      /* Position control */
+      margin-top: var(--toggle-btn-top-margin);
+      margin-left: var(--toggle-btn-horizontal-pos);
     }
 
     .sidebar h2 {
-      font-size: 20px;
-      margin-top: 0;
+      font-size: 1.2em; /* relative to sidebar font-size */
+      margin-top: 20px;
       white-space: nowrap;
     }
 
@@ -67,58 +102,83 @@
       white-space: nowrap;
     }
 
+    /* Show/hide sidebar content (links under toggle) */
+    .sidebar-content {
+      display: var(--sidebar-content-display);
+      width: 100%;
+    }
+
     .sidebar.minimized .sidebar-content {
       display: none;
     }
 
-    .toggle-btn {
+    /* Header fixed top, thick */
+    header {
       background: var(--header);
       color: white;
-      border: none;
-      width: 100%;
-      padding: 10px;
-      cursor: pointer;
-      margin-bottom: 20px;
-      border-radius: 4px;
-      font-size: 20px;
-    }
-
-    .main-content {
-      flex: 1;
-      padding: 20px;
-    }
-
-    header {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    header h1 {
+      padding: 20px 20px;
       margin: 0;
-      font-size: 28px;
+      user-select: none;
+      box-sizing: border-box;
+      position: fixed;
+      top: 0;
+      left: 150px;         /* after sidebar */
+      right: 0;
+      z-index: 10;
+      box-shadow: none;
+      font-size: var(--header-font-size);
+      display: flex;
+      align-items: center;   /* vertical center */
+      justify-content: center;
+      height: 120px;         /* thick */
+      transition: left 0.3s ease, width 0.3s ease;
+      white-space: nowrap;
     }
 
+    /* Main content with margin left and padding top to avoid header overlap */
+    .main-content {
+      padding: 20px;
+      padding-top: 160px;  /* header height (120px) + extra spacing */
+      margin-left: 200px;  /* sidebar width */
+      flex: 1;
+      transition: margin-left 0.3s ease;
+    }
+
+/* When sidebar minimized */
+.sidebar.minimized ~ header {
+  left: 50px;
+}
+
+.sidebar.minimized ~ .main-content {
+  margin-left: 50px;
+  padding-left: 20px; /* Maintain equal gap on the left side */
+}
+
+    /* Controls styling */
     .controls {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
       margin-bottom: 20px;
+      font-size: var(--controls-font-size);
     }
 
     .controls input,
     .controls select,
     .controls button {
       padding: 10px;
-      font-size: 14px;
+      font-size: inherit;
       border: 1px solid #ccc;
       border-radius: 6px;
       flex: 1;
+      min-width: 120px;
     }
 
     .controls button {
       background-color: #004080;
       color: white;
       cursor: pointer;
+      user-select: none;
     }
 
     .table-container {
@@ -132,6 +192,7 @@
       border-radius: 8px;
       overflow: hidden;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+      font-size: var(--table-font-size);
     }
 
     thead {
@@ -174,11 +235,11 @@
     </div>
   </div>
 
-  <div class="main-content">
-    <header>
-      <h1>SPECIAL MACHINE DATA</h1>
-    </header>
+  <header>
+    <h1>SPECIAL MACHINE DATA</h1>
+  </header>
 
+  <div class="main-content">
     <div class="controls">
       <input type="text" id="search" placeholder="Search..." oninput="filterTable()" />
       <select id="statusFilter" onchange="filterTable()">
@@ -190,8 +251,6 @@
     </div>
 
     <div class="table-container">
-
-      <!-- MACHINE DATA START -->
       <table id="machineTable">
         <thead>
           <tr>
@@ -207,8 +266,8 @@
         <tbody>
           <tr>
             <td>2</td>
-            <td>794622</td>
-            <td>A100M18985</td>
+            <td>421622</td>
+            <td>A100M18900</td>
             <td></td>
             <td></td>
             <td>NPI</td>
@@ -216,8 +275,6 @@
           </tr>
         </tbody>
       </table>
-      <!-- MACHINE DATA END -->
-
     </div>
 
     <footer>&copy; 2025 Israjul Riad | Machine Insights Dashboard</footer>
