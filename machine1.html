@@ -12,6 +12,7 @@
       --header: #004080;
       --table-header: #dbeeff;
       --highlight: #e6f0fa;
+      --text-line-height: 1.4;
     }
 
     body.dark {
@@ -29,6 +30,7 @@
       margin: 0;
       display: flex;
       transition: background 0.3s, color 0.3s;
+      line-height: var(--text-line-height);
     }
 
     .sidebar {
@@ -48,7 +50,7 @@
     }
 
     .sidebar.minimized {
-      width: 80px;
+      width: 50px;
       overflow: hidden;
     }
 
@@ -72,7 +74,7 @@
     }
 
     .toggle-btn {
-      background: var(--header);
+      background: var(--header);  /* same as sidebar */
       color: white;
       border: none;
       width: 100%;
@@ -81,21 +83,33 @@
       margin-bottom: 20px;
       border-radius: 4px;
       font-size: 20px;
+      box-shadow: none;
+    }
+    .toggle-btn:focus {
+      outline: none;
+      box-shadow: none;
     }
 
     .main-content {
       flex: 1;
       padding: 20px;
+      display: flex;
+      flex-direction: column;
     }
 
     header {
-      text-align: center;
+      background: var(--header);
+      color: white;
+      padding: 15px 20px;
+      border-radius: 0 0 8px 8px;
       margin-bottom: 20px;
+      user-select: none;
     }
 
     header h1 {
       margin: 0;
       font-size: 28px;
+      line-height: var(--text-line-height);
     }
 
     .controls {
@@ -103,9 +117,10 @@
       flex-wrap: wrap;
       gap: 10px;
       margin-bottom: 20px;
+      align-items: center;
     }
 
-    .controls input,
+    .controls input[type="text"],
     .controls select,
     .controls button {
       padding: 10px;
@@ -113,16 +128,29 @@
       border: 1px solid #ccc;
       border-radius: 6px;
       flex: 1;
+      line-height: var(--text-line-height);
     }
 
     .controls button {
       background-color: #004080;
       color: white;
       cursor: pointer;
+      flex: none;
+    }
+
+    /* New slider style for text height */
+    .controls label {
+      font-weight: bold;
+      white-space: nowrap;
+      color: var(--text);
+      flex: none;
+      margin-right: 5px;
+      user-select: none;
     }
 
     .table-container {
       overflow-x: auto;
+      flex: 1;
     }
 
     table {
@@ -132,6 +160,7 @@
       border-radius: 8px;
       overflow: hidden;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+      line-height: var(--text-line-height);
     }
 
     thead {
@@ -143,6 +172,7 @@
       padding: 14px;
       text-align: center;
       border-bottom: 1px solid #ccc;
+      line-height: var(--text-line-height);
     }
 
     tbody tr:hover {
@@ -154,6 +184,8 @@
       font-size: 13px;
       color: #999;
       margin-top: 30px;
+      user-select: none;
+      line-height: var(--text-line-height);
     }
 
     @media (max-width: 600px) {
@@ -187,6 +219,19 @@
       </select>
       <button onclick="exportTable()">⬇ Excel</button>
       <button onclick="toggleDark()">🌓 Dark<>Light</button>
+
+      <!-- New control to adjust text height -->
+      <label for="textHeightRange">Text Height:</label>
+      <input
+        type="range"
+        id="textHeightRange"
+        min="1"
+        max="3"
+        step="0.1"
+        value="1.4"
+        title="Adjust text line height"
+        oninput="updateTextHeight(this.value)"
+      />
     </div>
 
     <div class="table-container">
@@ -209,6 +254,15 @@
             <td>1</td>
             <td>794622</td>
             <td>A100M18985</td>
+            <td></td>
+            <td></td>
+            <td>NPI</td>
+            <td>2-Jan</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>799392</td>
+            <td>A100M18867</td>
             <td></td>
             <td></td>
             <td>NPI</td>
@@ -250,6 +304,10 @@
 
     function toggleSidebar() {
       document.getElementById("sidebar").classList.toggle("minimized");
+    }
+
+    function updateTextHeight(value) {
+      document.documentElement.style.setProperty("--text-line-height", value);
     }
   </script>
 
