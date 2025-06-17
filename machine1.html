@@ -29,10 +29,9 @@
       margin: 0;
       display: flex;
       transition: background 0.3s, color 0.3s;
-      min-height: 100vh;
-      overflow-x: hidden;
     }
 
+    /* Sidebar fixed left */
     .sidebar {
       width: 200px;
       background: var(--header);
@@ -45,17 +44,28 @@
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      justify-content: flex-start;
       position: fixed;
       top: 0;
       left: 0;
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
       z-index: 20;
     }
 
     .sidebar.minimized {
       width: 50px;
+    }
+
+    .toggle-btn {
+      background: var(--header);
+      color: white;
+      border: none;
+      width: 100%;
+      padding: 10px;
+      cursor: pointer;
+      margin-bottom: 20px;
+      border-radius: 4px;
+      font-size: 20px;
+      box-shadow: none; /* remove shadow */
+      user-select: none;
     }
 
     .sidebar h2 {
@@ -77,73 +87,46 @@
       display: none;
     }
 
-    .toggle-btn {
+    /* Header fixed top, thick */
+    header {
       background: var(--header);
       color: white;
-      border: none;
-      width: 100%;
-      padding: 10px;
-      cursor: pointer;
-      margin-bottom: 20px;
-      border-radius: 4px;
-      font-size: 20px;
-      box-shadow: none; /* Remove shadow */
+      padding: 15px 20px;
+      margin: 0;
+      user-select: none;
+      box-sizing: border-box;
+      text-align: center;
+      height: 120px;       /* doubled height */
+      line-height: 120px;  /* vertically center */
+      position: fixed;
+      top: 0;
+      left: 200px;         /* after sidebar */
+      right: 0;
+      z-index: 10;
+      box-shadow: none;
+      font-size: 24px;
+      transition: left 0.3s ease, width 0.3s ease;
     }
 
-    header {
-  background: var(--header);
-  color: white;
-  padding: 15px 20px;
-  margin: 0;
-  user-select: none;
-  box-sizing: border-box;
-  text-align: center;
-  height: 120px;          /* doubled from 60px */
-  line-height: 120px;     /* vertically centers text */
-  position: fixed;
-  top: 0;
-  left: 200px;            /* same as sidebar width */
-  right: 0;
-  z-index: 10;
-  box-shadow: none;
-  font-size: 24px;
-  transition: left 0.3s ease, width 0.3s ease;
-}
-
-.main-content {
-  padding: 20px;
-  padding-top: 140px;     /* 120px header + 20px spacing */
-  margin-left: 200px;     /* same as sidebar width */
-  transition: margin-left 0.3s ease;
-}
-
-.sidebar.minimized ~ header {
-  left: 50px;
-}
-
-.sidebar.minimized ~ .main-content {
-  margin-left: 50px;
-}
-
-
+    /* Main content with margin left and padding top to avoid header overlap */
     .main-content {
       padding: 20px;
-      padding-top: 80px; /* extra padding so content is below fixed header */
-      margin-left: 200px;
-      transition: margin-left 0.3s ease;
+      padding-top: 140px;  /* header height (120px) + 20px spacing */
+      margin-left: 200px;  /* sidebar width */
       flex: 1;
+      transition: margin-left 0.3s ease;
     }
 
-    /* When sidebar is minimized, adjust header and main content */
+    /* When sidebar minimized */
     .sidebar.minimized ~ header {
       left: 50px;
-      width: calc(100% - 50px);
     }
 
     .sidebar.minimized ~ .main-content {
       margin-left: 50px;
     }
 
+    /* Controls styling */
     .controls {
       display: flex;
       flex-wrap: wrap;
@@ -165,6 +148,7 @@
       background-color: #004080;
       color: white;
       cursor: pointer;
+      user-select: none;
     }
 
     .table-container {
@@ -221,7 +205,7 @@
   </div>
 
   <header>
-    SPECIAL MACHINE DATA
+    <h1>SPECIAL MACHINE DATA</h1>
   </header>
 
   <div class="main-content">
@@ -236,7 +220,6 @@
     </div>
 
     <div class="table-container">
-      <!-- MACHINE DATA START -->
       <table id="machineTable">
         <thead>
           <tr>
@@ -270,7 +253,6 @@
           </tr>
         </tbody>
       </table>
-      <!-- MACHINE DATA END -->
     </div>
 
     <footer>&copy; 2025 Israjul Riad | Machine Insights Dashboard</footer>
@@ -302,8 +284,7 @@
     }
 
     function toggleSidebar() {
-      const sidebar = document.getElementById("sidebar");
-      sidebar.classList.toggle("minimized");
+      document.getElementById("sidebar").classList.toggle("minimized");
     }
   </script>
 
