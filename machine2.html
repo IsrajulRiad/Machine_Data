@@ -1,4 +1,183 @@
 <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Machine Data</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+    :root {
+      --bg: #f9f9f9;
+      --text: #333;
+      --header: #004080;
+      --table-header: #dbeeff;
+      --highlight: #e6f0fa;
+    }
+
+    body.dark {
+      --bg: #121212;
+      --text: #f0f0f0;
+      --header: #1a1a1a;
+      --table-header: #333;
+      --highlight: #1e2b40;
+    }
+
+    body {
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      display: flex;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .sidebar {
+      width: 200px;
+      background: var(--header);
+      color: white;
+      padding: 20px;
+      box-sizing: border-box;
+      min-height: 100vh;
+      transition: width 0.3s ease;
+    }
+
+    .sidebar.minimized {
+      width: 50px;
+      overflow: hidden;
+    }
+
+    .sidebar h2 {
+      font-size: 20px;
+      margin-top: 0;
+    }
+
+    .sidebar a {
+      color: white;
+      display: block;
+      margin: 10px 0;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .toggle-btn {
+      background: #003060;
+      color: white;
+      border: none;
+      width: 100%;
+      padding: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+      border-radius: 4px;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .controls input,
+    .controls select,
+    .controls button {
+      padding: 10px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      flex: 1;
+    }
+
+    .controls button {
+      background-color: #004080;
+      color: white;
+      cursor: pointer;
+    }
+
+    .table-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    }
+
+    thead {
+      background-color: var(--table-header);
+    }
+
+    th,
+    td {
+      padding: 14px;
+      text-align: center;
+      border-bottom: 1px solid #ccc;
+    }
+
+    tbody tr:hover {
+      background-color: var(--highlight);
+    }
+
+    footer {
+      text-align: center;
+      font-size: 13px;
+      color: #999;
+      margin-top: 30px;
+    }
+
+    @media (max-width: 600px) {
+      .controls {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar" id="sidebar">
+    <h2>Machines</h2>
+    <a href="machine1.html">Machine 01</a>
+    <a href="machine2.html">Machine 02</a>
+    <button class="toggle-btn" onclick="toggleSidebar()">⏪</button>
+  </div>
+
+  <div class="main-content">
+    <header>
+      <h1>SPECIAL MACHINE DATA</h1>
+    </header>
+
+    <div class="controls">
+      <input type="text" id="search" placeholder="Search..." oninput="filterTable()" />
+      <select id="statusFilter" onchange="filterTable()">
+        <option value="">Filter by Status</option>
+        <option value="NPI">NPI</option>
+      </select>
+      <button onclick="exportTable()">⬇ Excel</button>
+      <button onclick="toggleDark()">🌓 Dark<>Light</button>
+    </div>
+
+    <div class="table-container">
+
+      <!-- MACHINE DATA START -->
+      <!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
@@ -61,3 +240,62 @@
 
 </body>
 </html>
+      <!-- MACHINE DATA END -->
+
+    </div>
+
+    <footer>&copy; 2025 Israjul Riad | Machine Insights Dashboard</footer>
+  </div>
+
+  <script>
+    function filterTable() {
+      const search = document.getElementById("search").value.toLowerCase();
+      const status = document.getElementById("statusFilter").value.toLowerCase();
+      const rows = document.querySelectorAll("#machineTable tbody tr");
+
+      rows.forEach((row) => {
+        const cells = Array.from(row.getElementsByTagName("td"));
+        const rowText = cells.map((cell) => cell.textContent.toLowerCase()).join(" ");
+        const statusMatch = status === "" || cells[5].textContent.toLowerCase() === status;
+        const searchMatch = rowText.includes(search);
+        row.style.display = statusMatch && searchMatch ? "" : "none";
+      });
+    }
+
+    function exportTable() {
+      const table = document.getElementById("machineTable");
+      const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
+      XLSX.writeFile(wb, "machine_data.xlsx");
+    }
+
+    function toggleDark() {
+      document.body.classList.toggle("dark");
+    }
+
+    function toggleSidebar() {
+      document.getElementById("sidebar").classList.toggle("minimized");
+    }
+  </script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
