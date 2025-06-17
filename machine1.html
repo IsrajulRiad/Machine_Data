@@ -39,11 +39,26 @@
       box-sizing: border-box;
       min-height: 100vh;
       transition: width 0.3s ease;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      position: relative;
     }
 
     .sidebar.minimized {
-      width: 50px;
-      overflow: hidden;
+      width: 60px;
+      padding: 20px 10px;
+    }
+
+    .sidebar-content {
+      display: block;
+      width: 100%;
+      transition: opacity 0.2s ease;
+    }
+
+    .sidebar.minimized .sidebar-content {
+      display: none;
     }
 
     .sidebar h2 {
@@ -64,10 +79,11 @@
       color: white;
       border: none;
       width: 100%;
-      padding: 8px;
+      padding: 10px;
       cursor: pointer;
-      margin-top: 20px;
+      margin-top: auto;
       border-radius: 4px;
+      font-size: 20px;
     }
 
     .main-content {
@@ -76,25 +92,18 @@
     }
 
     header {
-      text-align: center;
+      background-color: #004080;
+      color: white;
+      padding: 20px 0;
+      border-radius: 8px;
       margin-bottom: 20px;
+      text-align: center;
     }
 
-    header {
-  background-color: #004080;
-  color: white;
-  padding: 20px 0;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-header h1 {
-  margin: 0;
-  font-size: 32px;
-}
-
-
+    header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
 
     .controls {
       display: flex;
@@ -165,12 +174,11 @@ header h1 {
 
   <div class="sidebar" id="sidebar">
     <div class="sidebar-content" id="sidebarContent">
-  <h2>Machines</h2>
-  <a href="machine1.html">Machine 01</a>
-  <a href="machine2.html">Machine 02</a>
-</div>
-<button class="toggle-btn" onclick="toggleSidebar()">☰</button>
-
+      <h2>Machines</h2>
+      <a href="machine1.html">Machine 01</a>
+      <a href="machine2.html">Machine 02</a>
+    </div>
+    <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
   </div>
 
   <div class="main-content">
@@ -189,8 +197,6 @@ header h1 {
     </div>
 
     <div class="table-container">
-
-      <!-- MACHINE DATA START -->
       <table id="machineTable">
         <thead>
           <tr>
@@ -213,10 +219,17 @@ header h1 {
             <td>NPI</td>
             <td>2-Jan</td>
           </tr>
+          <tr>
+            <td>2</td>
+            <td>799392</td>
+            <td>A100M18867</td>
+            <td></td>
+            <td></td>
+            <td>NPI</td>
+            <td>2-Jan</td>
+          </tr>
         </tbody>
       </table>
-      <!-- MACHINE DATA END -->
-
     </div>
 
     <footer>&copy; 2025 Israjul Riad | Machine Insights Dashboard</footer>
