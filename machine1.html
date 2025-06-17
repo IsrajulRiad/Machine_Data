@@ -18,9 +18,9 @@
       --highlight: #e6f0fa;
       --toggle-btn-top-margin: 120px;
       --toggle-btn-horizontal-pos: 0px;
-      --logo-width: 200px;
-      --logo-margin-top: 20px;
-      --logo-margin-left: 0px;
+      --logo-top: 10px;
+      --logo-left: 10px;
+      --logo-width: 100px;
     }
 
     body.dark {
@@ -38,6 +38,14 @@
       margin: 0;
       display: flex;
       transition: background 0.3s, color 0.3s;
+    }
+
+    .page-logo {
+      position: fixed;
+      top: var(--logo-top);
+      left: var(--logo-left);
+      width: var(--logo-width);
+      z-index: 1000;
     }
 
     .sidebar {
@@ -61,14 +69,6 @@
 
     .sidebar.minimized {
       width: 70px;
-    }
-
-    .logo {
-      width: var(--logo-width);
-      height: auto;
-      margin-top: var(--logo-margin-top);
-      margin-left: var(--logo-margin-left);
-      margin-bottom: 20px;
     }
 
     .toggle-btn {
@@ -181,7 +181,7 @@
       overflow: hidden;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
       font-size: var(--table-font-size);
-      color: var(--text);
+      color: var(--text); /* Ensures table text is visible in dark mode */
     }
 
     thead {
@@ -215,8 +215,11 @@
 </head>
 <body>
 
+  <!-- LOGO ON TOP -->
+  <img src="logo.png" alt="Logo" class="page-logo" />
+
+  <!-- SIDEBAR -->
   <div class="sidebar" id="sidebar">
-    <img src="logo.png" alt="Logo" class="logo" />
     <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
     <div class="sidebar-content" id="sidebarContent">
       <h2>Machines</h2>
@@ -225,10 +228,12 @@
     </div>
   </div>
 
+  <!-- HEADER -->
   <header>
     <h1>SPECIAL MACHINE DATA</h1>
   </header>
 
+  <!-- MAIN CONTENT -->
   <div class="main-content">
     <div class="controls">
       <input type="text" id="search" placeholder="Search..." oninput="filterTable()" />
@@ -270,6 +275,7 @@
     <footer>&copy; 2025 Israjul Riad | Machine Insights Dashboard</footer>
   </div>
 
+  <!-- JS -->
   <script>
     function filterTable() {
       const search = document.getElementById("search").value.toLowerCase();
