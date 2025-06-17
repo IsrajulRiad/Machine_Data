@@ -39,16 +39,23 @@
       box-sizing: border-box;
       min-height: 100vh;
       transition: width 0.3s ease;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      position: relative;
     }
 
     .sidebar.minimized {
-      width: 50px;
+      width: 80px;
       overflow: hidden;
     }
 
     .sidebar h2 {
       font-size: 20px;
       margin-top: 0;
+      white-space: nowrap;
     }
 
     .sidebar a {
@@ -57,17 +64,23 @@
       margin: 10px 0;
       text-decoration: none;
       font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .sidebar.minimized .sidebar-content {
+      display: none;
     }
 
     .toggle-btn {
-      background: #003060;
+      background: var(--header);
       color: white;
       border: none;
       width: 100%;
-      padding: 8px;
+      padding: 10px;
       cursor: pointer;
-      margin-top: 20px;
+      margin-bottom: 20px;
       border-radius: 4px;
+      font-size: 20px;
     }
 
     .main-content {
@@ -80,21 +93,10 @@
       margin-bottom: 20px;
     }
 
-    header {
-  background-color: #004080;
-  color: white;
-  padding: 20px 0;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-header h1 {
-  margin: 0;
-  font-size: 32px;
-}
-
-
+    header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
 
     .controls {
       display: flex;
@@ -164,10 +166,12 @@ header h1 {
 <body>
 
   <div class="sidebar" id="sidebar">
-    <h2>Machines</h2>
-    <a href="machine1.html">Machine 01</a>
-    <a href="machine2.html">Machine 02</a>
-    <button class="toggle-btn" onclick="toggleSidebar()">⏪</button>
+    <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+    <div class="sidebar-content" id="sidebarContent">
+      <h2>Machines</h2>
+      <a href="machine1.html">Machine 01</a>
+      <a href="machine2.html">Machine 02</a>
+    </div>
   </div>
 
   <div class="main-content">
