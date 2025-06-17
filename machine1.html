@@ -7,38 +7,36 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
     :root {
-      --sidebar-width: 150px;      /* sidebar width */
-      --header-bg-color: #004080;  /* sidebar & header bg */
-      --toggle-btn-top: 35px;      /* vertical position of toggle button inside sidebar */
-      --toggle-btn-left: 10px;     /* horizontal position of toggle button inside sidebar */
-      
-      --font-size-header: 28px;
-      --font-size-sidebar-title: 20px;
-      --font-size-sidebar-links: 16px;
-      --font-size-main-text: 14px;
+      --bg: #f9f9f9;
+      --text: #333;
+      --header-bg-color: #004080;
+      --table-header: #dbeeff;
+      --highlight: #e6f0fa;
     }
 
     body.dark {
+      --bg: #121212;
+      --text: #f0f0f0;
       --header-bg-color: #1a1a1a;
-      background-color: #121212;
-      color: #f0f0f0;
+      --table-header: #333;
+      --highlight: #1e2b40;
     }
 
     body {
       font-family: "Segoe UI", Roboto, Arial, sans-serif;
-      background-color: var(--bg, #f9f9f9);
-      color: var(--text, #333);
+      background-color: var(--bg);
+      color: var(--text);
       margin: 0;
       display: flex;
       transition: background 0.3s, color 0.3s;
     }
 
-    /* SIDEBAR */
+    /* Sidebar */
     .sidebar {
-      width: var(--sidebar-width);
+      width: 200px;
       background: var(--header-bg-color);
       color: white;
-      padding: 20px 10px 20px 20px;
+      padding: 20px 20px 20px 20px;
       box-sizing: border-box;
       min-height: 100vh;
       transition: width 0.3s ease;
@@ -47,48 +45,17 @@
       flex-direction: column;
       align-items: flex-start;
       position: relative;
-      flex-shrink: 0;
     }
 
-    /* Toggle button positioned inside sidebar */
-    .toggle-btn {
-      position: absolute;
-      top: var(--toggle-btn-top);
-      left: var(--toggle-btn-left);
-      background: var(--header-bg-color);
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      cursor: pointer;
-      border-radius: 4px;
-      font-size: 18px;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      user-select: none;
-      box-shadow: none; /* remove shadow */
-      transition: background 0.3s;
-    }
-    .toggle-btn:hover {
-      background: #003060;
-    }
-
-    /* Sidebar minimized style */
     .sidebar.minimized {
       width: 50px;
-      padding-left: 10px;
-    }
-    .sidebar.minimized .sidebar-content {
-      display: none;
+      overflow: hidden;
     }
 
     .sidebar h2 {
-      font-size: var(--font-size-sidebar-title);
-      margin-top: 60px; /* Leave space for toggle button */
+      font-size: 20px;
+      margin-top: 0;
       white-space: nowrap;
-      user-select: none;
     }
 
     .sidebar a {
@@ -98,55 +65,71 @@
       text-decoration: none;
       font-weight: bold;
       white-space: nowrap;
-      font-size: var(--font-size-sidebar-links);
-      user-select: none;
     }
 
-    /* HEADER */
+    .sidebar.minimized .sidebar-content {
+      display: none;
+    }
+
+    /* Toggle button positioned to align horizontally with search box */
+    .toggle-btn {
+      position: absolute;
+      top: 90px; /* vertical alignment - adjust as needed */
+      left: 100%; /* position right outside sidebar */
+      transform: translateX(-100%);
+      background: var(--header-bg-color);
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 18px;
+      box-shadow: none; /* remove shadow */
+      transition: background 0.3s;
+      z-index: 10;
+      white-space: nowrap;
+    }
+
+    .toggle-btn:hover {
+      background: #002060;
+    }
+
+    /* Main content area */
+    .main-content {
+      flex: 1;
+      padding: 20px;
+    }
+
+    /* Header */
     header {
       background-color: var(--header-bg-color);
       color: white;
-      padding: 30px 0; /* thicker header */
+      padding: 25px 20px;
+      font-size: 32px; /* Change text size here */
+      font-weight: bold;
       text-align: center;
-      flex: 1;
-      margin-left: var(--sidebar-width);
-      box-sizing: border-box;
+      margin: 0 0 20px 0;
       user-select: none;
     }
 
-    header h1 {
-      margin: 0;
-      font-size: var(--font-size-header);
-      line-height: 1.2;
-    }
-
-    /* MAIN CONTENT */
-    .main-content {
-      flex: 1;
-      margin-left: var(--sidebar-width);
-      padding: 20px;
-      box-sizing: border-box;
-    }
-
-    /* CONTROLS */
+    /* Controls - search, filter, buttons */
     .controls {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
-      align-items: center; /* vertically align controls */
       margin-bottom: 20px;
-      margin-top: 10px;
+      align-items: center;
     }
 
-    .controls input[type="text"],
+    .controls input,
     .controls select,
     .controls button {
       padding: 10px;
-      font-size: var(--font-size-main-text);
+      font-size: 16px; /* Change text size here */
       border: 1px solid #ccc;
       border-radius: 6px;
       flex: 1;
-      min-width: 120px;
+      min-width: 150px;
       box-sizing: border-box;
     }
 
@@ -154,15 +137,15 @@
       background-color: var(--header-bg-color);
       color: white;
       cursor: pointer;
-      user-select: none;
-      border: none;
-      transition: background 0.3s;
-    }
-    .controls button:hover {
-      background-color: #003060;
+      flex: none;
+      min-width: auto;
     }
 
-    /* TABLE */
+    .controls button:hover {
+      background-color: #002060;
+    }
+
+    /* Table container */
     .table-container {
       overflow-x: auto;
     }
@@ -174,10 +157,11 @@
       border-radius: 8px;
       overflow: hidden;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+      font-size: 16px; /* Change text size here */
     }
 
     thead {
-      background-color: #dbeeff;
+      background-color: var(--table-header);
     }
 
     th,
@@ -185,12 +169,10 @@
       padding: 14px;
       text-align: center;
       border-bottom: 1px solid #ccc;
-      font-size: var(--font-size-main-text);
-      user-select: text;
     }
 
     tbody tr:hover {
-      background-color: #e6f0fa;
+      background-color: var(--highlight);
     }
 
     footer {
@@ -206,7 +188,6 @@
         flex-direction: column;
       }
     }
-
   </style>
 </head>
 <body>
@@ -222,7 +203,7 @@
 
   <div class="main-content">
     <header>
-      <h1>SPECIAL MACHINE DATA</h1>
+      SPECIAL MACHINE DATA
     </header>
 
     <div class="controls">
@@ -236,6 +217,8 @@
     </div>
 
     <div class="table-container">
+
+      <!-- MACHINE DATA START -->
       <table id="machineTable">
         <thead>
           <tr>
@@ -269,6 +252,8 @@
           </tr>
         </tbody>
       </table>
+      <!-- MACHINE DATA END -->
+
     </div>
 
     <footer>&copy; 2025 Israjul Riad | Machine Insights Dashboard</footer>
@@ -300,18 +285,9 @@
     }
 
     function toggleSidebar() {
-      const sidebar = document.getElementById("sidebar");
-      sidebar.classList.toggle("minimized");
-      // Optionally adjust main content margin when sidebar minimized
-      const mainContent = document.querySelector(".main-content");
-      if (sidebar.classList.contains("minimized")) {
-        mainContent.style.marginLeft = '50px';
-        document.querySelector('header').style.marginLeft = '50px';
-      } else {
-        mainContent.style.marginLeft = getComputedStyle(document.documentElement).getPropertyValue('--sidebar-width');
-        document.querySelector('header').style.marginLeft = getComputedStyle(document.documentElement).getPropertyValue('--sidebar-width');
-      }
+      document.getElementById("sidebar").classList.toggle("minimized");
     }
   </script>
+
 </body>
 </html>
