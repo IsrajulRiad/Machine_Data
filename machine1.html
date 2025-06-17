@@ -43,27 +43,19 @@
       display: flex;
       flex-direction: column;
       align-items: flex-start;
+      justify-content: flex-start;
       position: relative;
     }
 
     .sidebar.minimized {
-      width: 60px;
-      padding: 20px 10px;
-    }
-
-    .sidebar-content {
-      display: block;
-      width: 100%;
-      transition: opacity 0.2s ease;
-    }
-
-    .sidebar.minimized .sidebar-content {
-      display: none;
+      width: 50px;
+      overflow: hidden;
     }
 
     .sidebar h2 {
       font-size: 20px;
       margin-top: 0;
+      white-space: nowrap;
     }
 
     .sidebar a {
@@ -72,6 +64,11 @@
       margin: 10px 0;
       text-decoration: none;
       font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .sidebar.minimized .sidebar-content {
+      display: none;
     }
 
     .toggle-btn {
@@ -81,7 +78,7 @@
       width: 100%;
       padding: 10px;
       cursor: pointer;
-      margin-top: auto;
+      margin-bottom: 20px;
       border-radius: 4px;
       font-size: 20px;
     }
@@ -92,12 +89,8 @@
     }
 
     header {
-      background-color: #004080;
-      color: white;
-      padding: 20px 0;
-      border-radius: 8px;
-      margin-bottom: 20px;
       text-align: center;
+      margin-bottom: 20px;
     }
 
     header h1 {
@@ -172,15 +165,14 @@
 </head>
 <body>
 
-<div class="sidebar" id="sidebar">
-  <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
-  <div class="sidebar-content" id="sidebarContent">
-    <h2>Machines</h2>
-    <a href="machine1.html">Machine 01</a>
-    <a href="machine2.html">Machine 02</a>
+  <div class="sidebar" id="sidebar">
+    <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+    <div class="sidebar-content" id="sidebarContent">
+      <h2>Machines</h2>
+      <a href="machine1.html">Machine 01</a>
+      <a href="machine2.html">Machine 02</a>
+    </div>
   </div>
-</div>
-
 
   <div class="main-content">
     <header>
@@ -198,6 +190,8 @@
     </div>
 
     <div class="table-container">
+
+      <!-- MACHINE DATA START -->
       <table id="machineTable">
         <thead>
           <tr>
@@ -231,6 +225,8 @@
           </tr>
         </tbody>
       </table>
+      <!-- MACHINE DATA END -->
+
     </div>
 
     <footer>&copy; 2025 Israjul Riad | Machine Insights Dashboard</footer>
