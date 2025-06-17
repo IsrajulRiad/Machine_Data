@@ -120,16 +120,20 @@
     }
 
     .main-content {
-      padding: 20px; /* this creates equal left & right spacing */
+      padding: 20px;
       padding-top: 160px;
       margin-left: 150px;
-      width: 100%;
+      width: calc(100% - 150px);
+      max-width: 1200px;
+      margin-right: auto;
+      margin-left: auto;
       transition: margin-left 0.3s ease;
       box-sizing: border-box;
     }
 
     .sidebar.minimized ~ .main-content {
-      margin-left: 70px;
+      margin-left: auto;
+      width: calc(100% - 70px);
     }
 
     .controls {
@@ -170,6 +174,7 @@
       overflow: hidden;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
       font-size: var(--table-font-size);
+      color: var(--text);
     }
 
     thead {
@@ -198,6 +203,20 @@
       .controls {
         flex-direction: column;
       }
+    }
+
+    /* Dark mode fixes for table */
+    body.dark table {
+      color: white;
+      background-color: #1e1e1e;
+    }
+
+    body.dark thead {
+      background-color: #333;
+    }
+
+    body.dark tbody tr:hover {
+      background-color: #2a2a2a;
     }
   </style>
 </head>
