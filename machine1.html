@@ -72,17 +72,13 @@
 
     .controls {
       display: flex;
-      flex-wrap: wrap;
       gap: 10px;
       margin-bottom: 20px;
       font-size: var(--controls-font-size);
-      justify-content: space-between;
     }
 
-    .controls input[type="text"],
-    .controls select,
-    .controls input[type="file"],
-    .controls button {
+    .controls > * {
+      flex: 1;
       padding: 10px;
       font-size: inherit;
       border: 1px solid #ccc;
@@ -90,13 +86,18 @@
       background-color: transparent;
       color: inherit;
       cursor: pointer;
-      flex: 1;
-      min-width: 120px;
-      max-width: 200px;
+      max-width: none;
+      min-width: 0;
     }
 
     .controls input[type="text"] {
       flex: 2;
+    }
+
+    .controls input[type="file"] {
+      padding: 8px;
+      background-color: white;
+      color: black;
     }
 
     .table-container {
@@ -134,10 +135,9 @@
       margin-top: 30px;
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 700px) {
       .controls {
         flex-direction: column;
-        align-items: stretch;
       }
     }
 
@@ -168,6 +168,7 @@
 
   <div class="main-content">
     <div class="controls">
+      <button onclick="location.href='dashboard.html'">🏠 Home</button>
       <input type="file" id="fileUpload" accept=".xlsx, .xls" />
       <input type="text" id="search" placeholder="Search..." oninput="filterTable()" />
       <select id="statusFilter" onchange="filterTable()">
