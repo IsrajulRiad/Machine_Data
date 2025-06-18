@@ -16,11 +16,6 @@
       --header: #004080;
       --table-header: #dbeeff;
       --highlight: #e6f0fa;
-      --toggle-btn-top-margin: 120px;
-      --toggle-btn-horizontal-pos: 0px;
-      --logo-top: 30px;
-      --logo-left: 10px;
-      --logo-width: 200px;
     }
 
     body.dark {
@@ -36,76 +31,7 @@
       background-color: var(--bg);
       color: var(--text);
       margin: 0;
-      display: flex;
       transition: background 0.3s, color 0.3s;
-    }
-
-    .page-logo {
-      position: fixed;
-      top: var(--logo-top);
-      left: var(--logo-left);
-      width: var(--logo-width);
-      z-index: 1000;
-    }
-
-    .sidebar {
-      width: 150px;
-      background: var(--header);
-      color: white;
-      padding: 20px;
-      box-sizing: border-box;
-      min-height: 100vh;
-      transition: width 0.3s ease;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 20;
-      font-size: var(--sidebar-font-size);
-    }
-
-    .sidebar.minimized {
-      width: 70px;
-    }
-
-    .toggle-btn {
-      background: var(--header);
-      color: white;
-      border: none;
-      width: 20px;
-      padding: 10px;
-      cursor: pointer;
-      border-radius: 4px;
-      font-size: 20px;
-      user-select: none;
-      margin-top: var(--toggle-btn-top-margin);
-      margin-left: var(--toggle-btn-horizontal-pos);
-    }
-
-    .sidebar h2 {
-      font-size: 1.2em;
-      margin-top: 20px;
-      white-space: nowrap;
-    }
-
-    .sidebar a {
-      color: white;
-      display: block;
-      margin: 10px 0;
-      text-decoration: none;
-      font-weight: bold;
-      white-space: nowrap;
-    }
-
-    .sidebar-content {
-      width: 100%;
-    }
-
-    .sidebar.minimized .sidebar-content {
-      display: none;
     }
 
     header {
@@ -115,7 +41,7 @@
       box-sizing: border-box;
       position: fixed;
       top: 0;
-      left: 150px;
+      left: 0;
       right: 0;
       z-index: 10;
       font-size: var(--header-font-size);
@@ -123,24 +49,13 @@
       align-items: center;
       justify-content: center;
       height: 120px;
-      transition: left 0.3s ease;
-    }
-
-    .sidebar.minimized ~ header {
-      left: 70px;
     }
 
     .main-content {
       padding: 20px;
       padding-top: 160px;
-      margin-left: 150px;
       width: 100%;
-      transition: margin-left 0.3s ease;
       box-sizing: border-box;
-    }
-
-    .sidebar.minimized ~ .main-content {
-      margin-left: 70px;
     }
 
     .controls {
@@ -156,17 +71,16 @@
     .controls button {
       padding: 10px;
       font-size: inherit;
-      border: 1px solid #ccc;
       border-radius: 6px;
       flex: 1;
       min-width: 120px;
+      border: 1px solid #ccc;
     }
 
     .controls button {
-      background-color: #004080;
-      color: white;
+      background-color: transparent;
+      color: var(--text);
       cursor: pointer;
-      user-select: none;
     }
 
     .table-container {
@@ -177,134 +91,4 @@
       width: 100%;
       border-collapse: collapse;
       background-color: white;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-      font-size: var(--table-font-size);
-      color: var(--text); /* Ensures table text is visible in dark mode */
-    }
-
-    thead {
-      background-color: var(--table-header);
-    }
-
-    th,
-    td {
-      padding: 14px;
-      text-align: center;
-      border-bottom: 1px solid #ccc;
-    }
-
-    tbody tr:hover {
-      background-color: var(--highlight);
-    }
-
-    footer {
-      text-align: center;
-      font-size: 13px;
-      color: #999;
-      margin-top: 30px;
-    }
-
-    @media (max-width: 600px) {
-      .controls {
-        flex-direction: column;
-      }
-    }
-  </style>
-</head>
-<body>
-
-  <!-- LOGO ON TOP -->
-  <img src="logo.png" alt="Logo" class="page-logo" />
-
-  <!-- SIDEBAR -->
-  <div class="sidebar" id="sidebar">
-    <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
-    <div class="sidebar-content" id="sidebarContent">
-      <h2>Machines</h2>
-      <a href="machine1.html">Machine 01</a>
-      <a href="machine2.html">Machine 02</a>
-    </div>
-  </div>
-
-  <!-- HEADER -->
-  <header>
-    <h1>SPECIAL MACHINE DATA</h1>
-  </header>
-
-  <!-- MAIN CONTENT -->
-  <div class="main-content">
-    <div class="controls">
-      <input type="text" id="search" placeholder="Search..." oninput="filterTable()" />
-      <select id="statusFilter" onchange="filterTable()">
-        <option value="">Filter by Status</option>
-        <option value="NPI">NPI</option>
-      </select>
-      <button onclick="exportTable()">⬇ Excel</button>
-      <button onclick="toggleDark()">🌓 Dark<>Light</button>
-    </div>
-
-    <div class="table-container">
-      <table id="machineTable">
-        <thead>
-          <tr>
-            <th>Sl</th>
-            <th>ID</th>
-            <th>Style</th>
-            <th>Col 4</th>
-            <th>Col 5</th>
-            <th>Status</th>
-            <th>Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>1</td>
-            <td>794622</td>
-            <td>A100M18985</td>
-            <td></td>
-            <td></td>
-            <td>NPI</td>
-            <td>2-Jan</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <footer>&copy; 2025 Israjul Riad | Machine Insights Dashboard</footer>
-  </div>
-
-  <!-- JS -->
-  <script>
-    function filterTable() {
-      const search = document.getElementById("search").value.toLowerCase();
-      const status = document.getElementById("statusFilter").value.toLowerCase();
-      const rows = document.querySelectorAll("#machineTable tbody tr");
-
-      rows.forEach((row) => {
-        const cells = Array.from(row.getElementsByTagName("td"));
-        const rowText = cells.map((cell) => cell.textContent.toLowerCase()).join(" ");
-        const statusMatch = status === "" || cells[5].textContent.toLowerCase() === status;
-        const searchMatch = rowText.includes(search);
-        row.style.display = statusMatch && searchMatch ? "" : "none";
-      });
-    }
-
-    function exportTable() {
-      const table = document.getElementById("machineTable");
-      const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
-      XLSX.writeFile(wb, "machine_data.xlsx");
-    }
-
-    function toggleDark() {
-      document.body.classList.toggle("dark");
-    }
-
-    function toggleSidebar() {
-      document.getElementById("sidebar").classList.toggle("minimized");
-    }
-  </script>
-
-</body>
-</html>
+      border-radius: 8p
