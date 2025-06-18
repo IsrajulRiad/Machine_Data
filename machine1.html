@@ -47,18 +47,18 @@
       right: 0;
       z-index: 10;
       font-size: var(--header-font-size);
-      height: 120px;
+      height: 100px;
       display: flex;
       align-items: center;
       justify-content: center;
-      position: relative;
     }
 
     .logo-container {
       position: absolute;
-      left: 20px;
+      left: 0;
       top: 50%;
       transform: translateY(-50%);
+      padding: 10px;
     }
 
     .logo-container iframe {
@@ -69,10 +69,9 @@
 
     .main-content {
       padding: 20px;
-      padding-top: 140px;
+      padding-top: 20px;
       width: 100%;
       box-sizing: border-box;
-      margin-top: -20px;
     }
 
     .controls {
@@ -182,10 +181,12 @@
 </head>
 <body>
 
+  <!-- Show logo in left center (outside header) -->
+  <div class="logo-container">
+    <iframe src="logo.html"></iframe>
+  </div>
+
   <header>
-    <div class="logo-container">
-      <iframe src="logo.html"></iframe>
-    </div>
     <h1>SPECIAL MACHINE DATA</h1>
   </header>
 
@@ -197,10 +198,8 @@
         <option value="">Filter by Status</option>
         <option value="NPI">NPI</option>
       </select>
-
       <label for="uploadExcel">⬆ Upload Excel</label>
       <input type="file" id="uploadExcel" accept=".xls,.xlsx" />
-
       <button onclick="exportTable()">⬇ Excel</button>
       <button onclick="toggleDark()">🌓 Dark&lt;&gt;Light</button>
     </div>
