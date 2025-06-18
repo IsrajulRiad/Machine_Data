@@ -6,31 +6,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
+    /* Variables */
     :root {
       --header-font-size: 22px;
       --controls-font-size: 14px;
-      --table-font-size: 14px;
+      --table-font-size: 13px;
       --bg: #f9f9f9;
       --text: #333;
       --header: #004080;
-      --table-header: #dbeeff;
+      --table-header-bg: #dbeeff;
       --highlight: #e6f0fa;
       --button-bg: #cce5ff;
       --button-hover-bg: #99ccff;
+      --border-color: #999;
     }
 
     body.dark {
       --bg: #121212;
       --text: #f0f0f0;
       --header: #1a1a1a;
-      --table-header: #333;
+      --table-header-bg: #333;
       --highlight: #1e2b40;
       --button-bg: #334466;
       --button-hover-bg: #556688;
+      --border-color: #555;
     }
 
+    /* Body and general styling */
     body {
-      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       background-color: var(--bg);
       color: var(--text);
       margin: 0;
@@ -116,73 +120,88 @@
       display: none;
     }
 
-    /* Updated table styles */
-
     .table-container {
       overflow-x: auto;
-      border-radius: 8px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
-      background-color: var(--bg);
-      padding: 10px;
-      margin-bottom: 30px;
     }
+
+    /* --- Table styling to match your Excel format --- */
 
     table#machineTable {
       width: 100%;
       border-collapse: separate;
       border-spacing: 0;
       font-size: var(--table-font-size);
-      table-layout: fixed;
-      min-width: 800px;
+      background-color: white;
+      border: 1.5px solid var(--border-color);
+      border-radius: 6px;
+      table-layout: fixed; /* fix layout for exact widths */
     }
 
+    /* Column widths based on image approx */
+    table#machineTable colgroup col:nth-child(1) { width: 40px; }   /* No */
+    table#machineTable colgroup col:nth-child(2) { width: 180px; }  /* Checking Point */
+    table#machineTable colgroup col:nth-child(3) { width: 60px; }   /* empty col */
+    table#machineTable colgroup col:nth-child(4) { width: 50px; }   /* Yes */
+    table#machineTable colgroup col:nth-child(5) { width: 50px; }   /* No */
+    table#machineTable colgroup col:nth-child(6) { width: 200px; }  /* Remarks */
+
     thead {
-      background-color: var(--table-header);
+      background-color: var(--table-header-bg);
       color: #000;
-      font-weight: 600;
-      position: sticky;
-      top: 0;
-      z-index: 5;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      font-weight: bold;
+      border-bottom: 2px solid var(--border-color);
     }
 
     th, td {
-      padding: 12px 10px;
+      padding: 10px 8px;
       text-align: center;
-      border-bottom: 1px solid #ccc;
-      border-right: 1px solid #ccc;
+      vertical-align: middle;
+      border-right: 1.5px solid var(--border-color);
+      border-bottom: 1.5px solid var(--border-color);
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      vertical-align: middle;
+      font-weight: 600;
     }
 
+    /* Remove right border on last column */
     th:last-child, td:last-child {
       border-right: none;
+      text-align: left;
+      padding-left: 12px;
+      font-weight: 400;
+    }
+
+    /* Left align Checking Point text column */
+    th:nth-child(2), td:nth-child(2) {
+      text-align: left;
+      padding-left: 12px;
+    }
+
+    /* Yes/No columns use center alignment and bold */
+    th:nth-child(4), th:nth-child(5),
+    td:nth-child(4), td:nth-child(5) {
+      font-weight: 700;
+      user-select: none;
+      cursor: default;
     }
 
     tbody tr:hover {
       background-color: var(--highlight);
     }
 
-    body.dark .table-container {
+    /* Dark mode overrides */
+    body.dark table#machineTable,
+    body.dark th, body.dark td {
+      color: var(--text);
       background-color: #1e1e1e;
-      box-shadow: 0 0 15px rgba(255,255,255,0.1);
-    }
-
-    body.dark table#machineTable {
-      color: white;
       border-color: #444;
     }
 
     body.dark thead {
-      background-color: #333;
+      background-color: var(--table-header-bg);
       color: #eee;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.8);
-    }
-
-    body.dark th, body.dark td {
-      border-color: #444;
+      border-bottom-color: #555;
     }
 
     body.dark tbody tr:hover {
@@ -234,7 +253,29 @@
     </div>
 
     <div class="table-container">
-      <table id="machineTable"></table>
+      <table id="machineTable">
+        <colgroup>
+          <col />
+          <col />
+          <col />
+          <col />
+          <col />
+          <col />
+        </colgroup>
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Checking Point</th>
+            <th></th>
+            <th>Yes</th>
+            <th>No</th>
+            <th>Remarks</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Initially empty, filled by Excel upload -->
+        </tbody>
+      </table>
     </div>
   </div>
 
@@ -287,17 +328,29 @@
         const workbook = XLSX.read(data, { type: "array" });
         const firstSheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[firstSheetName];
-        const htmlString = XLSX.utils.sheet_to_html(worksheet);
-        const tempDiv = document.createElement("div");
-        tempDiv.innerHTML = htmlString;
-        const uploadedTable = tempDiv.querySelector("table");
-        if (!uploadedTable) {
-          alert("Uploaded file doesn't contain a valid table.");
-          return;
+
+        // Use SheetJS to convert to JSON
+        const json = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
+
+        // Clear table body
+        const tbody = document.querySelector("#machineTable tbody");
+        tbody.innerHTML = "";
+
+        // Append rows from JSON
+        for (let i = 1; i < json.length; i++) {
+          const row = document.createElement("tr");
+          // Create 6 cells as per columns
+          for (let j = 0; j < 6; j++) {
+            const cell = document.createElement("td");
+            // Fill cell if data exists, else empty string
+            cell.textContent = json[i][j] !== undefined ? json[i][j] : "";
+            row.appendChild(cell);
+          }
+          tbody.appendChild(row);
         }
-        const oldTable = document.getElementById("machineTable");
-        oldTable.innerHTML = uploadedTable.innerHTML;
-        localStorage.setItem("savedTable", uploadedTable.innerHTML);
+
+        // Save HTML of tbody only to localStorage (header static)
+        localStorage.setItem("savedTableBody", tbody.innerHTML);
         document.getElementById("search").value = "";
         document.getElementById("statusFilter").value = "";
         filterTable();
@@ -306,11 +359,11 @@
       e.target.value = "";
     });
 
-    // Restore saved data
+    // Restore saved data on load
     window.onload = function () {
-      const savedHTML = localStorage.getItem("savedTable");
-      if (savedHTML) {
-        document.getElementById("machineTable").innerHTML = savedHTML;
+      const savedBody = localStorage.getItem("savedTableBody");
+      if (savedBody) {
+        document.querySelector("#machineTable tbody").innerHTML = savedBody;
         filterTable();
       }
       if (localStorage.getItem("darkMode") === "1") {
