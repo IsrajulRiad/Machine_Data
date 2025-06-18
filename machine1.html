@@ -220,118 +220,100 @@
     &copy; 2025 Israjul Riad | Smart Machine Monitoring
   </footer>
 
- <!-- 👇 Only the updated section from script tag -->
-<script>
-  function goHome() {
-    window.location.href = "dashboard.html";
-  }
-
-  function filterTable() {
-    const table = document.getElementById("machineTable");
-    if (!table.tBodies.length) return;
-    const search = document.getElementById("search").value.toLowerCase();
-    const status = document.getElementById("statusFilter").value.toLowerCase();
-    const rows = table.tBodies[0].rows;
-    Array.from(rows).forEach(row => {
-      const cells = Array.from(row.cells);
-      const rowText = cells.map(cell => cell.textContent.toLowerCase()).join(" ");
-      const statusMatch = status === "" || (cells[5] && cells[5].textContent.toLowerCase() === status);
-      const searchMatch = rowText.includes(search);
-      row.style.display = (statusMatch && searchMatch) ? "" : "none";
-    });
-  }
-
-  function exportTable() {
-    const table = document.getElementById("machineTable");
-    if (!table || !table.innerHTML.trim()) {
-      alert("No data to export!");
-      return;
+  <script>
+    function goHome() {
+      window.location.href = "dashboard.html";
     }
-    const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
-    XLSX.writeFile(wb, "machine_data.xlsx");
-  }
 
-  function toggleDark() {
-    document.body.classList.toggle("dark");
-    localStorage.setItem("darkMode", document.body.classList.contains("dark") ? "1" : "0");
-  }
+    function filterTable() {
+      const table = document.getElementById("machineTable");
+      if (!table.tBodies.length) return;
+      const search = document.getElementById("search").value.toLowerCase();
+      const status = document.getElementById("statusFilter").value.toLowerCase();
+      const rows = table.tBodies[0].rows;
+      Array.from(rows).forEach(row => {
+        const cells = Array.from(row.cells);
+        const rowText = cells.map(cell => cell.textContent.toLowerCase()).join(" ");
+        const statusMatch = status === "" || (cells[5] && cells[5].textContent.toLowerCase() === status);
+        const searchMatch = rowText.includes(search);
+        row.style.display = (statusMatch && searchMatch) ? "" : "none";
+      });
+    }
 
-  document.getElementById("uploadExcel").addEventListener("change", function(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = function(evt) {
-      const data = new Uint8Array(evt.target.result);
-      const workbook = XLSX.read(data, { type: "array" });
-      const firstSheetName = workbook.SheetNames[0];
-      const worksheet = workbook.Sheets[firstSheetName];
-      const htmlString = XLSX.utils.sheet_to_html(worksheet);
-      const tempDiv = document.createElement("div");
-      tempDiv.innerHTML = htmlString;
-      const uploadedTable = tempDiv.querySelector("table");
-      if (!uploadedTable) {
-        alert("Uploaded file doesn't contain a valid table.");
+    function exportTable() {
+      const table = document.getElementById("machineTable");
+      if (!table || !table.innerHTML.trim()) {
+        alert("No data to export!");
         return;
       }
+      const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
+      XLSX.writeFile(wb, "machine_data.xlsx");
+    }
 
-      const oldTable = document.getElementById("machineTable");
-      oldTable.innerHTML = uploadedTable.innerHTML;
+    function toggleDark() {
+      document.body.classList.toggle("dark");
+      localStorage.setItem("darkMode", document.body.classList.contains("dark") ? "1" : "0");
+    }
 
-      // 👉 Set column widths in px: first = 60px, others = 90px; row height = 40px
-      const rows = oldTable.rows;
-      if (rows.length > 0) {
-        const colCount = rows[0].cells.length;
+    document.getElementById("uploadExcel").addEventListener("change", function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const data = new Uint8Array(evt.target.result);
+        const workbook = XLSX.read(data, { type: "array" });
+        const firstSheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[firstSheetName];
+        const htmlString = XLSX.utils.sheet_to_html(worksheet);
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = htmlString;
+        const uploadedTable = tempDiv.querySelector("table");
+
+        if (!uploadedTable) {
+          alert("Uploaded file doesn't contain a valid table.");
+          return;
+        }
+
+        const oldTable = document.getElementById("machineTable");
+        oldTable.innerHTML = uploadedTable.innerHTML;
+
+        // Set column and row styles
+        const rows = oldTable.rows;
         for (let r = 0; r < rows.length; r++) {
           rows[r].style.height = "40px";
-          for (let c = 0; c < colCount; c++) {
-            rows[r].cells[c].style.width = (c === 0) ? "60px" : "90px";
-            rows[r].cells[c].style.maxWidth = (c === 0) ? "60px" : "90px";
+          for (let c = 0; c < rows[r].cells.length; c++) {
+            const width = (c === 0) ? "60px" : "90px";
+            rows[r].cells[c].style.width = width;
+            rows[r].cells[c].style.maxWidth = width;
             rows[r].cells[c].style.overflow = "hidden";
             rows[r].cells[c].style.textOverflow = "ellipsis";
             rows[r].cells[c].style.whiteSpace = "nowrap";
           }
         }
-      }
 
-      localStorage.setItem("savedTable", oldTable.innerHTML);
-      document.getElementById("search").value = "";
-      document.getElementById("statusFilter").value = "";
-      filterTable();
+        // Save after fully styled
+        localStorage.setItem("savedTable", oldTable.innerHTML);
+
+        document.getElementById("search").value = "";
+        document.getElementById("statusFilter").value = "";
+        filterTable();
+      };
+      reader.readAsArrayBuffer(file);
+      e.target.value = "";
+    });
+
+    window.onload = function () {
+      const savedHTML = localStorage.getItem("savedTable");
+      if (savedHTML) {
+        document.getElementById("machineTable").innerHTML = savedHTML;
+        filterTable();
+      }
+      if (localStorage.getItem("darkMode") === "1") {
+        document.body.classList.add("dark");
+      }
     };
-    reader.readAsArrayBuffer(file);
-    e.target.value = "";
-  });
-
-  window.onload = function () {
-    const savedHTML = localStorage.getItem("savedTable");
-    if (savedHTML) {
-      const table = document.getElementById("machineTable");
-      table.innerHTML = savedHTML;
-
-      // 👉 Apply column widths and row height on reload
-      const rows = table.rows;
-      if (rows.length > 0) {
-        const colCount = rows[0].cells.length;
-        for (let r = 0; r < rows.length; r++) {
-          rows[r].style.height = "40px";
-          for (let c = 0; c < colCount; c++) {
-            rows[r].cells[c].style.width = (c === 0) ? "6px" : "90px";
-            rows[r].cells[c].style.maxWidth = (c === 0) ? "60px" : "90px";
-            rows[r].cells[c].style.overflow = "hidden";
-            rows[r].cells[c].style.textOverflow = "ellipsis";
-            rows[r].cells[c].style.whiteSpace = "nowrap";
-          }
-        }
-      }
-
-      filterTable();
-    }
-    if (localStorage.getItem("darkMode") === "1") {
-      document.body.classList.add("dark");
-    }
-  };
-</script>
+  </script>
 
 </body>
 </html>
