@@ -234,7 +234,65 @@
     </div>
 
     <div class="table-container">
-      <table id="machineTable"></table>
+      <table id="machineTable">
+        <thead>
+          <tr>
+            <th colspan="2">Machine Number | Machine Type</th>
+          </tr>
+          <tr>
+            <th colspan="2">Section | Line No</th>
+          </tr>
+          <tr>
+            <th colspan="2">Style Number</th>
+          </tr>
+          <tr>
+            <th colspan="2">Operation Name</th>
+          </tr>
+          <tr>
+            <th colspan="2">Seam Width</th>
+          </tr>
+          <tr>
+            <th colspan="2">Trim</th>
+          </tr>
+          <tr>
+            <th>No</th>
+            <th>Checking Point</th>
+            <th>Yes</th>
+            <th>No</th>
+            <th>Remarks</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>All parts of the machines are tight?</td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Machine table clean?</td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>All safety gurd are available?</td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>All wire and pipes are arranged?</td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
@@ -284,11 +342,6 @@
     }
 
     window.onload = function () {
-      const savedHTML = localStorage.getItem("savedTable");
-      if (savedHTML) {
-        document.getElementById("machineTable").innerHTML = savedHTML;
-        filterTable();
-      }
       if (localStorage.getItem("darkMode") === "1") {
         document.body.classList.add("dark");
       }
