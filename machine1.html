@@ -46,17 +46,21 @@
       left: 0;
       right: 0;
       z-index: 10;
-      font-size: var(--header-font-size);
       display: flex;
       align-items: center;
       gap: 20px;
-      height: auto;
+      height: 100px;
     }
 
     .logo {
       height: var(--logo-size);
       margin-left: var(--logo-margin-left);
       margin-top: var(--logo-margin-top);
+    }
+
+    .header-title {
+      font-size: var(--header-font-size);
+      margin: 0;
     }
 
     .main-content {
@@ -161,8 +165,8 @@
 <body>
 
   <header>
-    <img src="logo.png" alt="Logo" class="logo" />
-    <h1>SPECIAL MACHINE DATA</h1>
+    <img src="machine/logo.png" alt="Logo" class="logo" />
+    <h1 class="header-title">SPECIAL MACHINE DATA</h1>
   </header>
 
   <div class="main-content">
