@@ -45,20 +45,27 @@
       right: 0;
       z-index: 10;
       font-size: var(--header-font-size);
+      height: 120px;
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 120px;
     }
 
-    .logo {
-      height: 80px;
-      margin-right: 20px;
+    .logo-container {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .logo-container img {
+      height: 80px; /* ✅ Change height as needed */
+      width: auto;
     }
 
     .main-content {
       padding: 20px;
-      padding-top: 140px; /* 120 header + 20 spacing */
+      padding-top: 140px; /* Header height + spacing */
       width: 100%;
       box-sizing: border-box;
     }
@@ -150,7 +157,9 @@
 <body>
 
   <header>
-    <img src="machine/logo.png" alt="Logo" class="logo" style="height: 80px;" />
+    <div class="logo-container">
+      <img src="machine/logo.png" alt="Logo" />
+    </div>
     <h1>SPECIAL MACHINE DATA</h1>
   </header>
 
