@@ -137,8 +137,7 @@
       font-weight: bold;
     }
 
-    th,
-    td {
+    th, td {
       padding: 14px;
       text-align: center;
       border: 1px solid #ccc;
@@ -180,6 +179,13 @@
         min-width: unset;
       }
     }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 13px;
+      color: #999;
+    }
   </style>
 </head>
 <body>
@@ -212,6 +218,10 @@
       <table id="machineTable"></table>
     </div>
   </div>
+
+  <footer>
+    &copy; 2025 Israjul Riad | Smart Machine Monitoring
+  </footer>
 
   <script>
     function goHome() {
@@ -249,15 +259,6 @@
       document.body.classList.toggle("dark");
     }
 
-    // Load table from localStorage
-    window.addEventListener("DOMContentLoaded", () => {
-      const savedHTML = localStorage.getItem("machineTableHTML");
-      if (savedHTML) {
-        document.getElementById("machineTable").innerHTML = savedHTML;
-      }
-    });
-
-    // Upload Excel
     document.getElementById("uploadExcel").addEventListener("change", function(e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -282,10 +283,6 @@
         const oldTable = document.getElementById("machineTable");
         oldTable.innerHTML = uploadedTable.innerHTML;
 
-        // Save to localStorage
-        localStorage.setItem("machineTableHTML", uploadedTable.innerHTML);
-
-        // Clear filters
         document.getElementById("search").value = "";
         document.getElementById("statusFilter").value = "";
 
