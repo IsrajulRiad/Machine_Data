@@ -8,7 +8,6 @@
   <style>
     :root {
       --header-font-size: 22px;
-      --sidebar-font-size: 16px;
       --controls-font-size: 14px;
       --table-font-size: 14px;
       --bg: #f9f9f9;
@@ -16,6 +15,9 @@
       --header: #004080;
       --table-header: #dbeeff;
       --highlight: #e6f0fa;
+      --logo-size: 60px;            /* ✅ Resize logo */
+      --logo-margin-left: 20px;     /* ✅ Horizontal offset */
+      --logo-margin-top: 0px;       /* ✅ Vertical offset */
     }
 
     body.dark {
@@ -49,6 +51,15 @@
       align-items: center;
       justify-content: center;
       height: 120px;
+      position: relative;
+    }
+
+    .logo {
+      position: absolute;
+      left: var(--logo-margin-left);
+      top: 50%;
+      transform: translateY(-50%) translateY(var(--logo-margin-top));
+      height: var(--logo-size);
     }
 
     .main-content {
@@ -142,6 +153,8 @@
 <body>
 
   <header>
+    <!-- ✅ Replace logo.png with your actual file name -->
+    <img src="logo.png" alt="Logo" class="logo" />
     <h1>SPECIAL MACHINE DATA</h1>
   </header>
 
@@ -171,7 +184,7 @@
         </thead>
         <tbody>
           <tr>
-            <td>1</td>
+            <td>2</td>
             <td>563622</td>
             <td>A100M14859</td>
             <td></td>
