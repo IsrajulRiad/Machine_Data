@@ -56,6 +56,7 @@
       padding-top: 160px;
       width: 100%;
       box-sizing: border-box;
+      margin-left: 0;
     }
 
     .controls {
@@ -75,9 +76,6 @@
       flex: 1;
       min-width: 120px;
       border: 1px solid #ccc;
-    }
-
-    .controls button {
       background-color: transparent;
       color: var(--text);
       cursor: pointer;
@@ -91,4 +89,128 @@
       width: 100%;
       border-collapse: collapse;
       background-color: white;
-      border-radius: 8p
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+      font-size: var(--table-font-size);
+    }
+
+    thead {
+      background-color: var(--table-header);
+    }
+
+    th,
+    td {
+      padding: 14px;
+      text-align: center;
+      border-bottom: 1px solid #ccc;
+    }
+
+    tbody tr:hover {
+      background-color: var(--highlight);
+    }
+
+    footer {
+      text-align: center;
+      font-size: 13px;
+      color: #999;
+      margin-top: 30px;
+    }
+
+    @media (max-width: 600px) {
+      .controls {
+        flex-direction: column;
+      }
+    }
+
+    body.dark table,
+    body.dark th,
+    body.dark td {
+      color: white;
+      background-color: #1e1e1e;
+    }
+
+    body.dark thead {
+      background-color: #333;
+    }
+
+    body.dark tbody tr:hover {
+      background-color: #2a2a2a;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>SPECIAL MACHINE DATA</h1>
+  </header>
+
+  <div class="main-content">
+    <div class="controls">
+      <input type="text" id="search" placeholder="Search..." oninput="filterTable()" />
+      <select id="statusFilter" onchange="filterTable()">
+        <option value="">Filter by Status</option>
+        <option value="NPI">NPI</option>
+      </select>
+      <button onclick="exportTable()">⬇ Excel</button>
+      <button onclick="toggleDark()">🌓 Dark&lt;&gt;Light</button>
+    </div>
+
+    <div class="table-container">
+      <table id="machineTable">
+        <thead>
+          <tr>
+            <th>Sl</th>
+            <th>ID</th>
+            <th>Style</th>
+            <th>Col 4</th>
+            <th>Col 5</th>
+            <th>Status</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2</td>
+            <td>563622</td>
+            <td>A100M14859</td>
+            <td></td>
+            <td></td>
+            <td>NPI</td>
+            <td>2-Jan</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <footer>&copy; 2025 Israjul Riad | Machine Insights Dashboard</footer>
+  </div>
+
+  <script>
+    function filterTable() {
+      const search = document.getElementById("search").value.toLowerCase();
+      const status = document.getElementById("statusFilter").value.toLowerCase();
+      const rows = document.querySelectorAll("#machineTable tbody tr");
+
+      rows.forEach((row) => {
+        const cells = Array.from(row.getElementsByTagName("td"));
+        const rowText = cells.map((cell) => cell.textContent.toLowerCase()).join(" ");
+        const statusMatch = status === "" || cells[5].textContent.toLowerCase() === status;
+        const searchMatch = rowText.includes(search);
+        row.style.display = statusMatch && searchMatch ? "" : "none";
+      });
+    }
+
+    function exportTable() {
+      const table = document.getElementById("machineTable");
+      const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
+      XLSX.writeFile(wb, "machine_data.xlsx");
+    }
+
+    function toggleDark() {
+      document.body.classList.toggle("dark");
+    }
+  </script>
+
+</body>
+</html>
