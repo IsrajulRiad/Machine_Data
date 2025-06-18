@@ -124,7 +124,17 @@
   </header>
 
   <main class="dashboard" id="dashboard">
-    <!-- Cards will be loaded here by JS -->
+    <a href="machine1.html" class="card">Machine 01</a>
+    <a href="machine2.html" class="card">Machine 02</a>
+    <a href="machine3.html" class="card">Machine 03</a>
+    <a href="machine4.html" class="card">Machine 04</a>
+    <a href="machine4.html" class="card">Machine 05</a>
+    <a href="machine4.html" class="card">Machine 06</a>
+    <a href="machine4.html" class="card">Machine 07</a>
+    <a href="machine4.html" class="card">Machine 08</a>
+    <a href="machine4.html" class="card">Machine 09</a>
+    <a href="machine4.html" class="card">Machine 10</a>
+    <!-- Add more cards here -->
   </main>
 
   <footer>
@@ -141,47 +151,6 @@
     if (localStorage.getItem("darkMode") === "true") {
       document.body.classList.add("dark");
     }
-
-    // Default machines list - you can modify or add machines here
-    const defaultMachines = [
-      { name: "Machine 01", link: "machine1.html" },
-      { name: "Machine 02", link: "machine2.html" },
-      { name: "Machine 03", link: "machine3.html" },
-      { name: "Machine 04", link: "machine4.html" },
-      { name: "Machine 05", link: "machine5.html" },
-      { name: "Machine 06", link: "machine6.html" },
-      { name: "Machine 07", link: "machine7.html" },
-      { name: "Machine 08", link: "machine8.html" },
-      { name: "Machine 09", link: "machine9.html" },
-      { name: "Machine 10", link: "machine10.html" }
-    ];
-
-    // Load machines from localStorage or use default
-    function loadMachines() {
-      let machines = JSON.parse(localStorage.getItem('machines'));
-      if (!machines || !Array.isArray(machines) || machines.length === 0) {
-        machines = defaultMachines;
-        localStorage.setItem('machines', JSON.stringify(machines));
-      }
-      return machines;
-    }
-
-    // Render machine cards
-    function renderMachines() {
-      const dashboard = document.getElementById('dashboard');
-      dashboard.innerHTML = ''; // clear existing
-      const machines = loadMachines();
-      machines.forEach(machine => {
-        const a = document.createElement('a');
-        a.href = machine.link;
-        a.className = 'card';
-        a.textContent = machine.name;
-        dashboard.appendChild(a);
-      });
-    }
-
-    // Initialize
-    renderMachines();
   </script>
 
 </body>
