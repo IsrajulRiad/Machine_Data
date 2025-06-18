@@ -6,8 +6,209 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
-    /* [Previous CSS remains exactly the same] */
-    /* ... all your existing CSS ... */
+    :root {
+      --header-font-size: 22px;
+      --controls-font-size: 14px;
+      --table-font-size: 14px;
+      --bg: #f9f9f9;
+      --text: #333;
+      --header: #004080;
+      --table-header: #036;
+      --highlight: #e6f0fa;
+      --button-bg: #cce5ff;
+      --button-hover-bg: #99ccff;
+      --button-active-bg: #66b2ff;
+    }
+
+    body.dark {
+      --bg: #121212;
+      --text: #f0f0f0;
+      --header: #1a1a1a;
+      --table-header: #1a3a5a;
+      --highlight: #1e2b40;
+      --button-bg: #334466;
+      --button-hover-bg: #556688;
+      --button-active-bg: #7799aa;
+    }
+
+    body {
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    header {
+      background: var(--header);
+      color: white;
+      padding: 20px;
+      box-sizing: border-box;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 10;
+      font-size: var(--header-font-size);
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+    }
+
+    .logo img {
+      height: 60px;
+    }
+
+    .main-content {
+      padding: 20px;
+      padding-top: 140px;
+      width: 100%;
+      box-sizing: border-box;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      font-size: var(--controls-font-size);
+    }
+
+    .controls button,
+    .controls input[type="text"],
+    .controls select {
+      padding: 10px;
+      font-size: inherit;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      width: 100%;
+      background-color: var(--button-bg);
+      color: inherit;
+      cursor: pointer;
+      user-select: none;
+      box-sizing: border-box;
+      transition: all 0.2s ease;
+    }
+
+    .controls button:hover,
+    .controls input[type="text"]:focus,
+    .controls select:focus {
+      background-color: var(--button-hover-bg);
+      outline: none;
+      border-color: #888;
+    }
+
+    .controls button:active {
+      background-color: var(--button-active-bg);
+      transform: scale(0.98);
+    }
+
+    .table-container {
+      overflow-x: auto;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.075);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+      font-size: var(--table-font-size);
+      table-layout: auto;
+      margin: 0 auto;
+    }
+
+    thead {
+      background-color: var(--table-header);
+      color: white;
+      font-weight: bold;
+      position: sticky;
+      top: 0;
+    }
+
+    th, td {
+      padding: 12px 15px;
+      text-align: center;
+      border: 1px solid #ddd;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    td {
+      color: #333;
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: #f8f8f8;
+    }
+
+    tbody tr:hover {
+      background-color: var(--highlight);
+    }
+
+    body.dark table,
+    body.dark th,
+    body.dark td {
+      color: white;
+      background-color: #1e1e1e;
+      border-color: #444;
+    }
+
+    body.dark thead {
+      background-color: var(--table-header);
+    }
+
+    body.dark tbody tr:hover {
+      background-color: #2a2a2a;
+    }
+
+    body.dark tbody tr:nth-child(even) {
+      background-color: #252525;
+    }
+
+    @media (max-width: 768px) {
+      .controls {
+        flex-wrap: wrap;
+      }
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 13px;
+      color: #999;
+      margin-top: 40px;
+    }
+    
+    @media print {
+      header, footer, .controls {
+        display: none;
+      }
+      
+      .main-content {
+        padding-top: 20px;
+      }
+      
+      body {
+        background: white;
+        color: black;
+      }
+      
+      table {
+        width: 100%;
+        border: 1px solid black;
+      }
+    }
   </style>
 </head>
 <body>
@@ -34,85 +235,77 @@
 
     <div class="table-container">
       <table id="machineTable">
-        <thead>
-          <tr>
-            <th>Machine Number</th>
-            <th>Machine Type</th>
-          </tr>
-          <tr>
-            <td></td>
-            <td></td>
-          </tr>
-          <tr>
-            <th>Section</th>
-            <th>Line No</th>
-          </tr>
-          <tr>
-            <td></td>
-            <td></td>
-          </tr>
-          <tr>
-            <th colspan="2">Style Number</th>
-          </tr>
-          <tr>
-            <td colspan="2"></td>
-          </tr>
-          <tr>
-            <th colspan="2">Operation Name</th>
-          </tr>
-          <tr>
-            <td colspan="2"></td>
-          </tr>
-          <tr>
-            <th colspan="2">Seam Width</th>
-          </tr>
-          <tr>
-            <td colspan="2"></td>
-          </tr>
-          <tr>
-            <th colspan="2">Trim</th>
-          </tr>
-          <tr>
-            <td colspan="2"></td>
-          </tr>
-          <tr>
-            <th>No</th>
-            <th>Checking Point</th>
-            <th>Yes</th>
-            <th>No</th>
-            <th>Remarks</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>1</td>
-            <td>All parts of the machines are tight?</td>
-            <td></td>
-            <td></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>Machine table clean?</td>
-            <td></td>
-            <td></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td>All safety gurd are available?</td>
-            <td></td>
-            <td></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>4</td>
-            <td>All wire and pipes are arranged?</td>
-            <td></td>
-            <td></td>
-            <td></td>
-          </tr>
-        </tbody>
+        <tr>
+          <th>Machine Number</th>
+          <th></th>
+          <th>Machine Type</th>
+          <th></th>
+        </tr>
+        <tr>
+          <th>Section</th>
+          <th></th>
+          <th>Line No</th>
+          <th></th>
+        </tr>
+        <tr>
+          <th colspan="4">Style Number</th>
+        </tr>
+        <tr>
+          <td colspan="4"></td>
+        </tr>
+        <tr>
+          <th colspan="4">Operation Name</th>
+        </tr>
+        <tr>
+          <td colspan="4"></td>
+        </tr>
+        <tr>
+          <th colspan="4">Seam Width</th>
+        </tr>
+        <tr>
+          <td colspan="4"></td>
+        </tr>
+        <tr>
+          <th colspan="4">Trim</th>
+        </tr>
+        <tr>
+          <td colspan="4"></td>
+        </tr>
+        <tr>
+          <th>No</th>
+          <th>Checking Point</th>
+          <th>Yes</th>
+          <th>No</th>
+          <th>Remarks</th>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>All parts of the machines are tight?</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>Machine table clean?</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>All safety gurd are available?</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>All wire and pipes are arranged?</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
       </table>
     </div>
   </div>
@@ -122,8 +315,64 @@
   </footer>
 
   <script>
-    // [Previous JavaScript remains exactly the same]
-    /* ... all your existing JavaScript ... */
+    function goHome() {
+      window.location.href = "dashboard.html";
+    }
+
+    function filterTable() {
+      const table = document.getElementById("machineTable");
+      if (!table.rows) return;
+      const search = document.getElementById("search").value.toLowerCase();
+      const status = document.getElementById("statusFilter").value.toLowerCase();
+      const rows = table.rows;
+      
+      // Start filtering from the checking points rows (row 11 onwards)
+      for (let i = 11; i < rows.length; i++) {
+        const row = rows[i];
+        const cells = Array.from(row.cells);
+        const rowText = cells.map(cell => cell.textContent.toLowerCase()).join(" ");
+        const statusMatch = status === "" || (cells[5] && cells[5].textContent.toLowerCase() === status);
+        const searchMatch = rowText.includes(search);
+        row.style.display = (statusMatch && searchMatch) ? "" : "none";
+      }
+    }
+
+    function exportTable() {
+      const table = document.getElementById("machineTable");
+      if (!table || !table.innerHTML.trim()) {
+        alert("No data to export!");
+        return;
+      }
+      const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
+      XLSX.writeFile(wb, "machine_data.xlsx");
+    }
+
+    function toggleDark() {
+      document.body.classList.toggle("dark");
+      localStorage.setItem("darkMode", document.body.classList.contains("dark") ? "1" : "0");
+    }
+
+    function logoutAdmin() {
+      localStorage.removeItem("isAdmin");
+      alert("Logged out from admin mode.");
+      location.reload();
+    }
+
+    window.onload = function () {
+      if (localStorage.getItem("darkMode") === "1") {
+        document.body.classList.add("dark");
+      }
+
+      // Auto-size columns when table loads
+      const table = document.getElementById("machineTable");
+      if (table.rows.length > 0) {
+        const headerRow = table.rows[10]; // The checking points header row
+        for (let i = 0; i < headerRow.cells.length; i++) {
+          headerRow.cells[i].style.minWidth = "100px";
+          if (i === 0) headerRow.cells[i].style.minWidth = "60px";
+        }
+      }
+    };
   </script>
 </body>
 </html>
