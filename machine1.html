@@ -75,6 +75,7 @@
       gap: 10px;
       margin-bottom: 20px;
       font-size: var(--controls-font-size);
+      flex-wrap: wrap;
     }
 
     .controls > * {
@@ -86,8 +87,6 @@
       background-color: transparent;
       color: inherit;
       cursor: pointer;
-      max-width: none;
-      min-width: 0;
     }
 
     .controls input[type="text"] {
@@ -169,40 +168,20 @@
   <div class="main-content">
     <div class="controls">
       <button onclick="location.href='dashboard.html'">🏠 Home</button>
-      <input type="file" id="fileUpload" accept=".xlsx, .xls" />
       <input type="text" id="search" placeholder="Search..." oninput="filterTable()" />
       <select id="statusFilter" onchange="filterTable()">
         <option value="">Filter by Status</option>
         <option value="NPI">NPI</option>
       </select>
+      <input type="file" id="fileUpload" accept=".xlsx, .xls" />
       <button onclick="exportTable()">⬇ Excel</button>
       <button onclick="toggleDark()">🌓 Dark&lt;&gt;Light</button>
     </div>
 
     <div class="table-container">
       <table id="machineTable">
-        <thead>
-          <tr>
-            <th>Sl</th>
-            <th>ID</th>
-            <th>Style</th>
-            <th>Col 4</th>
-            <th>Col 5</th>
-            <th>Status</th>
-            <th>Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>1</td>
-            <td>563622</td>
-            <td>A100M14859</td>
-            <td></td>
-            <td></td>
-            <td>NPI</td>
-            <td>2-Jan</td>
-          </tr>
-        </tbody>
+        <thead></thead>
+        <tbody></tbody>
       </table>
     </div>
 
@@ -234,7 +213,33 @@
       document.body.classList.toggle("dark");
     }
 
-    // Excel upload and update table
+    function renderTable(data) {
+      const table = document.getElementById("machineTable");
+      const thead = table.querySelector("thead");
+      const tbody = table.querySelector("tbody");
+
+      thead.innerHTML = "";
+      tbody.innerHTML = "";
+
+      const headerRow = document.createElement("tr");
+      data[0].forEach(headerText => {
+        const th = document.createElement("th");
+        th.textContent = headerText;
+        headerRow.appendChild(th);
+      });
+      thead.appendChild(headerRow);
+
+      for (let i = 1; i < data.length; i++) {
+        const row = document.createElement("tr");
+        data[i].forEach(cellText => {
+          const td = document.createElement("td");
+          td.textContent = cellText;
+          row.appendChild(td);
+        });
+        tbody.appendChild(row);
+      }
+    }
+
     document.getElementById("fileUpload").addEventListener("change", function (e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -249,33 +254,26 @@
 
         if (json.length === 0) return;
 
-        const table = document.getElementById("machineTable");
-        const thead = table.querySelector("thead");
-        const tbody = table.querySelector("tbody");
-
-        thead.innerHTML = "";
-        tbody.innerHTML = "";
-
-        const headerRow = document.createElement("tr");
-        json[0].forEach(headerText => {
-          const th = document.createElement("th");
-          th.textContent = headerText;
-          headerRow.appendChild(th);
-        });
-        thead.appendChild(headerRow);
-
-        for (let i = 1; i < json.length; i++) {
-          const row = document.createElement("tr");
-          json[i].forEach(cellText => {
-            const td = document.createElement("td");
-            td.textContent = cellText;
-            row.appendChild(td);
-          });
-          tbody.appendChild(row);
-        }
+        localStorage.setItem("uploadedTable", JSON.stringify(json));
+        renderTable(json);
       };
       reader.readAsArrayBuffer(file);
     });
+
+    // Load from storage on refresh
+    window.onload = function () {
+      const saved = localStorage.getItem("uploadedTable");
+      if (saved) {
+        const json = JSON.parse(saved);
+        renderTable(json);
+      } else {
+        // default sample if no upload yet
+        renderTable([
+          ["Sl", "ID", "Style", "Col 4", "Col 5", "Status", "Date"],
+          [1, "563622", "A100M14859", "", "", "NPI", "2-Jan"]
+        ]);
+      }
+    };
   </script>
 
 </body>
