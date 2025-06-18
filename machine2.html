@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <title>Machine Data</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
     :root {
-      --header-font-size: 16px;
+      --header-font-size: 22px;
       --controls-font-size: 14px;
       --table-font-size: 14px;
       --bg: #f9f9f9;
@@ -15,6 +15,8 @@
       --header: #004080;
       --table-header: #dbeeff;
       --highlight: #e6f0fa;
+      --button-bg: #cce5ff;
+      --button-hover-bg: #99ccff;
     }
 
     body.dark {
@@ -23,6 +25,8 @@
       --header: #1a1a1a;
       --table-header: #333;
       --highlight: #1e2b40;
+      --button-bg: #334466;
+      --button-hover-bg: #556688;
     }
 
     body {
@@ -51,51 +55,58 @@
       justify-content: center;
     }
 
-    .logo-container {
-      position: absolute;
-      left: 10px;
-      top: 45px;
-      transform: translateY(-50%);
-    }
-
-    .logo-container img {
-      height: 60px;
-      width: auto;
-    }
-
     .main-content {
       padding: 20px;
-      padding-top: 140px;
+      padding-top: 140px; /* header height 120px + 20px gap */
       width: 100%;
       box-sizing: border-box;
     }
 
     .controls {
       display: flex;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       gap: 10px;
       margin-bottom: 20px;
       font-size: var(--controls-font-size);
-      justify-content: space-between;
     }
 
-    .controls > * {
-      flex: 1;
-      min-width: 120px;
+    /* Style all buttons and inputs inside controls for uniform size and background */
+    .controls button,
+    .controls input[type="text"],
+    .controls select,
+    label[for="uploadExcel"] {
       padding: 10px;
       font-size: inherit;
       border: 1px solid #ccc;
       border-radius: 6px;
-      background-color: transparent;
+      flex: 1;
+      min-width: 120px;
+      background-color: var(--button-bg);
       color: inherit;
-      box-sizing: border-box;
       cursor: pointer;
+      user-select: none;
+      text-align: center;
+      box-sizing: border-box;
+      transition: background-color 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
 
-    .controls input {
-      background-color: white;
-      color: var(--text);
-      cursor: text;
+    /* Hover effect for buttons and label */
+    .controls button:hover,
+    label[for="uploadExcel"]:hover,
+    .controls input[type="text"]:focus,
+    .controls select:focus {
+      background-color: var(--button-hover-bg);
+      outline: none;
+      border-color: #888;
+    }
+
+    /* Hide actual file input */
+    #uploadExcel {
+      display: none;
     }
 
     .table-container {
@@ -110,38 +121,27 @@
       overflow: hidden;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
       font-size: var(--table-font-size);
+      table-layout: fixed;
     }
 
     thead {
       background-color: var(--table-header);
+      color: #000;
+      font-weight: bold;
     }
 
     th,
     td {
       padding: 14px;
       text-align: center;
-      border-bottom: 1px solid #ccc;
+      border: 1px solid #ccc;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     tbody tr:hover {
       background-color: var(--highlight);
-    }
-
-    footer {
-      text-align: center;
-      font-size: 13px;
-      color: #999;
-      margin-top: 100px;
-    }
-
-    @media (max-width: 768px) {
-      .controls {
-        flex-direction: column;
-      }
-
-      .controls > * {
-        width: 100%;
-      }
     }
 
     body.dark table,
@@ -149,85 +149,88 @@
     body.dark td {
       color: white;
       background-color: #1e1e1e;
+      border-color: #444;
     }
 
     body.dark thead {
       background-color: #333;
+      color: #eee;
     }
 
     body.dark tbody tr:hover {
       background-color: #2a2a2a;
+    }
+
+    @media (max-width: 600px) {
+      .controls {
+        flex-wrap: wrap;
+      }
+      .controls button,
+      .controls input[type="text"],
+      .controls select,
+      label[for="uploadExcel"] {
+        flex: 100%;
+        min-width: unset;
+      }
     }
   </style>
 </head>
 <body>
 
   <header>
-    <div class="logo-container">
-      <img src="logo.png" alt="Logo" />
-    </div>
     <h1>SPECIAL MACHINE DATA</h1>
   </header>
 
   <div class="main-content">
     <div class="controls">
-      <button onclick="window.location.href='dashboard.html'">🏠 Home</button>
+      <button onclick="goHome()">🏠 Home</button>
+
       <input type="text" id="search" placeholder="Search..." oninput="filterTable()" />
       <select id="statusFilter" onchange="filterTable()">
         <option value="">Filter by Status</option>
         <option value="NPI">NPI</option>
       </select>
+
+      <label for="uploadExcel">⬆ Upload Excel</label>
+      <input type="file" id="uploadExcel" accept=".xls,.xlsx" />
+
       <button onclick="exportTable()">⬇ Excel</button>
-      <button onclick="toggleDark()">🌓 Dark<>Light</button>
+      <button onclick="toggleDark()">🌓 Dark&lt;&gt;Light</button>
     </div>
 
     <div class="table-container">
-      <table id="machineTable">
-        <thead>
-          <tr>
-            <th>Sl</th>
-            <th>ID</th>
-            <th>Style</th>
-            <th>Col 4</th>
-            <th>Col 5</th>
-            <th>Status</th>
-            <th>Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>1</td>
-            <td>563622</td>
-            <td>A100M14859</td>
-            <td></td>
-            <td></td>
-            <td>NPI</td>
-            <td>2-Jan</td>
-          </tr>
-        </tbody>
-      </table>
+      <table id="machineTable"></table>
     </div>
-
-    <footer>&copy; 2025 Israjul Riad | Machine Insights Dashboard</footer>
   </div>
 
   <script>
+    function goHome() {
+      window.location.href = "dashboard.html";
+    }
+
     function filterTable() {
+      const table = document.getElementById("machineTable");
+      if (!table.tBodies.length) return;
+
       const search = document.getElementById("search").value.toLowerCase();
       const status = document.getElementById("statusFilter").value.toLowerCase();
-      const rows = document.querySelectorAll("#machineTable tbody tr");
+      const rows = table.tBodies[0].rows;
 
-      rows.forEach((row) => {
-        const cells = Array.from(row.getElementsByTagName("td"));
-        const rowText = cells.map((cell) => cell.textContent.toLowerCase()).join(" ");
-        const statusMatch = status === "" || cells[5].textContent.toLowerCase() === status;
+      Array.from(rows).forEach(row => {
+        const cells = Array.from(row.cells);
+        const rowText = cells.map(cell => cell.textContent.toLowerCase()).join(" ");
+        const statusMatch = status === "" || (cells[5] && cells[5].textContent.toLowerCase() === status);
         const searchMatch = rowText.includes(search);
-        row.style.display = statusMatch && searchMatch ? "" : "none";
+        row.style.display = (statusMatch && searchMatch) ? "" : "none";
       });
     }
 
     function exportTable() {
       const table = document.getElementById("machineTable");
+      if (!table || !table.innerHTML.trim()) {
+        alert("No data to export!");
+        return;
+      }
       const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
       XLSX.writeFile(wb, "machine_data.xlsx");
     }
@@ -235,6 +238,45 @@
     function toggleDark() {
       document.body.classList.toggle("dark");
     }
+
+    document.getElementById("uploadExcel").addEventListener("change", function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const data = new Uint8Array(evt.target.result);
+        const workbook = XLSX.read(data, { type: "array" });
+        const firstSheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[firstSheetName];
+
+        // Convert entire sheet to HTML table string
+        const htmlString = XLSX.utils.sheet_to_html(worksheet);
+
+        // Extract the <table> element from htmlString
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = htmlString;
+        const uploadedTable = tempDiv.querySelector("table");
+
+        if (!uploadedTable) {
+          alert("Uploaded file doesn't contain a valid table.");
+          return;
+        }
+
+        const oldTable = document.getElementById("machineTable");
+        // Replace entire table content with uploaded table's HTML
+        oldTable.innerHTML = uploadedTable.innerHTML;
+
+        // Clear filters
+        document.getElementById("search").value = "";
+        document.getElementById("statusFilter").value = "";
+
+        filterTable();
+      };
+      reader.readAsArrayBuffer(file);
+
+      e.target.value = "";
+    });
   </script>
 
 </body>
