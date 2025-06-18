@@ -2,171 +2,322 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <title>Machine Data</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Machine Data Table</title>
-
-  <!-- SheetJS CDN for Excel import -->
-  <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/shim.min.js"></script>
-  <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
-    /* --- Basic page and container styles --- */
+    :root {
+      --header-font-size: 22px;
+      --controls-font-size: 14px;
+      --table-font-size: 14px;
+      --bg: #f9f9f9;
+      --text: #333;
+      --header: #004080;
+      --table-header: #dbeeff;
+      --highlight: #e6f0fa;
+      --button-bg: #cce5ff;
+      --button-hover-bg: #99ccff;
+    }
+
+    body.dark {
+      --bg: #121212;
+      --text: #f0f0f0;
+      --header: #1a1a1a;
+      --table-header: #333;
+      --highlight: #1e2b40;
+      --button-bg: #334466;
+      --button-hover-bg: #556688;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      background-color: #fff;
-      color: #333;
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+      transition: background 0.3s, color 0.3s;
     }
 
-    h1 {
-      margin-bottom: 10px;
+    header {
+      background: var(--header);
+      color: white;
+      padding: 20px;
+      box-sizing: border-box;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 10;
+      font-size: var(--header-font-size);
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    /* --- Table container to keep width consistent --- */
-    #machine-data-table-container {
+    .logo {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+    }
+
+    .logo img {
+      height: 60px;
+    }
+
+    .main-content {
+      padding: 20px;
+      padding-top: 140px;
       width: 100%;
-      overflow-x: auto;
-      margin-top: 10px;
-      border: 1px solid #999;
-      border-radius: 4px;
+      box-sizing: border-box;
     }
 
-    /* --- Styled table matching your reference image --- */
-    table#machine-data-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-      color: #333;
+    .controls {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 10px;
+      margin-bottom: 20px;
+      font-size: var(--controls-font-size);
     }
 
-    table#machine-data-table thead tr {
-      background-color: #f0f0f0;
-    }
-
-    table#machine-data-table thead th {
-      border: 1px solid #999;
-      padding: 8px 12px;
-      text-align: left;
-      font-weight: 600;
-      white-space: nowrap;
-    }
-
-    table#machine-data-table tbody td {
+    .controls button,
+    .controls input[type="text"],
+    .controls select,
+    label[for="uploadExcel"] {
+      padding: 10px;
+      font-size: inherit;
       border: 1px solid #ccc;
-      padding: 6px 12px;
-      vertical-align: middle;
-      white-space: nowrap;
-      min-width: 60px;
-    }
-
-    /* Keep empty cells visible and height consistent */
-    table#machine-data-table tbody td:empty::after {
-      content: "\00a0";
-    }
-
-    /* Alternate row background for readability */
-    table#machine-data-table tbody tr:nth-child(even) {
-      background-color: #fafafa;
-    }
-
-    /* --- File input styling --- */
-    #upload-excel-btn {
-      margin-top: 15px;
-      padding: 8px 15px;
-      font-size: 14px;
+      border-radius: 6px;
+      flex: 1;
+      min-width: 120px;
+      background-color: var(--button-bg);
+      color: inherit;
       cursor: pointer;
+      user-select: none;
+      text-align: center;
+      box-sizing: border-box;
+      transition: background-color 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .controls button:hover,
+    label[for="uploadExcel"]:hover,
+    .controls input[type="text"]:focus,
+    .controls select:focus {
+      background-color: var(--button-hover-bg);
+      outline: none;
+      border-color: #888;
+    }
+
+    #uploadExcel {
+      display: none;
+    }
+
+    /* Updated table styles */
+
+    .table-container {
+      overflow-x: auto;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      background-color: var(--bg);
+      padding: 10px;
+      margin-bottom: 30px;
+    }
+
+    table#machineTable {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: var(--table-font-size);
+      table-layout: fixed;
+      min-width: 800px;
+    }
+
+    thead {
+      background-color: var(--table-header);
+      color: #000;
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+      padding: 12px 10px;
+      text-align: center;
+      border-bottom: 1px solid #ccc;
+      border-right: 1px solid #ccc;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+
+    th:last-child, td:last-child {
+      border-right: none;
+    }
+
+    tbody tr:hover {
+      background-color: var(--highlight);
+    }
+
+    body.dark .table-container {
+      background-color: #1e1e1e;
+      box-shadow: 0 0 15px rgba(255,255,255,0.1);
+    }
+
+    body.dark table#machineTable {
+      color: white;
+      border-color: #444;
+    }
+
+    body.dark thead {
+      background-color: #333;
+      color: #eee;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.8);
+    }
+
+    body.dark th, body.dark td {
+      border-color: #444;
+    }
+
+    body.dark tbody tr:hover {
+      background-color: #2a2a2a;
+    }
+
+    @media (max-width: 600px) {
+      .controls {
+        flex-wrap: wrap;
+      }
+      .controls button,
+      .controls input[type="text"],
+      .controls select,
+      label[for="uploadExcel"] {
+        flex: 100%;
+        min-width: unset;
+      }
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 13px;
+      color: #999;
     }
   </style>
 </head>
 <body>
-  <h1>Machine Data</h1>
 
-  <!-- Excel Upload Button -->
-  <input type="file" id="upload-excel-btn" accept=".xlsx, .xls" />
+  <header>
+    <div class="logo">
+      <img src="logo.png" alt="Logo" />
+    </div>
+    <h1>SPECIAL MACHINE DATA</h1>
+  </header>
 
-  <!-- Table container -->
-  <div id="machine-data-table-container">
-    <table id="machine-data-table">
-      <thead>
-        <tr>
-          <th>Machine Number</th>
-          <th>Machine Type</th>
-          <th>Section</th>
-          <th>Line No</th>
-          <th>Style Number</th>
-          <th>Operation Name</th>
-          <th>Seam Width</th>
-          <th>Trim</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Initial empty row -->
-        <tr>
-          <td colspan="8" style="text-align:center; color:#888;">Upload an Excel file to load data</td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="main-content">
+    <div class="controls">
+      <button onclick="goHome()">🏠 Home</button>
+      <input type="text" id="search" placeholder="Search..." oninput="filterTable()" />
+      <select id="statusFilter" onchange="filterTable()">
+        <option value="">Filter by Status</option>
+        <option value="NPI">NPI</option>
+      </select>
+      <label for="uploadExcel">⬆ Upload Excel</label>
+      <input type="file" id="uploadExcel" accept=".xls,.xlsx" />
+      <button onclick="exportTable()">⬇ Excel</button>
+      <button onclick="toggleDark()">🌓 Dark&lt;&gt;Light</button>
+    </div>
+
+    <div class="table-container">
+      <table id="machineTable"></table>
+    </div>
   </div>
 
-  <script>
-    const fileInput = document.getElementById("upload-excel-btn");
-    const tableBody = document.querySelector("#machine-data-table tbody");
+  <footer>
+    &copy; 2025 Israjul Riad | Smart Machine Monitoring
+  </footer>
 
-    fileInput.addEventListener("change", (event) => {
-      const file = event.target.files[0];
+  <script>
+    function goHome() {
+      window.location.href = "dashboard.html";
+    }
+
+    function filterTable() {
+      const table = document.getElementById("machineTable");
+      if (!table.tBodies.length) return;
+      const search = document.getElementById("search").value.toLowerCase();
+      const status = document.getElementById("statusFilter").value.toLowerCase();
+      const rows = table.tBodies[0].rows;
+      Array.from(rows).forEach(row => {
+        const cells = Array.from(row.cells);
+        const rowText = cells.map(cell => cell.textContent.toLowerCase()).join(" ");
+        const statusMatch = status === "" || (cells[5] && cells[5].textContent.toLowerCase() === status);
+        const searchMatch = rowText.includes(search);
+        row.style.display = (statusMatch && searchMatch) ? "" : "none";
+      });
+    }
+
+    function exportTable() {
+      const table = document.getElementById("machineTable");
+      if (!table || !table.innerHTML.trim()) {
+        alert("No data to export!");
+        return;
+      }
+      const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
+      XLSX.writeFile(wb, "machine_data.xlsx");
+    }
+
+    function toggleDark() {
+      document.body.classList.toggle("dark");
+      localStorage.setItem("darkMode", document.body.classList.contains("dark") ? "1" : "0");
+    }
+
+    document.getElementById("uploadExcel").addEventListener("change", function(e) {
+      const file = e.target.files[0];
       if (!file) return;
 
       const reader = new FileReader();
-      reader.onload = (e) => {
-        const data = new Uint8Array(e.target.result);
+      reader.onload = function(evt) {
+        const data = new Uint8Array(evt.target.result);
         const workbook = XLSX.read(data, { type: "array" });
-
-        // Assuming first sheet contains the data
         const firstSheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[firstSheetName];
-
-        // Convert sheet to JSON array of objects
-        const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
-
-        // Clear existing table body
-        tableBody.innerHTML = "";
-
-        if (jsonData.length === 0) {
-          // No data found in Excel
-          const tr = document.createElement("tr");
-          tr.innerHTML = '<td colspan="8" style="text-align:center; color:#888;">No data found in Excel file</td>';
-          tableBody.appendChild(tr);
+        const htmlString = XLSX.utils.sheet_to_html(worksheet);
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = htmlString;
+        const uploadedTable = tempDiv.querySelector("table");
+        if (!uploadedTable) {
+          alert("Uploaded file doesn't contain a valid table.");
           return;
         }
-
-        // Populate rows dynamically
-        jsonData.forEach((row) => {
-          const tr = document.createElement("tr");
-
-          // Make sure your Excel columns match exactly these keys, or adapt below keys:
-          const cols = [
-            "Machine Number",
-            "Machine Type",
-            "Section",
-            "Line No",
-            "Style Number",
-            "Operation Name",
-            "Seam Width",
-            "Trim",
-          ];
-
-          cols.forEach((col) => {
-            const td = document.createElement("td");
-            td.textContent = row[col] !== undefined ? row[col] : "";
-            tr.appendChild(td);
-          });
-
-          tableBody.appendChild(tr);
-        });
+        const oldTable = document.getElementById("machineTable");
+        oldTable.innerHTML = uploadedTable.innerHTML;
+        localStorage.setItem("savedTable", uploadedTable.innerHTML);
+        document.getElementById("search").value = "";
+        document.getElementById("statusFilter").value = "";
+        filterTable();
       };
-
       reader.readAsArrayBuffer(file);
+      e.target.value = "";
     });
+
+    // Restore saved data
+    window.onload = function () {
+      const savedHTML = localStorage.getItem("savedTable");
+      if (savedHTML) {
+        document.getElementById("machineTable").innerHTML = savedHTML;
+        filterTable();
+      }
+      if (localStorage.getItem("darkMode") === "1") {
+        document.body.classList.add("dark");
+      }
+    };
   </script>
+
 </body>
 </html>
