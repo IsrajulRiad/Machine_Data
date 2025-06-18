@@ -233,11 +233,10 @@
   <script>
     // Home button clears saved table and reloads page to original default data
     function goHome() {
-      localStorage.removeItem("machineTableHTML");
-      document.getElementById("search").value = "";
-      document.getElementById("statusFilter").value = "";
-      window.location.reload();
-    }
+  // Don't remove localStorage if you want to keep data
+  window.location.href = "dashboard.html";
+}
+
 
     // Filter table rows by search text and status
     function filterTable() {
