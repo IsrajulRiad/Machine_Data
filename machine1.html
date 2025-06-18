@@ -7,7 +7,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
     :root {
-      --header-font-size: 22px;
+      --header-font-size: 24px;
       --controls-font-size: 14px;
       --table-font-size: 14px;
       --bg: #f9f9f9;
@@ -16,8 +16,6 @@
       --table-header: #dbeeff;
       --highlight: #e6f0fa;
       --logo-size: 60px;
-      --logo-margin-left: 20px;
-      --logo-margin-top: 0px;
     }
 
     body.dark {
@@ -39,23 +37,31 @@
     header {
       background: var(--header);
       color: white;
-      padding: 20px;
+      padding: 0 20px;
       box-sizing: border-box;
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
+      height: 100px;
       z-index: 10;
       display: flex;
       align-items: center;
-      gap: 20px;
-      height: 100px;
+      justify-content: center;
     }
 
-    .logo {
+    .header-inner {
+      position: relative;
+      width: 100%;
+      text-align: center;
+    }
+
+    .header-logo {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
       height: var(--logo-size);
-      margin-left: var(--logo-margin-left);
-      margin-top: var(--logo-margin-top);
     }
 
     .header-title {
@@ -165,8 +171,10 @@
 <body>
 
   <header>
-    <img src="machine/logo.png" alt="Logo" class="logo" />
-    <h1 class="header-title">SPECIAL MACHINE DATA</h1>
+    <div class="header-inner">
+      <img src="machine/logo.png" alt="Logo" class="header-logo" />
+      <h1 class="header-title">SPECIAL MACHINE DATA</h1>
+    </div>
   </header>
 
   <div class="main-content">
