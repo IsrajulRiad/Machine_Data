@@ -123,7 +123,7 @@
     <h1>MACHINE DASHBOARD</h1>
   </header>
 
-  <main class="dashboard" id="dashboard">
+  <main class="dashboard">
     <a href="machine1.html" class="card">Machine 01</a>
     <a href="machine2.html" class="card">Machine 02</a>
     <a href="machine3.html" class="card">Machine 03</a>
@@ -144,14 +144,8 @@
   <script>
     function toggleDark() {
       document.body.classList.toggle("dark");
-      localStorage.setItem("darkMode", document.body.classList.contains("dark"));
-    }
-
-    // On page load, apply saved dark mode setting
-    if (localStorage.getItem("darkMode") === "true") {
-      document.body.classList.add("dark");
     }
   </script>
 
 </body>
-</html>  
+</html>
