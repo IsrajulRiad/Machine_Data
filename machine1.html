@@ -72,30 +72,30 @@
 
     .controls {
       display: flex;
-      flex-direction: column;
-      gap: 12px;
+      flex-wrap: wrap;
+      gap: 10px;
       margin-bottom: 20px;
       font-size: var(--controls-font-size);
-      max-width: 100%;
+      justify-content: space-between;
     }
 
-    .controls input,
-    .controls select,
-    .controls button {
-      padding: 12px;
+    .controls > * {
+      flex: 1;
+      min-width: 120px;
+      padding: 10px;
       font-size: inherit;
       border: 1px solid #ccc;
       border-radius: 6px;
       background-color: transparent;
       color: inherit;
-      cursor: pointer;
-      width: 100%;
       box-sizing: border-box;
+      cursor: pointer;
     }
 
     .controls input {
       background-color: white;
       color: var(--text);
+      cursor: text;
     }
 
     .table-container {
@@ -134,9 +134,13 @@
       margin-top: 30px;
     }
 
-    @media (min-width: 768px) {
+    @media (max-width: 768px) {
       .controls {
-        max-width: 100%;
+        flex-direction: column;
+      }
+
+      .controls > * {
+        width: 100%;
       }
     }
 
