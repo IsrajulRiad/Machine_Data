@@ -13,20 +13,22 @@
       --bg: #f9f9f9;
       --text: #333;
       --header: #004080;
-      --table-header: #dbeeff;
+      --table-header: #036;
       --highlight: #e6f0fa;
       --button-bg: #cce5ff;
       --button-hover-bg: #99ccff;
+      --button-active-bg: #66b2ff;
     }
 
     body.dark {
       --bg: #121212;
       --text: #f0f0f0;
       --header: #1a1a1a;
-      --table-header: #333;
+      --table-header: #1a3a5a;
       --highlight: #1e2b40;
       --button-bg: #334466;
       --button-hover-bg: #556688;
+      --button-active-bg: #7799aa;
     }
 
     body {
@@ -70,11 +72,12 @@
       padding-top: 140px;
       width: 100%;
       box-sizing: border-box;
+      max-width: 1400px;
+      margin: 0 auto;
     }
 
     .controls {
       display: flex;
-      flex-wrap: nowrap;
       gap: 10px;
       margin-bottom: 20px;
       font-size: var(--controls-font-size);
@@ -82,29 +85,21 @@
 
     .controls button,
     .controls input[type="text"],
-    .controls select,
-    label[for="uploadExcel"] {
+    .controls select {
       padding: 10px;
       font-size: inherit;
       border: 1px solid #ccc;
       border-radius: 6px;
-      flex: 1;
-      min-width: 120px;
+      width: 100%;
       background-color: var(--button-bg);
       color: inherit;
       cursor: pointer;
       user-select: none;
-      text-align: center;
       box-sizing: border-box;
-      transition: background-color 0.2s ease;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
+      transition: all 0.2s ease;
     }
 
     .controls button:hover,
-    label[for="uploadExcel"]:hover,
     .controls input[type="text"]:focus,
     .controls select:focus {
       background-color: var(--button-hover-bg);
@@ -112,38 +107,49 @@
       border-color: #888;
     }
 
-    #uploadExcel {
-      display: none;
+    .controls button:active {
+      background-color: var(--button-active-bg);
+      transform: scale(0.98);
     }
 
     .table-container {
       overflow-x: auto;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.075);
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
       background-color: white;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
       font-size: var(--table-font-size);
-      table-layout: fixed;
+      table-layout: auto;
+      margin: 0 auto;
     }
 
     thead {
       background-color: var(--table-header);
-      color: #000;
+      color: white;
       font-weight: bold;
+      position: sticky;
+      top: 0;
     }
 
     th, td {
-      padding: 14px;
+      padding: 12px 15px;
       text-align: center;
-      border: 1px solid #ccc;
+      border: 1px solid #ddd;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+    }
+
+    td {
+      color: #333;
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: #f8f8f8;
     }
 
     tbody tr:hover {
@@ -159,24 +165,20 @@
     }
 
     body.dark thead {
-      background-color: #333;
-      color: #eee;
+      background-color: var(--table-header);
     }
 
     body.dark tbody tr:hover {
       background-color: #2a2a2a;
     }
 
-    @media (max-width: 600px) {
+    body.dark tbody tr:nth-child(even) {
+      background-color: #252525;
+    }
+
+    @media (max-width: 768px) {
       .controls {
         flex-wrap: wrap;
-      }
-      .controls button,
-      .controls input[type="text"],
-      .controls select,
-      label[for="uploadExcel"] {
-        flex: 100%;
-        min-width: unset;
       }
     }
 
@@ -185,6 +187,27 @@
       padding: 20px;
       font-size: 13px;
       color: #999;
+      margin-top: 40px;
+    }
+    
+    @media print {
+      header, footer, .controls {
+        display: none;
+      }
+      
+      .main-content {
+        padding-top: 20px;
+      }
+      
+      body {
+        background: white;
+        color: black;
+      }
+      
+      table {
+        width: 100%;
+        border: 1px solid black;
+      }
     }
   </style>
 </head>
@@ -202,13 +225,11 @@
       <button onclick="goHome()">🏠 Home</button>
       <input type="text" id="search" placeholder="Search..." oninput="filterTable()" />
       <select id="statusFilter" onchange="filterTable()">
-        <option value="">Filter by Status</option>
+        <option value="">All Status</option>
         <option value="NPI">NPI</option>
       </select>
-      <label for="uploadExcel" id="uploadLabel" style="display: none;">⬆ Upload Excel</label>
-      <input type="file" id="uploadExcel" accept=".xls,.xlsx" />
       <button onclick="exportTable()">⬇ Excel</button>
-      <button onclick="toggleDark()">🌓 Dark&lt;&gt;Light</button>
+      <button onclick="toggleDark()">🌓 Dark/Light</button>
       <button onclick="logoutAdmin()">Logout</button>
     </div>
 
@@ -262,52 +283,6 @@
       location.reload();
     }
 
-    document.getElementById("uploadExcel").addEventListener("change", function(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        const data = new Uint8Array(evt.target.result);
-        const workbook = XLSX.read(data, { type: "array" });
-        const firstSheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[firstSheetName];
-        const htmlString = XLSX.utils.sheet_to_html(worksheet);
-        const tempDiv = document.createElement("div");
-        tempDiv.innerHTML = htmlString;
-        const uploadedTable = tempDiv.querySelector("table");
-
-        if (!uploadedTable) {
-          alert("Uploaded file doesn't contain a valid table.");
-          return;
-        }
-
-        const oldTable = document.getElementById("machineTable");
-        oldTable.innerHTML = uploadedTable.innerHTML;
-
-        // Set column and row styles
-        const rows = oldTable.rows;
-        for (let r = 0; r < rows.length; r++) {
-          rows[r].style.height = "40px";
-          for (let c = 0; c < rows[r].cells.length; c++) {
-            const width = (c === 0) ? "60px" : "90px";
-            rows[r].cells[c].style.width = width;
-            rows[r].cells[c].style.maxWidth = width;
-            rows[r].cells[c].style.overflow = "hidden";
-            rows[r].cells[c].style.textOverflow = "ellipsis";
-            rows[r].cells[c].style.whiteSpace = "nowrap";
-          }
-        }
-
-        localStorage.setItem("savedTable", oldTable.innerHTML);
-        document.getElementById("search").value = "";
-        document.getElementById("statusFilter").value = "";
-        filterTable();
-      };
-      reader.readAsArrayBuffer(file);
-      e.target.value = "";
-    });
-
     window.onload = function () {
       const savedHTML = localStorage.getItem("savedTable");
       if (savedHTML) {
@@ -318,13 +293,14 @@
         document.body.classList.add("dark");
       }
 
-      // Admin control: show upload button only if admin
-      const params = new URLSearchParams(window.location.search);
-      if (params.get("admin") === "true") {
-        localStorage.setItem("isAdmin", "true");
-      }
-      if (localStorage.getItem("isAdmin") === "true") {
-        document.getElementById("uploadLabel").style.display = "inline-flex";
+      // Auto-size columns when table loads
+      const table = document.getElementById("machineTable");
+      if (table.rows.length > 0) {
+        const headerRow = table.rows[0];
+        for (let i = 0; i < headerRow.cells.length; i++) {
+          headerRow.cells[i].style.minWidth = "100px";
+          if (i === 0) headerRow.cells[i].style.minWidth = "60px";
+        }
       }
     };
   </script>
