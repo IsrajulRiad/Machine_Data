@@ -1,3 +1,4 @@
+<!-- 🟢 Full Updated machine1.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -59,13 +60,13 @@
     }
 
     .logo-container img {
-      height: 80px; /* ✅ Change height as needed */
+      height: 80px;
       width: auto;
     }
 
     .main-content {
       padding: 20px;
-      padding-top: 140px; /* Header height + spacing */
+      padding-top: 140px;
       width: 100%;
       box-sizing: border-box;
     }
@@ -85,15 +86,15 @@
       font-size: inherit;
       border: 1px solid #ccc;
       border-radius: 6px;
-      flex: 1;
-      min-width: 120px;
-    }
-
-    .controls button {
       background-color: transparent;
       color: inherit;
       cursor: pointer;
-      user-select: none;
+      min-width: 100px;
+    }
+
+    .controls input {
+      background-color: white;
+      color: var(--text);
     }
 
     .table-container {
@@ -114,8 +115,7 @@
       background-color: var(--table-header);
     }
 
-    th,
-    td {
+    th, td {
       padding: 14px;
       text-align: center;
       border-bottom: 1px solid #ccc;
@@ -158,20 +158,21 @@
 
   <header>
     <div class="logo-container">
-  <img src="logo.png" alt="Logo" />
-</div>
+      <img src="logo.png" alt="Logo" />
+    </div>
     <h1>SPECIAL MACHINE DATA</h1>
   </header>
 
   <div class="main-content">
     <div class="controls">
+      <button onclick="window.location.href='dashboard.html'">🏠 Home</button>
       <input type="text" id="search" placeholder="Search..." oninput="filterTable()" />
       <select id="statusFilter" onchange="filterTable()">
         <option value="">Filter by Status</option>
         <option value="NPI">NPI</option>
       </select>
       <button onclick="exportTable()">⬇ Excel</button>
-      <button onclick="toggleDark()">🌓 Dark&lt;&gt;Light</button>
+      <button onclick="toggleDark()">🌓 Dark<>Light</button>
     </div>
 
     <div class="table-container">
