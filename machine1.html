@@ -7,7 +7,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
     :root {
-      --header-font-size: 24px;
+      --header-font-size: 22px;
       --controls-font-size: 14px;
       --table-font-size: 14px;
       --bg: #f9f9f9;
@@ -15,7 +15,6 @@
       --header: #004080;
       --table-header: #dbeeff;
       --highlight: #e6f0fa;
-      --logo-size: 60px;
     }
 
     body.dark {
@@ -31,47 +30,35 @@
       background-color: var(--bg);
       color: var(--text);
       margin: 0;
+      padding: 0;
       transition: background 0.3s, color 0.3s;
     }
 
     header {
       background: var(--header);
       color: white;
-      padding: 0 20px;
+      padding: 20px;
       box-sizing: border-box;
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
-      height: 100px;
       z-index: 10;
+      font-size: var(--header-font-size);
       display: flex;
       align-items: center;
       justify-content: center;
+      height: 120px;
     }
 
-    .header-inner {
-      position: relative;
-      width: 100%;
-      text-align: center;
-    }
-
-    .header-logo {
-      position: absolute;
-      left: 20px;
-      top: 50%;
-      transform: translateY(-50%);
-      height: var(--logo-size);
-    }
-
-    .header-title {
-      font-size: var(--header-font-size);
-      margin: 0;
+    .logo {
+      height: 80px;
+      margin-right: 20px;
     }
 
     .main-content {
       padding: 20px;
-      padding-top: 140px;
+      padding-top: 140px; /* 120 header + 20 spacing */
       width: 100%;
       box-sizing: border-box;
     }
@@ -85,7 +72,8 @@
     }
 
     .controls input,
-    .controls select {
+    .controls select,
+    .controls button {
       padding: 10px;
       font-size: inherit;
       border: 1px solid #ccc;
@@ -95,19 +83,10 @@
     }
 
     .controls button {
-      padding: 10px;
-      font-size: inherit;
-      border: 1px solid #004080;
-      border-radius: 6px;
       background-color: transparent;
-      color: #004080;
+      color: inherit;
       cursor: pointer;
-      flex: 1;
-      min-width: 120px;
-    }
-
-    .controls button:hover {
-      background-color: #e6f0fa;
+      user-select: none;
     }
 
     .table-container {
@@ -171,10 +150,8 @@
 <body>
 
   <header>
-    <div class="header-inner">
-      <img src="machine/logo.png" alt="Logo" class="header-logo" />
-      <h1 class="header-title">SPECIAL MACHINE DATA</h1>
-    </div>
+    <img src="machine/logo.png" alt="Logo" class="logo" style="height: 80px;" />
+    <h1>SPECIAL MACHINE DATA</h1>
   </header>
 
   <div class="main-content">
