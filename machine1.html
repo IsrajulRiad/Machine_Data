@@ -6,94 +6,179 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
-    /* === Your previous CSS styles === */
+    :root {
+      --header-font-size: 22px;
+      --controls-font-size: 14px;
+      --table-font-size: 14px;
+      --bg: #f9f9f9;
+      --text: #333;
+      --header: #004080;
+      --table-header: #dbeeff;
+      --highlight: #e6f0fa;
+      --button-bg: #cce5ff;
+      --button-hover-bg: #99ccff;
+    }
+
+    body.dark {
+      --bg: #121212;
+      --text: #f0f0f0;
+      --header: #1a1a1a;
+      --table-header: #333;
+      --highlight: #1e2b40;
+      --button-bg: #334466;
+      --button-hover-bg: #556688;
+    }
+
     body {
-      font-family: Arial, sans-serif;
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
       margin: 0;
       padding: 0;
-      background: #f9f9f9;
-      color: #333;
+      transition: background 0.3s, color 0.3s;
     }
+
     header {
-      background-color: #007acc;
+      background: var(--header);
       color: white;
-      padding: 15px 20px;
-      font-size: 24px;
-      font-weight: bold;
-      text-align: center;
+      padding: 20px;
+      box-sizing: border-box;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 10;
+      font-size: var(--header-font-size);
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
+
     .main-content {
       padding: 20px;
-      max-width: 1200px;
-      margin: auto;
+      padding-top: 140px; /* header height 120px + 20px gap */
+      width: 100%;
+      box-sizing: border-box;
     }
+
     .controls {
-      margin-bottom: 20px;
       display: flex;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       gap: 10px;
-      align-items: center;
+      margin-bottom: 20px;
+      font-size: var(--controls-font-size);
     }
+
+    /* Style all buttons and inputs inside controls for uniform size and background */
     .controls button,
-    .controls input[type="file"],
     .controls input[type="text"],
     .controls select,
-    .controls label {
-      background: #e3f2fd; /* soft blue background for buttons and controls */
-      border: none;
-      padding: 8px 15px;
-      font-size: 14px;
+    label[for="uploadExcel"] {
+      padding: 10px;
+      font-size: inherit;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      flex: 1;
+      min-width: 120px;
+      background-color: var(--button-bg);
+      color: inherit;
       cursor: pointer;
-      border-radius: 4px;
-      color: #007acc;
+      user-select: none;
+      text-align: center;
+      box-sizing: border-box;
+      transition: background-color 0.2s ease;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
+
+    /* Hover effect for buttons and label */
     .controls button:hover,
-    .controls label:hover {
-      background: #bbdefb;
+    label[for="uploadExcel"]:hover,
+    .controls input[type="text"]:focus,
+    .controls select:focus {
+      background-color: var(--button-hover-bg);
+      outline: none;
+      border-color: #888;
     }
-    .controls input[type="text"] {
-      flex-grow: 1;
-      min-width: 150px;
-      color: #333;
-    }
-    .controls input[type="file"] {
+
+    /* Hide actual file input */
+    #uploadExcel {
       display: none;
     }
-    .controls label {
-      cursor: pointer;
-    }
+
     .table-container {
       overflow-x: auto;
     }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 700px;
-      background: white;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      background-color: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+      font-size: var(--table-font-size);
+      table-layout: fixed;
     }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 8px 12px;
-      text-align: left;
+
+    thead {
+      background-color: var(--table-header);
+      color: #000;
+      font-weight: bold;
+    }
+
+    th,
+    td {
+      padding: 14px;
+      text-align: center;
+      border: 1px solid #ccc;
+      overflow: hidden;
+      text-overflow: ellipsis;
       white-space: nowrap;
     }
-    th {
-      background-color: #2196f3;
+
+    tbody tr:hover {
+      background-color: var(--highlight);
+    }
+
+    body.dark table,
+    body.dark th,
+    body.dark td {
       color: white;
-      font-weight: bold;
-      position: sticky;
-      top: 0;
-      z-index: 1;
+      background-color: #1e1e1e;
+      border-color: #444;
+    }
+
+    body.dark thead {
+      background-color: #333;
+      color: #eee;
+    }
+
+    body.dark tbody tr:hover {
+      background-color: #2a2a2a;
+    }
+
+    @media (max-width: 600px) {
+      .controls {
+        flex-wrap: wrap;
+      }
+      .controls button,
+      .controls input[type="text"],
+      .controls select,
+      label[for="uploadExcel"] {
+        flex: 100%;
+        min-width: unset;
+      }
     }
   </style>
 </head>
 <body>
 
   <header>
-    SPECIAL MACHINE DATA
+    <h1>SPECIAL MACHINE DATA</h1>
   </header>
 
   <div class="main-content">
@@ -111,22 +196,14 @@
 
       <button onclick="exportTable()">⬇ Excel</button>
       <button onclick="toggleDark()">🌓 Dark&lt;&gt;Light</button>
-
-      <button onclick="clearStoredData()" style="background:#ffcccc; color:#900; min-width: 140px;">
-        🗑 Clear Data
-      </button>
     </div>
 
     <div class="table-container">
-      <table id="machineTable">
-        <!-- Table content will be loaded from Excel -->
-      </table>
+      <table id="machineTable"></table>
     </div>
   </div>
 
   <script>
-    const STORAGE_KEY = "uploadedExcelBase64";
-
     function goHome() {
       window.location.href = "dashboard.html";
     }
@@ -160,88 +237,46 @@
 
     function toggleDark() {
       document.body.classList.toggle("dark");
-      // Optional: add your dark mode CSS styles if needed
     }
 
-    // Load Excel from Base64 and render table exactly as before
-    function loadExcelFromBase64(base64Data) {
-      const binaryString = atob(base64Data);
-      const len = binaryString.length;
-      const bytes = new Uint8Array(len);
-      for (let i = 0; i < len; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
-      }
-      const workbook = XLSX.read(bytes, { type: "array" });
-      const firstSheetName = workbook.SheetNames[0];
-      const worksheet = workbook.Sheets[firstSheetName];
-
-      // Convert worksheet to HTML table string
-      const htmlString = XLSX.utils.sheet_to_html(worksheet);
-      const tempDiv = document.createElement("div");
-      tempDiv.innerHTML = htmlString;
-      const uploadedTable = tempDiv.querySelector("table");
-
-      if (!uploadedTable) {
-        alert("Stored data is invalid.");
-        return;
-      }
-
-      const oldTable = document.getElementById("machineTable");
-      oldTable.innerHTML = uploadedTable.innerHTML;
-
-      // Reset filters
-      document.getElementById("search").value = "";
-      document.getElementById("statusFilter").value = "";
-
-      filterTable();
-    }
-
-    // On page load, load saved Excel from localStorage if available
-    window.addEventListener("load", () => {
-      const savedBase64 = localStorage.getItem(STORAGE_KEY);
-      if (savedBase64) {
-        loadExcelFromBase64(savedBase64);
-      }
-    });
-
-    // Upload Excel file, store base64 in localStorage, render table
     document.getElementById("uploadExcel").addEventListener("change", function(e) {
       const file = e.target.files[0];
       if (!file) return;
 
       const reader = new FileReader();
       reader.onload = function(evt) {
-        const arrayBuffer = evt.target.result;
+        const data = new Uint8Array(evt.target.result);
+        const workbook = XLSX.read(data, { type: "array" });
+        const firstSheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[firstSheetName];
 
-        // Convert to base64
-        const bytes = new Uint8Array(arrayBuffer);
-        let binary = '';
-        for (let i = 0; i < bytes.byteLength; i++) {
-          binary += String.fromCharCode(bytes[i]);
+        // Convert entire sheet to HTML table string
+        const htmlString = XLSX.utils.sheet_to_html(worksheet);
+
+        // Extract the <table> element from htmlString
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = htmlString;
+        const uploadedTable = tempDiv.querySelector("table");
+
+        if (!uploadedTable) {
+          alert("Uploaded file doesn't contain a valid table.");
+          return;
         }
-        const base64String = btoa(binary);
 
-        // Save in localStorage
-        localStorage.setItem(STORAGE_KEY, base64String);
+        const oldTable = document.getElementById("machineTable");
+        // Replace entire table content with uploaded table's HTML
+        oldTable.innerHTML = uploadedTable.innerHTML;
 
-        // Load and display
-        loadExcelFromBase64(base64String);
+        // Clear filters
+        document.getElementById("search").value = "";
+        document.getElementById("statusFilter").value = "";
+
+        filterTable();
       };
       reader.readAsArrayBuffer(file);
 
-      // Reset input value so user can upload same file again if needed
       e.target.value = "";
     });
-
-    // Clear saved data and table
-    function clearStoredData() {
-      if (confirm("Are you sure you want to clear the saved Excel data?")) {
-        localStorage.removeItem(STORAGE_KEY);
-        document.getElementById("machineTable").innerHTML = "";
-        document.getElementById("search").value = "";
-        document.getElementById("statusFilter").value = "";
-      }
-    }
   </script>
 
 </body>
