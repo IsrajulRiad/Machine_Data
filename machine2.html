@@ -137,7 +137,6 @@
 
     th, td {
       padding: 12px 15px;
-      text-align: center;
       border: 1px solid #ddd;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -235,42 +234,54 @@
 
     <div class="table-container">
       <table id="machineTable">
+        <!-- Machine Information -->
         <tr>
-          <th>Machine Number</th>
-          <th></th>
-          <th>Machine Type</th>
-          <th></th>
+          <th style="text-align: left; width: 30%;">Machine Number</th>
+          <th style="text-align: left; width: 70%;">Machine Type</th>
         </tr>
         <tr>
-          <th>Section</th>
-          <th></th>
-          <th>Line No</th>
-          <th></th>
+          <td style="text-align: left;"></td>
+          <td style="text-align: left;"></td>
+        </tr>
+        
+        <tr>
+          <th style="text-align: left; width: 30%;">Section</th>
+          <th style="text-align: left; width: 70%;">Line No</th>
         </tr>
         <tr>
-          <th colspan="4">Style Number</th>
+          <td style="text-align: left;"></td>
+          <td style="text-align: left;"></td>
+        </tr>
+        
+        <tr>
+          <th colspan="2" style="text-align: left;">Style Number</th>
         </tr>
         <tr>
-          <td colspan="4"></td>
+          <td colspan="2" style="text-align: left;"></td>
+        </tr>
+        
+        <tr>
+          <th colspan="2" style="text-align: left;">Operation Name</th>
         </tr>
         <tr>
-          <th colspan="4">Operation Name</th>
+          <td colspan="2" style="text-align: left;"></td>
+        </tr>
+        
+        <tr>
+          <th colspan="2" style="text-align: left;">Seam Width</th>
         </tr>
         <tr>
-          <td colspan="4"></td>
+          <td colspan="2" style="text-align: left;"></td>
+        </tr>
+        
+        <tr>
+          <th colspan="2" style="text-align: left;">Trim</th>
         </tr>
         <tr>
-          <th colspan="4">Seam Width</th>
+          <td colspan="2" style="text-align: left;"></td>
         </tr>
-        <tr>
-          <td colspan="4"></td>
-        </tr>
-        <tr>
-          <th colspan="4">Trim</th>
-        </tr>
-        <tr>
-          <td colspan="4"></td>
-        </tr>
+        
+        <!-- Checking Points Header -->
         <tr>
           <th>No</th>
           <th>Checking Point</th>
@@ -278,6 +289,8 @@
           <th>No</th>
           <th>Remarks</th>
         </tr>
+        
+        <!-- Checking Points Rows -->
         <tr>
           <td>1</td>
           <td>All parts of the machines are tight?</td>
@@ -326,14 +339,13 @@
       const status = document.getElementById("statusFilter").value.toLowerCase();
       const rows = table.rows;
       
-      // Start filtering from the checking points rows (row 11 onwards)
+      // Start filtering from row 11 (after the header section)
       for (let i = 11; i < rows.length; i++) {
         const row = rows[i];
         const cells = Array.from(row.cells);
         const rowText = cells.map(cell => cell.textContent.toLowerCase()).join(" ");
-        const statusMatch = status === "" || (cells[5] && cells[5].textContent.toLowerCase() === status);
         const searchMatch = rowText.includes(search);
-        row.style.display = (statusMatch && searchMatch) ? "" : "none";
+        row.style.display = searchMatch ? "" : "none";
       }
     }
 
@@ -366,7 +378,7 @@
       // Auto-size columns when table loads
       const table = document.getElementById("machineTable");
       if (table.rows.length > 0) {
-        const headerRow = table.rows[10]; // The checking points header row
+        const headerRow = table.rows[10]; // The header row with No, Checking Point, etc.
         for (let i = 0; i < headerRow.cells.length; i++) {
           headerRow.cells[i].style.minWidth = "100px";
           if (i === 0) headerRow.cells[i].style.minWidth = "60px";
