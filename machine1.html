@@ -15,9 +15,9 @@
       --header: #004080;
       --table-header: #dbeeff;
       --highlight: #e6f0fa;
-      --logo-size: 60px;            /* ✅ Resize logo */
-      --logo-margin-left: 20px;     /* ✅ Horizontal offset */
-      --logo-margin-top: 0px;       /* ✅ Vertical offset */
+      --logo-size: 60px;
+      --logo-margin-left: 20px;
+      --logo-margin-top: 0px;
     }
 
     body.dark {
@@ -49,25 +49,21 @@
       font-size: var(--header-font-size);
       display: flex;
       align-items: center;
-      justify-content: center;
-      height: 120px;
-      position: relative;
+      gap: 20px;
+      height: auto;
     }
 
     .logo {
-      position: absolute;
-      left: var(--logo-margin-left);
-      top: 50%;
-      transform: translateY(-50%) translateY(var(--logo-margin-top));
       height: var(--logo-size);
+      margin-left: var(--logo-margin-left);
+      margin-top: var(--logo-margin-top);
     }
 
     .main-content {
       padding: 20px;
-      padding-top: 160px;
+      padding-top: 140px;
       width: 100%;
       box-sizing: border-box;
-      margin-left: 0;
     }
 
     .controls {
@@ -79,17 +75,29 @@
     }
 
     .controls input,
-    .controls select,
-    .controls button {
+    .controls select {
       padding: 10px;
       font-size: inherit;
+      border: 1px solid #ccc;
       border-radius: 6px;
       flex: 1;
       min-width: 120px;
-      border: 1px solid #ccc;
+    }
+
+    .controls button {
+      padding: 10px;
+      font-size: inherit;
+      border: 1px solid #004080;
+      border-radius: 6px;
       background-color: transparent;
-      color: var(--text);
+      color: #004080;
       cursor: pointer;
+      flex: 1;
+      min-width: 120px;
+    }
+
+    .controls button:hover {
+      background-color: #e6f0fa;
     }
 
     .table-container {
@@ -153,7 +161,6 @@
 <body>
 
   <header>
-    <!-- ✅ Replace logo.png with your actual file name -->
     <img src="logo.png" alt="Logo" class="logo" />
     <h1>SPECIAL MACHINE DATA</h1>
   </header>
