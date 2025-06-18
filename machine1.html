@@ -64,41 +64,50 @@
       width: auto;
     }
 
-   .main-content {
-  padding-top: 140px; /* 120px header + 20px gap */
-  margin-top: 0;      /* remove negative margin */
-}
-
-.controls {
-  margin-bottom: 20px;
-  margin-top: 0; /* ensure no top margin */
-}
-
-    .controls input,
-    .controls select,
-    .controls button,
-    .controls label {
-      padding: 10px;
-      font-size: inherit;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      flex: 1;
-      min-width: 120px;
-      background-color: transparent;
-      color: inherit;
-      cursor: pointer;
-      user-select: none;
-      text-align: center;
+    .main-content {
+      padding-top: 140px; /* 120px header height + 20px gap */
+      margin-top: 0; /* remove negative margin */
+      width: 100%;
       box-sizing: border-box;
     }
 
-    /* For file input (upload), hide default input and style label as button */
-    #uploadExcel {
-      display: none;
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      margin-top: 0; /* no gap above controls */
+      width: 100%; /* fill full width */
+      box-sizing: border-box;
     }
 
+    .controls > * {
+      flex-grow: 1;   /* fill available space equally */
+      flex-basis: 0;  /* allow shrinking */
+      min-width: 0;   /* prevent overflow */
+      height: 44px;   /* fixed height for all buttons and inputs */
+      padding: 0 12px; /* horizontal padding */
+      font-size: var(--controls-font-size);
+      box-sizing: border-box;
+      cursor: pointer;
+      user-select: none;
+      text-align: center;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background-color: transparent;
+      color: inherit;
+    }
+
+    /* Style file input label as button */
     label[for="uploadExcel"] {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Remove default input styles and ensure same height */
+    .controls input[type="text"],
+    .controls select,
+    .controls button {
       cursor: pointer;
     }
 
@@ -127,7 +136,7 @@
     td {
       padding: 14px;
       text-align: center;
-      border: 1px solid #ccc; /* changed from bottom border to all sides for clarity */
+      border: 1px solid #ccc;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -148,11 +157,9 @@
       .controls {
         flex-wrap: wrap;
       }
-      .controls input,
-      .controls select,
-      .controls button,
-      label[for="uploadExcel"] {
-        flex: 100%;
+      .controls > * {
+        flex-basis: 100%;
+        min-width: 100%;
       }
     }
 
@@ -231,12 +238,12 @@
   </div>
 
   <script>
-    // Home button clears saved table and reloads page to original default data
+    // Home button navigates to dashboard.html in same folder
     function goHome() {
-  // Don't remove localStorage if you want to keep data
-  window.location.href = "dashboard.html";
-}
-
+      // Uncomment next line if you want to clear saved data when going home:
+      // localStorage.removeItem("machineTableHTML");
+      window.location.href = "dashboard.html";
+    }
 
     // Filter table rows by search text and status
     function filterTable() {
