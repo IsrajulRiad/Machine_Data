@@ -64,22 +64,15 @@
       width: auto;
     }
 
-    .main-content {
-      padding: 20px;
-      /* Padding-top should be header height (120px) + 20px gap = 140px */
-      padding-top: 140px;
-      width: 100%;
-      box-sizing: border-box;
-      margin-top: -20px; /* To reduce gap below header */
-    }
+   .main-content {
+  padding-top: 140px; /* 120px header + 20px gap */
+  margin-top: 0;      /* remove negative margin */
+}
 
-    .controls {
-      display: flex;
-      flex-wrap: nowrap;
-      gap: 10px;
-      margin-bottom: 20px;
-      font-size: var(--controls-font-size);
-    }
+.controls {
+  margin-bottom: 20px;
+  margin-top: 0; /* ensure no top margin */
+}
 
     .controls input,
     .controls select,
