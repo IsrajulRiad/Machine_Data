@@ -205,10 +205,11 @@
         <option value="">Filter by Status</option>
         <option value="NPI">NPI</option>
       </select>
-      <label for="uploadExcel">⬆ Upload Excel</label>
+      <label for="uploadExcel" id="uploadLabel" style="display: none;">⬆ Upload Excel</label>
       <input type="file" id="uploadExcel" accept=".xls,.xlsx" />
       <button onclick="exportTable()">⬇ Excel</button>
       <button onclick="toggleDark()">🌓 Dark&lt;&gt;Light</button>
+      <button onclick="logoutAdmin()">Logout</button>
     </div>
 
     <div class="table-container">
@@ -255,6 +256,12 @@
       localStorage.setItem("darkMode", document.body.classList.contains("dark") ? "1" : "0");
     }
 
+    function logoutAdmin() {
+      localStorage.removeItem("isAdmin");
+      alert("Logged out from admin mode.");
+      location.reload();
+    }
+
     document.getElementById("uploadExcel").addEventListener("change", function(e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -292,9 +299,7 @@
           }
         }
 
-        // Save after fully styled
         localStorage.setItem("savedTable", oldTable.innerHTML);
-
         document.getElementById("search").value = "";
         document.getElementById("statusFilter").value = "";
         filterTable();
@@ -312,8 +317,16 @@
       if (localStorage.getItem("darkMode") === "1") {
         document.body.classList.add("dark");
       }
+
+      // Admin control: show upload button only if admin
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("admin") === "true") {
+        localStorage.setItem("isAdmin", "true");
+      }
+      if (localStorage.getItem("isAdmin") === "true") {
+        document.getElementById("uploadLabel").style.display = "inline-flex";
+      }
     };
   </script>
-
 </body>
 </html>
