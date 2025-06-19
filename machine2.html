@@ -132,20 +132,21 @@
       white-space: nowrap;
     }
 
-    thead {
-      background-color: var(--table-header);
-      color: white;
-      position: sticky;
-      top: 0;
-    }
-
     .label-cell {
       background-color: #eef4fb;
       font-weight: bold;
     }
 
+    .thick-group {
+      border: 2px solid #333;
+    }
+
+    .thick-group td, .thick-group th {
+      border: 1px solid #ccc;
+    }
+
     .centered-header th {
-      text-align: center !important;
+      text-align: center;
     }
 
     tbody tr:nth-child(even) {
@@ -227,86 +228,82 @@
 
   <div class="table-container">
     <table id="machineTable">
-      <!-- Machine Number & Machine Type -->
-      <tr>
-        <th class="label-cell" style="width: 15%;">Machine Number</th>
-        <td style="width: 16%;"></td>
-        <th class="label-cell" style="width: 15%;">Machine Type</th>
-        <td colspan="2" style="width: 54%;"></td>
-      </tr>
+      <!-- Grouped rows 1 & 2 with thick outer border -->
+      <tbody class="thick-group">
+        <tr>
+          <th class="label-cell" style="width: 15%;">Machine Number</th>
+          <td style="width: 10%;"></td>
+          <th class="label-cell" style="width: 15%;">Machine Type</th>
+          <td colspan="2" style="width: 60%;"></td>
+        </tr>
+        <tr>
+          <th class="label-cell">Section</th>
+          <td></td>
+          <th class="label-cell">Line No</th>
+          <td colspan="2"></td>
+        </tr>
+      </tbody>
 
-      <!-- Section & Line No -->
-      <tr>
-        <th class="label-cell">Section</th>
-        <td></td>
-        <th class="label-cell">Line No</th>
-        <td colspan="2"></td>
-      </tr>
+      <!-- Empty row -->
+      <tr><td colspan="5"></td></tr>
 
-      <!-- Empty row under Section -->
-      <tr>
-        <td colspan="5"></td>
-      </tr>
+      <!-- Grouped rows 4 & 5 with thick outer border -->
+      <tbody class="thick-group">
+        <tr>
+          <th class="label-cell">Style Number</th>
+          <td></td>
+          <th class="label-cell">Operation Name</th>
+          <td colspan="2"></td>
+        </tr>
+        <tr>
+          <th class="label-cell">Seam Width</th>
+          <td></td>
+          <th class="label-cell">Trim</th>
+          <td colspan="2"></td>
+        </tr>
+      </tbody>
 
-      <!-- Style Number and Operation Name (combined row) -->
-      <tr>
-        <th colspan="1" class="label-cell" style="border: 1px solid #ccc;">Style Number</th>
-        <td></td>
-        <th colspan="1" class="label-cell" style="border: 1px solid #ccc;">Operation Name</th>
-        <td colspan="2"></td>
-      </tr>
+      <!-- Empty row -->
+      <tr><td colspan="5"></td></tr>
 
-      <!-- Seam Width and Trim -->
-      <tr>
-        <th colspan="1" class="label-cell" style="border: 1px solid #ccc;">Seam Width</th>
-        <td></td>
-        <th colspan="1" class="label-cell" style="border: 1px solid #ccc;">Trim</th>
-        <td colspan="2"></td>
-      </tr>
-
-      <!-- Empty row after Seam Width and Trim -->
-      <tr>
-        <td colspan="5"></td>
-      </tr>
-
-      <!-- Checking Points Header -->
-      <tr class="centered-header">
-        <th class="label-cell" style="width: 4%;">No</th>
-        <th class="label-cell" style="width: 48%;">Checking Point</th>
-        <th class="label-cell" style="width: 16%;">Yes</th>
-        <th class="label-cell" style="width: 16%;">No</th>
-        <th class="label-cell" style="width: 16%;">Remarks</th>
-      </tr>
-
-      <!-- Checking Point Rows -->
-      <tr class="check-row">
-        <td>1</td>
-        <td>All parts of the machines are tight?</td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-      <tr class="check-row">
-        <td>2</td>
-        <td>Machine table clean?</td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-      <tr class="check-row">
-        <td>3</td>
-        <td>All safety guard are available?</td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-      <tr class="check-row">
-        <td>4</td>
-        <td>All wire and pipes are arranged?</td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
+      <!-- Grouped header + check rows with thick outer border -->
+      <tbody class="thick-group">
+        <tr class="centered-header">
+          <th class="label-cell" style="width: 4%;">No</th>
+          <th class="label-cell" style="width: 48%;">Checking Point</th>
+          <th class="label-cell" style="width: 16%;">Yes</th>
+          <th class="label-cell" style="width: 16%;">No</th>
+          <th class="label-cell" style="width: 16%;">Remarks</th>
+        </tr>
+        <tr class="check-row">
+          <td>1</td>
+          <td>All parts of the machines are tight?</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="check-row">
+          <td>2</td>
+          <td>Machine table clean?</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="check-row">
+          <td>3</td>
+          <td>All safety guard are available?</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="check-row">
+          <td>4</td>
+          <td>All wire and pipes are arranged?</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tbody>
     </table>
   </div>
 </div>
