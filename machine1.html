@@ -5,6 +5,7 @@
   <title>Machine Data</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     :root {
       --header-font-size: 22px;
@@ -217,14 +218,13 @@
   <div class="controls">
     <button onclick="goHome()">🏠 Home</button>
     <input type="text" id="search" placeholder="Search..." oninput="filterTable()" />
-   
     <button onclick="exportTable()">⬇ Excel</button>
+    <button onclick="exportTableAsPDF()">📄 PDF</button>
     <button onclick="toggleDark()">🌓 Dark/Light</button>
-      </div>
+  </div>
 
   <div class="table-container">
     <table id="machineTable">
-      <!-- Grouped rows 1 & 2 with thick outer border -->
       <tbody class="thick-group">
         <tr>
           <th class="label-cell" style="width: 15%;">Machine Number</th>
@@ -240,10 +240,8 @@
         </tr>
       </tbody>
 
-      <!-- Empty row -->
       <tr><td colspan="5"></td></tr>
 
-      <!-- Grouped rows 4 & 5 with thick outer border -->
       <tbody class="thick-group">
         <tr>
           <th class="label-cell">Style Number</th>
@@ -259,10 +257,8 @@
         </tr>
       </tbody>
 
-      <!-- Empty row -->
       <tr><td colspan="5"></td></tr>
 
-      <!-- Grouped header + check rows with thick outer border -->
       <tbody class="thick-group">
         <tr class="centered-header">
           <th class="label-cell" style="width: 1%;">No</th>
@@ -332,15 +328,29 @@
     XLSX.writeFile(wb, "machine_data.xlsx");
   }
 
+  async function exportTableAsPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('l', 'pt', 'a4');
+    const table = document.getElementById("machineTable");
+
+    if (!table) {
+      alert("No table found!");
+      return;
+    }
+
+    await doc.html(table, {
+      x: 10,
+      y: 10,
+      html2canvas: { scale: 0.8 },
+      callback: function (doc) {
+        doc.save("machine_data.pdf");
+      }
+    });
+  }
+
   function toggleDark() {
     document.body.classList.toggle("dark");
     localStorage.setItem("darkMode", document.body.classList.contains("dark") ? "1" : "0");
-  }
-
-  function logoutAdmin() {
-    localStorage.removeItem("isAdmin");
-    alert("Logged out from admin mode.");
-    location.reload();
   }
 
   window.onload = function () {
@@ -352,3 +362,4 @@
 
 </body>
 </html>
+
