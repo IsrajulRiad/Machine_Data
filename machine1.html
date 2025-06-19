@@ -5,7 +5,9 @@
   <title>Machine Data</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
   <style>
     :root {
       --header-font-size: 22px;
@@ -14,7 +16,6 @@
       --bg: #f9f9f9;
       --text: #333;
       --header: #004080;
-      --table-header: #036;
       --highlight: #e6f0fa;
       --button-bg: #cce5ff;
       --button-hover-bg: #99ccff;
@@ -25,7 +26,6 @@
       --bg: #121212;
       --text: #f0f0f0;
       --header: #1a1a1a;
-      --table-header: #1a3a5a;
       --highlight: #1e2b40;
       --button-bg: #334466;
       --button-hover-bg: #556688;
@@ -45,7 +45,6 @@
       background: var(--header);
       color: white;
       padding: 20px;
-      box-sizing: border-box;
       position: fixed;
       top: 0;
       left: 0;
@@ -71,46 +70,37 @@
     .main-content {
       padding: 20px;
       padding-top: 140px;
-      width: 100%;
-      box-sizing: border-box;
-      max-width: 1400px;
+      max-width: 1200px;
       margin: 0 auto;
     }
 
     .controls {
       display: flex;
+      flex-wrap: wrap;
       gap: 10px;
       margin-bottom: 20px;
       font-size: var(--controls-font-size);
     }
 
     .controls button,
-    .controls input[type="text"],
-    .controls select {
+    .controls input[type="text"] {
       padding: 10px;
       font-size: inherit;
       border: 1px solid #ccc;
       border-radius: 6px;
-      width: 100%;
       background-color: var(--button-bg);
       color: inherit;
       cursor: pointer;
-      user-select: none;
-      box-sizing: border-box;
       transition: all 0.2s ease;
     }
 
-    .controls button:hover,
-    .controls input[type="text"]:focus,
-    .controls select:focus {
+    .controls button:hover {
       background-color: var(--button-hover-bg);
-      outline: none;
-      border-color: #888;
     }
 
     .controls button:active {
       background-color: var(--button-active-bg);
-      transform: scale(0.98);
+      transform: scale(0.97);
     }
 
     .table-container {
@@ -170,12 +160,6 @@
       background-color: #2a3b4d;
     }
 
-    @media (max-width: 768px) {
-      .controls {
-        flex-wrap: wrap;
-      }
-    }
-
     footer {
       text-align: center;
       padding: 20px;
@@ -223,7 +207,7 @@
     <button onclick="toggleDark()">🌓 Dark/Light</button>
   </div>
 
-  <div class="table-container">
+  <div class="table-container" id="tableCapture">
     <table id="machineTable">
       <tbody class="thick-group">
         <tr>
@@ -328,23 +312,23 @@
     XLSX.writeFile(wb, "machine_data.xlsx");
   }
 
-  async function exportTableAsPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF('l', 'pt', 'a4');
-    const table = document.getElementById("machineTable");
+  function exportTableAsPDF() {
+    const table = document.getElementById("tableCapture");
+    if (!table) return alert("No table to export!");
 
-    if (!table) {
-      alert("No table found!");
-      return;
-    }
+    html2canvas(table, { scale: 2 }).then(canvas => {
+      const imgData = canvas.toDataURL("image/png");
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF("landscape", "pt", "a4");
 
-    await doc.html(table, {
-      x: 10,
-      y: 10,
-      html2canvas: { scale: 0.8 },
-      callback: function (doc) {
-        doc.save("machine_data.pdf");
-      }
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const ratio = Math.min(pageWidth / canvas.width, pageHeight / canvas.height);
+      const imgWidth = canvas.width * ratio;
+      const imgHeight = canvas.height * ratio;
+
+      pdf.addImage(imgData, "PNG", 20, 20, imgWidth, imgHeight);
+      pdf.save("machine_data.pdf");
     });
   }
 
@@ -362,4 +346,3 @@
 
 </body>
 </html>
-
