@@ -141,10 +141,7 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-    }
-
-    td {
-      color: #333;
+      color: var(--text);
     }
 
     tbody tr:nth-child(even) {
@@ -158,7 +155,7 @@
     body.dark table,
     body.dark th,
     body.dark td {
-      color: white;
+      color: var(--text);
       background-color: #1e1e1e;
       border-color: #444;
     }
@@ -188,21 +185,21 @@
       color: #999;
       margin-top: 40px;
     }
-    
+
     @media print {
       header, footer, .controls {
         display: none;
       }
-      
+
       .main-content {
         padding-top: 20px;
       }
-      
+
       body {
         background: white;
         color: black;
       }
-      
+
       table {
         width: 100%;
         border: 1px solid black;
@@ -212,179 +209,173 @@
 </head>
 <body>
 
-  <header>
-    <div class="logo">
-      <img src="logo.png" alt="Logo" />
-    </div>
-    <h1>SPECIAL MACHINE DATA</h1>
-  </header>
+<header>
+  <div class="logo">
+    <img src="logo.png" alt="Logo" />
+  </div>
+  <h1>SPECIAL MACHINE DATA</h1>
+</header>
 
-  <div class="main-content">
-    <div class="controls">
-      <button onclick="goHome()">🏠 Home</button>
-      <input type="text" id="search" placeholder="Search..." oninput="filterTable()" />
-      <select id="statusFilter" onchange="filterTable()">
-        <option value="">All Status</option>
-        <option value="NPI">NPI</option>
-      </select>
-      <button onclick="exportTable()">⬇ Excel</button>
-      <button onclick="toggleDark()">🌓 Dark/Light</button>
-      <button onclick="logoutAdmin()">Logout</button>
-    </div>
+<div class="main-content">
+  <div class="controls">
+    <button onclick="goHome()">🏠 Home</button>
+    <input type="text" id="search" placeholder="Search..." oninput="filterTable()" />
+    <select id="statusFilter" onchange="filterTable()">
+      <option value="">All Status</option>
+      <option value="NPI">NPI</option>
+    </select>
+    <button onclick="exportTable()">⬇ Excel</button>
+    <button onclick="toggleDark()">🌓 Dark/Light</button>
+    <button onclick="logoutAdmin()">Logout</button>
+  </div>
 
-    <div class="table-container">
-      <table id="machineTable">
-        <!-- Machine Information -->
+  <div class="table-container">
+    <table id="machineTable">
+      <!-- Machine Information -->
+      <tr>
+        <th style="text-align: left; width: 20%;">Machine Number</th>
+        <th style="text-align: left;" colspan="4">Machine Type</th>
+      </tr>
+      <tr>
+        <td style="text-align: left;"></td>
+        <td colspan="4" style="text-align: left;"></td>
+      </tr>
+
+      <tr>
+        <th style="text-align: left;">Section</th>
+        <th colspan="4" style="text-align: left;">Line No</th>
+      </tr>
+      <tr>
+        <td style="text-align: left;"></td>
+        <td colspan="4" style="text-align: left;"></td>
+      </tr>
+
+      <tr>
+        <th colspan="5" style="text-align: left;">Style Number</th>
+      </tr>
+      <tr>
+        <td colspan="5" style="text-align: left;"></td>
+      </tr>
+
+      <tr>
+        <th colspan="5" style="text-align: left;">Operation Name</th>
+      </tr>
+      <tr>
+        <td colspan="5" style="text-align: left;"></td>
+      </tr>
+
+      <tr>
+        <th colspan="5" style="text-align: left;">Seam Width</th>
+      </tr>
+      <tr>
+        <td colspan="5" style="text-align: left;"></td>
+      </tr>
+
+      <tr>
+        <th colspan="5" style="text-align: left;">Trim</th>
+      </tr>
+      <tr>
+        <td colspan="5" style="text-align: left;"></td>
+      </tr>
+
+      <!-- Checking Points Header -->
+      <thead>
         <tr>
-          <th style="text-align: left; width: 30%;">Machine Number</th>
-          <th style="text-align: left; width: 70%;">Machine Type</th>
-        </tr>
-        <tr>
-          <td style="text-align: left;"></td>
-          <td style="text-align: left;"></td>
-        </tr>
-        
-        <tr>
-          <th style="text-align: left; width: 30%;">Section</th>
-          <th style="text-align: left; width: 70%;">Line No</th>
-        </tr>
-        <tr>
-          <td style="text-align: left;"></td>
-          <td style="text-align: left;"></td>
-        </tr>
-        
-        <tr>
-          <th colspan="2" style="text-align: left;">Style Number</th>
-        </tr>
-        <tr>
-          <td colspan="2" style="text-align: left;"></td>
-        </tr>
-        
-        <tr>
-          <th colspan="2" style="text-align: left;">Operation Name</th>
-        </tr>
-        <tr>
-          <td colspan="2" style="text-align: left;"></td>
-        </tr>
-        
-        <tr>
-          <th colspan="2" style="text-align: left;">Seam Width</th>
-        </tr>
-        <tr>
-          <td colspan="2" style="text-align: left;"></td>
-        </tr>
-        
-        <tr>
-          <th colspan="2" style="text-align: left;">Trim</th>
-        </tr>
-        <tr>
-          <td colspan="2" style="text-align: left;"></td>
-        </tr>
-        
-        <!-- Checking Points Header -->
-        <tr>
-          <th>No</th>
-          <th>Checking Point</th>
-          <th>Yes</th>
-          <th>No</th>
+          <th style="width: 4%;">No</th>
+          <th style="width: 40%;">Checking Point</th>
+          <th style="width: 12%;">Yes</th>
+          <th style="width: 12%;">No</th>
           <th>Remarks</th>
         </tr>
-        
-        <!-- Checking Points Rows -->
-        <tr>
+      </thead>
+
+      <!-- Checking Points Rows -->
+      <tbody>
+        <tr class="check-row">
           <td>1</td>
           <td>All parts of the machines are tight?</td>
           <td></td>
           <td></td>
           <td></td>
         </tr>
-        <tr>
+        <tr class="check-row">
           <td>2</td>
           <td>Machine table clean?</td>
           <td></td>
           <td></td>
           <td></td>
         </tr>
-        <tr>
+        <tr class="check-row">
           <td>3</td>
-          <td>All safety gurd are available?</td>
+          <td>All safety guards are available?</td>
           <td></td>
           <td></td>
           <td></td>
         </tr>
-        <tr>
+        <tr class="check-row">
           <td>4</td>
-          <td>All wire and pipes are arranged?</td>
+          <td>All wires and pipes are arranged?</td>
           <td></td>
           <td></td>
           <td></td>
         </tr>
-      </table>
-    </div>
+      </tbody>
+    </table>
   </div>
+</div>
 
-  <footer>
-    &copy; 2025 Israjul Riad | Smart Machine Monitoring
-  </footer>
+<footer>
+  &copy; 2025 Israjul Riad | Smart Machine Monitoring
+</footer>
 
-  <script>
-    function goHome() {
-      window.location.href = "dashboard.html";
+<script>
+  function goHome() {
+    window.location.href = "dashboard.html";
+  }
+
+  function filterTable() {
+    const search = document.getElementById("search").value.toLowerCase();
+    const rows = document.querySelectorAll("#machineTable .check-row");
+    rows.forEach(row => {
+      const rowText = row.textContent.toLowerCase();
+      row.style.display = rowText.includes(search) ? "" : "none";
+    });
+  }
+
+  function exportTable() {
+    const table = document.getElementById("machineTable");
+    if (!table || !table.innerHTML.trim()) {
+      alert("No data to export!");
+      return;
+    }
+    const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
+    XLSX.writeFile(wb, "machine_data.xlsx");
+  }
+
+  function toggleDark() {
+    document.body.classList.toggle("dark");
+    localStorage.setItem("darkMode", document.body.classList.contains("dark") ? "1" : "0");
+  }
+
+  function logoutAdmin() {
+    localStorage.removeItem("isAdmin");
+    alert("Logged out from admin mode.");
+    location.reload();
+  }
+
+  window.onload = function () {
+    if (localStorage.getItem("darkMode") === "1") {
+      document.body.classList.add("dark");
     }
 
-    function filterTable() {
-      const table = document.getElementById("machineTable");
-      if (!table.rows) return;
-      const search = document.getElementById("search").value.toLowerCase();
-      const status = document.getElementById("statusFilter").value.toLowerCase();
-      const rows = table.rows;
-      
-      // Start filtering from row 11 (after the header section)
-      for (let i = 11; i < rows.length; i++) {
-        const row = rows[i];
-        const cells = Array.from(row.cells);
-        const rowText = cells.map(cell => cell.textContent.toLowerCase()).join(" ");
-        const searchMatch = rowText.includes(search);
-        row.style.display = searchMatch ? "" : "none";
+    const table = document.getElementById("machineTable");
+    const headerRow = table.querySelector("thead tr");
+    if (headerRow) {
+      for (let i = 0; i < headerRow.cells.length; i++) {
+        headerRow.cells[i].style.minWidth = i === 0 ? "60px" : "100px";
       }
     }
-
-    function exportTable() {
-      const table = document.getElementById("machineTable");
-      if (!table || !table.innerHTML.trim()) {
-        alert("No data to export!");
-        return;
-      }
-      const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
-      XLSX.writeFile(wb, "machine_data.xlsx");
-    }
-
-    function toggleDark() {
-      document.body.classList.toggle("dark");
-      localStorage.setItem("darkMode", document.body.classList.contains("dark") ? "1" : "0");
-    }
-
-    function logoutAdmin() {
-      localStorage.removeItem("isAdmin");
-      alert("Logged out from admin mode.");
-      location.reload();
-    }
-
-    window.onload = function () {
-      if (localStorage.getItem("darkMode") === "1") {
-        document.body.classList.add("dark");
-      }
-
-      // Auto-size columns when table loads
-      const table = document.getElementById("machineTable");
-      if (table.rows.length > 0) {
-        const headerRow = table.rows[10]; // The header row with No, Checking Point, etc.
-        for (let i = 0; i < headerRow.cells.length; i++) {
-          headerRow.cells[i].style.minWidth = "100px";
-          if (i === 0) headerRow.cells[i].style.minWidth = "60px";
-        }
-      }
-    };
-  </script>
+  };
+</script>
 </body>
 </html>
