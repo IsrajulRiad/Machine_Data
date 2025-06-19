@@ -13,20 +13,22 @@
       --bg: #f9f9f9;
       --text: #333;
       --header: #004080;
-      --table-header: #dbeeff;
+      --table-header: #036;
       --highlight: #e6f0fa;
       --button-bg: #cce5ff;
       --button-hover-bg: #99ccff;
+      --button-active-bg: #66b2ff;
     }
 
     body.dark {
       --bg: #121212;
       --text: #f0f0f0;
       --header: #1a1a1a;
-      --table-header: #333;
+      --table-header: #1a3a5a;
       --highlight: #1e2b40;
       --button-bg: #334466;
       --button-hover-bg: #556688;
+      --button-active-bg: #7799aa;
     }
 
     body {
@@ -70,11 +72,12 @@
       padding-top: 140px;
       width: 100%;
       box-sizing: border-box;
+      max-width: 1400px;
+      margin: 0 auto;
     }
 
     .controls {
       display: flex;
-      flex-wrap: nowrap;
       gap: 10px;
       margin-bottom: 20px;
       font-size: var(--controls-font-size);
@@ -82,29 +85,21 @@
 
     .controls button,
     .controls input[type="text"],
-    .controls select,
-    label[for="uploadExcel"] {
+    .controls select {
       padding: 10px;
       font-size: inherit;
       border: 1px solid #ccc;
       border-radius: 6px;
-      flex: 1;
-      min-width: 120px;
+      width: 100%;
       background-color: var(--button-bg);
       color: inherit;
       cursor: pointer;
       user-select: none;
-      text-align: center;
       box-sizing: border-box;
-      transition: background-color 0.2s ease;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
+      transition: all 0.2s ease;
     }
 
     .controls button:hover,
-    label[for="uploadExcel"]:hover,
     .controls input[type="text"]:focus,
     .controls select:focus {
       background-color: var(--button-hover-bg);
@@ -112,38 +107,50 @@
       border-color: #888;
     }
 
-    #uploadExcel {
-      display: none;
+    .controls button:active {
+      background-color: var(--button-active-bg);
+      transform: scale(0.98);
     }
 
     .table-container {
       overflow-x: auto;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.075);
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
       background-color: white;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
       font-size: var(--table-font-size);
-      table-layout: fixed;
-    }
-
-    thead {
-      background-color: var(--table-header);
-      color: #000;
-      font-weight: bold;
     }
 
     th, td {
-      padding: 14px;
-      text-align: center;
+      padding: 10px;
       border: 1px solid #ccc;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      text-align: left;
       white-space: nowrap;
+    }
+
+    .label-cell {
+      background-color: #eef4fb;
+      font-weight: bold;
+    }
+
+    .thick-group {
+      border: 2px solid #333;
+    }
+
+    .thick-group td, .thick-group th {
+      border: 1px solid #ccc;
+    }
+
+    .centered-header th {
+      text-align: center;
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: #f8f8f8;
     }
 
     tbody tr:hover {
@@ -158,25 +165,13 @@
       border-color: #444;
     }
 
-    body.dark thead {
-      background-color: #333;
-      color: #eee;
+    body.dark .label-cell {
+      background-color: #2a3b4d;
     }
 
-    body.dark tbody tr:hover {
-      background-color: #2a2a2a;
-    }
-
-    @media (max-width: 600px) {
+    @media (max-width: 768px) {
       .controls {
         flex-wrap: wrap;
-      }
-      .controls button,
-      .controls input[type="text"],
-      .controls select,
-      label[for="uploadExcel"] {
-        flex: 100%;
-        min-width: unset;
       }
     }
 
@@ -185,148 +180,179 @@
       padding: 20px;
       font-size: 13px;
       color: #999;
+      margin-top: 40px;
+    }
+
+    @media print {
+      header, footer, .controls {
+        display: none;
+      }
+
+      .main-content {
+        padding-top: 20px;
+      }
+
+      body {
+        background: white;
+        color: black;
+      }
+
+      table {
+        width: 100%;
+        border: 1px solid black;
+      }
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="logo">
-      <img src="logo.png" alt="Logo" />
-    </div>
-    <h1>SPECIAL MACHINE DATA</h1>
-  </header>
+<header>
+  <div class="logo">
+    <img src="logo.png" alt="Logo" />
+  </div>
+  <h1>SPECIAL MACHINE DATA</h1>
+</header>
 
-  <div class="main-content">
-    <div class="controls">
-      <button onclick="goHome()">🏠 Home</button>
-      <input type="text" id="search" placeholder="Search..." oninput="filterTable()" />
-      <select id="statusFilter" onchange="filterTable()">
-        <option value="">Filter by Status</option>
-        <option value="NPI">NPI</option>
-      </select>
-      <label for="uploadExcel" id="uploadLabel" style="display: none;">⬆ Upload Excel</label>
-      <input type="file" id="uploadExcel" accept=".xls,.xlsx" />
-      <button onclick="exportTable()">⬇ Excel</button>
-      <button onclick="toggleDark()">🌓 Dark&lt;&gt;Light</button>
-      <button onclick="logoutAdmin()">Logout</button>
-    </div>
-
-    <div class="table-container">
-      <table id="machineTable"></table>
-    </div>
+<div class="main-content">
+  <div class="controls">
+    <button onclick="goHome()">🏠 Home</button>
+    <input type="text" id="search" placeholder="Search..." oninput="filterTable()" />
+    <select id="statusFilter" onchange="filterTable()">
+      <option value="">All Status</option>
+      <option value="NPI">NPI</option>
+    </select>
+    <button onclick="exportTable()">⬇ Excel</button>
+    <button onclick="toggleDark()">🌓 Dark/Light</button>
+    <button onclick="logoutAdmin()">Logout</button>
   </div>
 
-  <footer>
-    &copy; 2025 Israjul Riad | Smart Machine Monitoring
-  </footer>
+  <div class="table-container">
+    <table id="machineTable">
+      <!-- Grouped rows 1 & 2 with thick outer border -->
+      <tbody class="thick-group">
+        <tr>
+          <th class="label-cell" style="width: 15%;">Machine Number</th>
+          <td style="width: 10%;"></td>
+          <th class="label-cell" style="width: 15%;">Machine Type</th>
+          <td colspan="2" style="width: 60%;"></td>
+        </tr>
+        <tr>
+          <th class="label-cell">Section</th>
+          <td></td>
+          <th class="label-cell">Line No</th>
+          <td colspan="2"></td>
+        </tr>
+      </tbody>
 
-  <script>
-    function goHome() {
-      window.location.href = "dashboard.html";
-    }
+      <!-- Empty row -->
+      <tr><td colspan="5"></td></tr>
 
-    function filterTable() {
-      const table = document.getElementById("machineTable");
-      if (!table.tBodies.length) return;
-      const search = document.getElementById("search").value.toLowerCase();
-      const status = document.getElementById("statusFilter").value.toLowerCase();
-      const rows = table.tBodies[0].rows;
-      Array.from(rows).forEach(row => {
-        const cells = Array.from(row.cells);
-        const rowText = cells.map(cell => cell.textContent.toLowerCase()).join(" ");
-        const statusMatch = status === "" || (cells[5] && cells[5].textContent.toLowerCase() === status);
-        const searchMatch = rowText.includes(search);
-        row.style.display = (statusMatch && searchMatch) ? "" : "none";
-      });
-    }
+      <!-- Grouped rows 4 & 5 with thick outer border -->
+      <tbody class="thick-group">
+        <tr>
+          <th class="label-cell">Style Number</th>
+          <td></td>
+          <th class="label-cell">Operation Name</th>
+          <td colspan="2"></td>
+        </tr>
+        <tr>
+          <th class="label-cell">Seam Width</th>
+          <td></td>
+          <th class="label-cell">Trim</th>
+          <td colspan="2"></td>
+        </tr>
+      </tbody>
 
-    function exportTable() {
-      const table = document.getElementById("machineTable");
-      if (!table || !table.innerHTML.trim()) {
-        alert("No data to export!");
-        return;
-      }
-      const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
-      XLSX.writeFile(wb, "machine_data.xlsx");
-    }
+      <!-- Empty row -->
+      <tr><td colspan="5"></td></tr>
 
-    function toggleDark() {
-      document.body.classList.toggle("dark");
-      localStorage.setItem("darkMode", document.body.classList.contains("dark") ? "1" : "0");
-    }
+      <!-- Grouped header + check rows with thick outer border -->
+      <tbody class="thick-group">
+        <tr class="centered-header">
+          <th class="label-cell" style="width: 4%;">No</th>
+          <th class="label-cell" style="width: 48%;">Checking Point</th>
+          <th class="label-cell" style="width: 16%;">Yes</th>
+          <th class="label-cell" style="width: 16%;">No</th>
+          <th class="label-cell" style="width: 16%;">Remarks</th>
+        </tr>
+        <tr class="check-row">
+          <td>1</td>
+          <td>All parts of the machines are tight?</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="check-row">
+          <td>2</td>
+          <td>Machine table clean?</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="check-row">
+          <td>3</td>
+          <td>All safety guard are available?</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="check-row">
+          <td>4</td>
+          <td>All wire and pipes are arranged?</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
 
-    function logoutAdmin() {
-      localStorage.removeItem("isAdmin");
-      alert("Logged out from admin mode.");
-      location.reload();
-    }
+<footer>
+  &copy; 2025 Israjul Riad | Smart Machine Monitoring
+</footer>
 
-    document.getElementById("uploadExcel").addEventListener("change", function(e) {
-      const file = e.target.files[0];
-      if (!file) return;
+<script>
+  function goHome() {
+    window.location.href = "dashboard.html";
+  }
 
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        const data = new Uint8Array(evt.target.result);
-        const workbook = XLSX.read(data, { type: "array" });
-        const firstSheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[firstSheetName];
-        const htmlString = XLSX.utils.sheet_to_html(worksheet);
-        const tempDiv = document.createElement("div");
-        tempDiv.innerHTML = htmlString;
-        const uploadedTable = tempDiv.querySelector("table");
-
-        if (!uploadedTable) {
-          alert("Uploaded file doesn't contain a valid table.");
-          return;
-        }
-
-        const oldTable = document.getElementById("machineTable");
-        oldTable.innerHTML = uploadedTable.innerHTML;
-
-        // Set column and row styles
-        const rows = oldTable.rows;
-        for (let r = 0; r < rows.length; r++) {
-          rows[r].style.height = "40px";
-          for (let c = 0; c < rows[r].cells.length; c++) {
-            const width = (c === 0) ? "60px" : "90px";
-            rows[r].cells[c].style.width = width;
-            rows[r].cells[c].style.maxWidth = width;
-            rows[r].cells[c].style.overflow = "hidden";
-            rows[r].cells[c].style.textOverflow = "ellipsis";
-            rows[r].cells[c].style.whiteSpace = "nowrap";
-          }
-        }
-
-        localStorage.setItem("savedTable", oldTable.innerHTML);
-        document.getElementById("search").value = "";
-        document.getElementById("statusFilter").value = "";
-        filterTable();
-      };
-      reader.readAsArrayBuffer(file);
-      e.target.value = "";
+  function filterTable() {
+    const search = document.getElementById("search").value.toLowerCase();
+    const rows = document.querySelectorAll("#machineTable .check-row");
+    rows.forEach(row => {
+      const rowText = row.textContent.toLowerCase();
+      row.style.display = rowText.includes(search) ? "" : "none";
     });
+  }
 
-    window.onload = function () {
-      const savedHTML = localStorage.getItem("savedTable");
-      if (savedHTML) {
-        document.getElementById("machineTable").innerHTML = savedHTML;
-        filterTable();
-      }
-      if (localStorage.getItem("darkMode") === "1") {
-        document.body.classList.add("dark");
-      }
+  function exportTable() {
+    const table = document.getElementById("machineTable");
+    if (!table || !table.innerHTML.trim()) {
+      alert("No data to export!");
+      return;
+    }
+    const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
+    XLSX.writeFile(wb, "machine_data.xlsx");
+  }
 
-      // Admin control: show upload button only if admin
-      const params = new URLSearchParams(window.location.search);
-      if (params.get("admin") === "true") {
-        localStorage.setItem("isAdmin", "true");
-      }
-      if (localStorage.getItem("isAdmin") === "true") {
-        document.getElementById("uploadLabel").style.display = "inline-flex";
-      }
-    };
-  </script>
+  function toggleDark() {
+    document.body.classList.toggle("dark");
+    localStorage.setItem("darkMode", document.body.classList.contains("dark") ? "1" : "0");
+  }
+
+  function logoutAdmin() {
+    localStorage.removeItem("isAdmin");
+    alert("Logged out from admin mode.");
+    location.reload();
+  }
+
+  window.onload = function () {
+    if (localStorage.getItem("darkMode") === "1") {
+      document.body.classList.add("dark");
+    }
+  };
+</script>
+
 </body>
 </html>
