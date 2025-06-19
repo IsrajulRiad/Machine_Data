@@ -95,13 +95,11 @@
       user-select: none;
     }
 
-    .controls.minimized button:not(.toggle),
-    .controls.minimized input[type="text"] {
+    .controls.minimized button:not(.toggle) {
       display: none;
     }
 
-    .controls button,
-    .controls input[type="text"] {
+    .controls button {
       padding: 8px 10px;
       font-size: inherit;
       border: 1px solid #ccc;
@@ -116,8 +114,12 @@
       text-align: center;
     }
 
-    .controls button:hover,
-    .controls input[type="text"]:focus {
+    .controls button.toggle {
+      min-width: 40px;
+      padding: 0 10px;
+    }
+
+    .controls button:hover {
       background-color: var(--button-hover-bg);
       outline: none;
       border-color: #888;
@@ -228,8 +230,7 @@
         width: 100%;
       }
 
-      .controls button,
-      .controls input[type="text"] {
+      .controls button {
         width: 100%;
         min-width: unset;
         height: 40px;
@@ -242,6 +243,12 @@
 
       .main-content {
         padding-top: 110px;
+      }
+    }
+
+    @media (min-width: 769px) {
+      .controls .toggle {
+        display: none !important;
       }
     }
   </style>
@@ -259,8 +266,7 @@
     <button onclick="exportTable()">⬇ Excel</button>
     <button onclick="exportPDF()">🖨️ PDF</button>
     <button onclick="toggleDark()" id="themeBtn">🌓 Dark</button>
-    <input type="text" id="search" placeholder="Search..." oninput="filterTable()" />
-    <button class="toggle" onclick="toggleControls()">🔽 Minimize</button>
+    <button class="toggle" onclick="toggleControls()">🔽</button>
   </div>
 
   <div class="table-container" id="pdfArea">
@@ -299,9 +305,6 @@
         <tr class="check-row"><td>2</td><td>Machine table clean?</td><td></td><td></td><td></td></tr>
         <tr class="check-row"><td>3</td><td>All safety guard are available?</td><td></td><td></td><td></td></tr>
         <tr class="check-row"><td>4</td><td>All wire and pipes are arranged?</td><td></td><td></td><td></td></tr>
-        <tr class="check-row"><td>5</td><td>Any oil leakage?</td><td></td><td></td><td></td></tr>
-        <tr class="check-row"><td>6</td><td>Vibration is normal?</td><td></td><td></td><td></td></tr>
-        <tr class="check-row"><td>7</td><td>All screws tightened?</td><td></td><td></td><td></td></tr>
       </tbody>
     </table>
   </div>
@@ -312,15 +315,6 @@
 <script>
   function goHome() {
     window.location.href = "dashboard.html";
-  }
-
-  function filterTable() {
-    const search = document.getElementById("search").value.toLowerCase();
-    const rows = document.querySelectorAll("#machineTable .check-row");
-    rows.forEach(row => {
-      const cell = row.cells[1].textContent.toLowerCase();
-      row.style.display = cell.includes(search) ? "" : "none";
-    });
   }
 
   function exportTable() {
@@ -352,6 +346,8 @@
   function toggleControls() {
     const bar = document.getElementById("controlBar");
     bar.classList.toggle("minimized");
+    const icon = bar.classList.contains("minimized") ? "🔽" : "🔼";
+    bar.querySelector('.toggle').innerText = icon;
     localStorage.setItem("controlsMinimized", bar.classList.contains("minimized") ? "1" : "0");
   }
 
@@ -360,8 +356,13 @@
       document.body.classList.add("dark");
       document.getElementById("themeBtn").innerText = "🌞 Light";
     }
-    if (localStorage.getItem("controlsMinimized") !== "0") {
-      document.getElementById("controlBar").classList.add("minimized");
+    if (window.innerWidth < 768) {
+      if (localStorage.getItem("controlsMinimized") !== "0") {
+        document.getElementById("controlBar").classList.add("minimized");
+        document.querySelector(".toggle").innerText = "🔽";
+      }
+    } else {
+      document.getElementById("controlBar").classList.remove("minimized");
     }
   };
 </script>
