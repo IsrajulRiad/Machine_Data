@@ -44,6 +44,11 @@
       transition: background 0.3s, color 0.3s;
     }
 
+    /* Container to scale all content together */
+    .page-wrapper {
+      transform-origin: top center;
+    }
+
     header {
       background: var(--header);
       color: white;
@@ -218,117 +223,122 @@
       }
     }
 
-    @media (max-width: 300px) {
-      .main-content {
-        transform: scale(0.2);
-        transform-origin: left;
+    @media (max-width: 600px) {
+      .page-wrapper {
+        transform: scale(0.75);
       }
 
-      .controls {
-        transform: scale(0.2);
-        transform-origin: left;
+      header {
+        font-size: 18px;
+        height: 60px;
+      }
+
+      .logo img {
+        height: 35px;
       }
     }
   </style>
 </head>
 <body>
 
-<header>
-  <div class="logo">
-    <img src="logo.png" alt="Logo" />
+<div class="page-wrapper">
+  <header>
+    <div class="logo">
+      <img src="logo.png" alt="Logo" />
+    </div>
+    <h1>SPECIAL MACHINE DATA</h1>
+  </header>
+
+  <div class="main-content">
+    <div class="controls" role="region" aria-label="Table controls">
+      <button onclick="goHome()" tabindex="0" aria-label="Go to Home">🏠 Home</button>
+      <input type="text" id="search" placeholder="Search Checking Point..." oninput="filterTable()" tabindex="0" aria-label="Search checking points" />
+      <button onclick="exportTable()" tabindex="0" aria-label="Export table data to Excel">⬇ Excel</button>
+      <button onclick="exportPDF()" tabindex="0" aria-label="Export table data to PDF">🖨️ PDF</button>
+      <button onclick="toggleDark()" tabindex="0" aria-label="Toggle dark and light mode">🌓 Dark/Light</button>
+    </div>
+
+    <div class="table-container" id="pdfArea" role="region" aria-label="Machine data table">
+      <table id="machineTable" aria-describedby="tableDescription" role="table" summary="Special machine data and inspection checklist">
+        <tbody class="thick-group">
+          <tr>
+            <th class="label-cell" style="width: 15%;">Machine Number</th>
+            <td style="width: 10%;"></td>
+            <th class="label-cell" style="width: 15%;">Machine Type</th>
+            <td colspan="2" style="width: 60%;"></td>
+          </tr>
+          <tr>
+            <th class="label-cell">Section</th>
+            <td></td>
+            <th class="label-cell">Line No</th>
+            <td colspan="2"></td>
+          </tr>
+        </tbody>
+
+        <tr><td colspan="5"></td></tr>
+
+        <tbody class="thick-group">
+          <tr>
+            <th class="label-cell">Style Number</th>
+            <td></td>
+            <th class="label-cell">Operation Name</th>
+            <td colspan="2"></td>
+          </tr>
+          <tr>
+            <th class="label-cell">Seam Width</th>
+            <td></td>
+            <th class="label-cell">Trim</th>
+            <td colspan="2"></td>
+          </tr>
+        </tbody>
+
+        <tr><td colspan="5"></td></tr>
+
+        <tbody class="thick-group">
+          <tr class="centered-header">
+            <th class="label-cell" style="width: 4%;">No</th>
+            <th class="label-cell" style="width: 33%;">Checking Point</th>
+            <th class="label-cell" style="width: 16%;">Yes</th>
+            <th class="label-cell" style="width: 20%;">No</th>
+            <th class="label-cell" style="width: 27%;">Remarks</th>
+          </tr>
+          <tr class="check-row">
+            <td>1</td>
+            <td>All parts of the machines are tight?</td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr class="check-row">
+            <td>2</td>
+            <td>Machine table clean?</td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr class="check-row">
+            <td>3</td>
+            <td>All safety guard are available?</td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr class="check-row">
+            <td>4</td>
+            <td>All wire and pipes are arranged?</td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
-  <h1>SPECIAL MACHINE DATA</h1>
-</header>
 
-<div class="main-content">
-  <div class="controls" role="region" aria-label="Table controls">
-    <button onclick="goHome()" tabindex="0" aria-label="Go to Home">🏠 Home</button>
-    <input type="text" id="search" placeholder="Search Checking Point..." oninput="filterTable()" tabindex="0" aria-label="Search checking points" />
-    <button onclick="exportTable()" tabindex="0" aria-label="Export table data to Excel">⬇ Excel</button>
-    <button onclick="exportPDF()" tabindex="0" aria-label="Export table data to PDF">🖨️ PDF</button>
-    <button onclick="toggleDark()" tabindex="0" aria-label="Toggle dark and light mode">🌓 Dark/Light</button>
-  </div>
-
-  <div class="table-container" id="pdfArea" role="region" aria-label="Machine data table">
-    <table id="machineTable" aria-describedby="tableDescription" role="table" summary="Special machine data and inspection checklist">
-      <tbody class="thick-group">
-        <tr>
-          <th class="label-cell" style="width: 15%;">Machine Number</th>
-          <td style="width: 10%;"></td>
-          <th class="label-cell" style="width: 15%;">Machine Type</th>
-          <td colspan="2" style="width: 60%;"></td>
-        </tr>
-        <tr>
-          <th class="label-cell">Section</th>
-          <td></td>
-          <th class="label-cell">Line No</th>
-          <td colspan="2"></td>
-        </tr>
-      </tbody>
-
-      <tr><td colspan="5"></td></tr>
-
-      <tbody class="thick-group">
-        <tr>
-          <th class="label-cell">Style Number</th>
-          <td></td>
-          <th class="label-cell">Operation Name</th>
-          <td colspan="2"></td>
-        </tr>
-        <tr>
-          <th class="label-cell">Seam Width</th>
-          <td></td>
-          <th class="label-cell">Trim</th>
-          <td colspan="2"></td>
-        </tr>
-      </tbody>
-
-      <tr><td colspan="5"></td></tr>
-
-      <tbody class="thick-group">
-        <tr class="centered-header">
-          <th class="label-cell" style="width: 4%;">No</th>
-          <th class="label-cell" style="width: 33%;">Checking Point</th>
-          <th class="label-cell" style="width: 16%;">Yes</th>
-          <th class="label-cell" style="width: 20%;">No</th>
-          <th class="label-cell" style="width: 27%;">Remarks</th>
-        </tr>
-        <tr class="check-row">
-          <td>1</td>
-          <td>All parts of the machines are tight?</td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr class="check-row">
-          <td>2</td>
-          <td>Machine table clean?</td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr class="check-row">
-          <td>3</td>
-          <td>All safety guard are available?</td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr class="check-row">
-          <td>4</td>
-          <td>All wire and pipes are arranged?</td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <footer>
+    &copy; 2025 Israjul Riad | Smart Machine Monitoring
+  </footer>
 </div>
-
-<footer>
-  &copy; 2025 Israjul Riad | Smart Machine Monitoring
-</footer>
 
 <script>
   function goHome() {
