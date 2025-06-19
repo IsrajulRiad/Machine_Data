@@ -144,6 +144,10 @@
       font-weight: bold;
     }
 
+    .centered-header th {
+      text-align: center !important;
+    }
+
     tbody tr:nth-child(even) {
       background-color: #f8f8f8;
     }
@@ -223,12 +227,12 @@
 
   <div class="table-container">
     <table id="machineTable">
-      <!-- Machine Number & Type -->
+      <!-- Machine Number & Machine Type -->
       <tr>
         <th class="label-cell" style="width: 15%;">Machine Number</th>
-        <td style="width: 25%;"></td>
+        <td style="width: 20%;"></td>
         <th class="label-cell" style="width: 15%;">Machine Type</th>
-        <td colspan="2" style="width: 45%;"></td>
+        <td colspan="2" style="width: 50%;"></td>
       </tr>
 
       <!-- Section & Line No -->
@@ -239,12 +243,14 @@
         <td colspan="2"></td>
       </tr>
 
+      <!-- Empty row under Section -->
+      <tr>
+        <td colspan="5"></td>
+      </tr>
+
       <!-- Style Number -->
       <tr>
         <th colspan="5" class="label-cell" style="border: 1px solid #ccc;">Style Number</th>
-      </tr>
-      <tr>
-        <td colspan="5"></td>
       </tr>
 
       <!-- Operation Name -->
@@ -261,9 +267,12 @@
       <tr>
         <th colspan="5" class="label-cell" style="border: 1px solid #ccc;">Trim</th>
       </tr>
+      <tr>
+        <td colspan="5"></td>
+      </tr>
 
       <!-- Checking Points Header -->
-      <tr>
+      <tr class="centered-header">
         <th class="label-cell" style="width: 4%;">No</th>
         <th class="label-cell" style="width: 48%;">Checking Point</th>
         <th class="label-cell" style="width: 16%;">Yes</th>
