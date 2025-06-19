@@ -10,7 +10,6 @@
   <style>
     :root {
       --header-font-size: 22px;
-      --mobile-header-font: 18px;
       --controls-font-size: 14px;
       --table-font-size: 14px;
       --bg: #f9f9f9;
@@ -40,7 +39,6 @@
       color: var(--text);
       margin: 0;
       padding: 0;
-      transition: background 0.3s, color 0.3s;
     }
 
     header {
@@ -48,15 +46,16 @@
       color: white;
       padding: 10px 20px;
       box-sizing: border-box;
-      position: sticky;
+      position: fixed;
       top: 0;
+      left: 0;
+      right: 0;
       z-index: 20;
       font-size: var(--header-font-size);
-      height: auto;
+      height: 80px;
       display: flex;
       align-items: center;
       justify-content: center;
-      text-align: center;
     }
 
     .logo {
@@ -72,50 +71,55 @@
     }
 
     .main-content {
-      padding: 20px;
-      padding-top: 10px;
-      box-sizing: border-box;
+      padding-top: 90px;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
 
     .controls {
-      margin: 10px 0;
+      position: sticky;
+      top: 80px;
       background: var(--bg);
+      z-index: 19;
+      padding: 10px 0;
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
+      margin-bottom: 10px;
       font-size: var(--controls-font-size);
       width: 1450px;
-      max-width: 100%;
+      box-sizing: border-box;
       justify-content: center;
-      z-index: 10;
-      position: sticky;
-      top: 80px;
-      padding: 10px 0;
+      user-select: none;
+    }
+
+    .controls.minimized button:not(.toggle),
+    .controls.minimized input[type="text"] {
+      display: none;
     }
 
     .controls button,
     .controls input[type="text"] {
-      padding: 8px;
+      padding: 8px 10px;
       font-size: inherit;
       border: 1px solid #ccc;
       border-radius: 6px;
       background-color: var(--button-bg);
       color: inherit;
       cursor: pointer;
+      user-select: none;
+      transition: all 0.2s ease;
       min-width: 120px;
       height: 36px;
-      box-sizing: border-box;
       text-align: center;
-      transition: all 0.2s ease;
     }
 
     .controls button:hover,
     .controls input[type="text"]:focus {
       background-color: var(--button-hover-bg);
       outline: none;
+      border-color: #888;
     }
 
     .controls button:active {
@@ -125,15 +129,13 @@
 
     .table-container {
       width: 1450px;
-      max-width: 100%;
       overflow-x: auto;
       overflow-y: auto;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.075);
+      max-height: calc(100vh - 200px);
     }
 
     table {
-      width: 100%;
+      width: 1450px;
       border-collapse: collapse;
       background-color: white;
       font-size: var(--table-font-size);
@@ -150,6 +152,14 @@
       background-color: #eef4fb;
       font-weight: bold;
       user-select: none;
+    }
+
+    .thick-group {
+      border: 2px solid #333;
+    }
+
+    .thick-group td, .thick-group th {
+      border: 1px solid #ccc;
     }
 
     .centered-header th {
@@ -181,43 +191,8 @@
       padding: 20px;
       font-size: 13px;
       color: #999;
-      margin-top: 40px;
+      margin-top: 20px;
       user-select: none;
-    }
-
-    #extraControls {
-      display: flex;
-      gap: 10px;
-    }
-
-    @media (max-width: 768px) {
-      header h1 {
-        font-size: var(--mobile-header-font);
-        width: 100%;
-      }
-
-      .controls {
-        flex-direction: column;
-        align-items: stretch;
-        width: 100%;
-        position: sticky;
-        top: 0;
-      }
-
-      .controls button,
-      .controls input[type="text"] {
-        width: 100%;
-      }
-
-      #extraControls {
-        display: none;
-        flex-direction: column;
-        width: 100%;
-      }
-
-      .mobile-toggle {
-        display: block;
-      }
     }
 
     @media print {
@@ -239,93 +214,151 @@
         border: 1px solid black;
       }
     }
+
+    @media (max-width: 768px) {
+      header {
+        font-size: 18px;
+        text-align: center;
+      }
+
+      .controls {
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+      }
+
+      .controls button,
+      .controls input[type="text"] {
+        width: 100%;
+        min-width: unset;
+        height: 40px;
+      }
+
+      .table-container,
+      table {
+        width: 100%;
+      }
+
+      .main-content {
+        padding-top: 110px;
+      }
+    }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="logo"><img src="logo.png" alt="Logo" /></div>
-    <h1>SPECIAL MACHINE DATA</h1>
-  </header>
+<header>
+  <div class="logo"><img src="logo.png" alt="Logo"></div>
+  <h1>SPECIAL MACHINE DATA</h1>
+</header>
 
-  <div class="main-content">
-    <div class="controls">
-      <button onclick="goHome()">🏠 Home</button>
-      <button onclick="toggleDark()" id="modeToggle">🌓 Dark</button>
-      <input type="text" id="search" placeholder="Search..." oninput="filterTable()" />
-      <button onclick="toggleControls()" id="toggleControlsBtn" class="mobile-toggle">➖ Minimize</button>
-      <div id="extraControls">
-        <button onclick="exportTable()">⬇ Excel</button>
-        <button onclick="exportPDF()">🖨️ PDF</button>
-      </div>
-    </div>
-
-    <div class="table-container" id="pdfArea">
-      <table id="machineTable">
-        <!-- Table content here (Machine info rows, checking rows, etc.) -->
-      </table>
-    </div>
+<div class="main-content">
+  <div class="controls" id="controlBar">
+    <button onclick="goHome()">🏠 Home</button>
+    <button onclick="exportTable()">⬇ Excel</button>
+    <button onclick="exportPDF()">🖨️ PDF</button>
+    <button onclick="toggleDark()" id="themeBtn">🌓 Dark</button>
+    <input type="text" id="search" placeholder="Search..." oninput="filterTable()" />
+    <button class="toggle" onclick="toggleControls()">🔽 Minimize</button>
   </div>
 
-  <footer>
-    &copy; 2025 Israjul Riad | Smart Machine Monitoring
-  </footer>
+  <div class="table-container" id="pdfArea">
+    <table id="machineTable">
+      <tbody class="thick-group">
+        <tr>
+          <th class="label-cell">Machine Number</th><td></td>
+          <th class="label-cell">Machine Type</th><td colspan="2"></td>
+        </tr>
+        <tr>
+          <th class="label-cell">Section</th><td></td>
+          <th class="label-cell">Line No</th><td colspan="2"></td>
+        </tr>
+      </tbody>
+      <tr><td colspan="5"></td></tr>
+      <tbody class="thick-group">
+        <tr>
+          <th class="label-cell">Style Number</th><td></td>
+          <th class="label-cell">Operation Name</th><td colspan="2"></td>
+        </tr>
+        <tr>
+          <th class="label-cell">Seam Width</th><td></td>
+          <th class="label-cell">Trim</th><td colspan="2"></td>
+        </tr>
+      </tbody>
+      <tr><td colspan="5"></td></tr>
+      <tbody class="thick-group">
+        <tr class="centered-header">
+          <th class="label-cell">No</th>
+          <th class="label-cell">Checking Point</th>
+          <th class="label-cell">Yes</th>
+          <th class="label-cell">No</th>
+          <th class="label-cell">Remarks</th>
+        </tr>
+        <tr class="check-row"><td>1</td><td>All parts of the machines are tight?</td><td></td><td></td><td></td></tr>
+        <tr class="check-row"><td>2</td><td>Machine table clean?</td><td></td><td></td><td></td></tr>
+        <tr class="check-row"><td>3</td><td>All safety guard are available?</td><td></td><td></td><td></td></tr>
+        <tr class="check-row"><td>4</td><td>All wire and pipes are arranged?</td><td></td><td></td><td></td></tr>
+        <tr class="check-row"><td>5</td><td>Any oil leakage?</td><td></td><td></td><td></td></tr>
+        <tr class="check-row"><td>6</td><td>Vibration is normal?</td><td></td><td></td><td></td></tr>
+        <tr class="check-row"><td>7</td><td>All screws tightened?</td><td></td><td></td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
 
-  <script>
-    function goHome() {
-      window.location.href = "dashboard.html";
+<footer>&copy; 2025 Israjul Riad | Smart Machine Monitoring</footer>
+
+<script>
+  function goHome() {
+    window.location.href = "dashboard.html";
+  }
+
+  function filterTable() {
+    const search = document.getElementById("search").value.toLowerCase();
+    const rows = document.querySelectorAll("#machineTable .check-row");
+    rows.forEach(row => {
+      const cell = row.cells[1].textContent.toLowerCase();
+      row.style.display = cell.includes(search) ? "" : "none";
+    });
+  }
+
+  function exportTable() {
+    const table = document.getElementById("machineTable");
+    const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
+    const timestamp = new Date().toISOString().slice(0,19).replace(/:/g,"-");
+    XLSX.writeFile(wb, `machine_data_${timestamp}.xlsx`);
+  }
+
+  async function exportPDF() {
+    const element = document.getElementById("pdfArea");
+    const canvas = await html2canvas(element, { scale: 2, scrollY: -window.scrollY });
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jspdf.jsPDF('l', 'pt', 'a4');
+    const margin = 20;
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (canvas.height * (pdfWidth - margin * 2)) / canvas.width;
+    pdf.addImage(imgData, 'PNG', margin, margin, pdfWidth - margin * 2, pdfHeight);
+    pdf.save(`machine_data_${new Date().toISOString().slice(0,19).replace(/:/g,"-")}.pdf`);
+  }
+
+  function toggleDark() {
+    document.body.classList.toggle("dark");
+    const isDark = document.body.classList.contains("dark");
+    localStorage.setItem("darkMode", isDark ? "1" : "0");
+    document.getElementById("themeBtn").innerText = isDark ? "🌞 Light" : "🌓 Dark";
+  }
+
+  function toggleControls() {
+    document.getElementById("controlBar").classList.toggle("minimized");
+  }
+
+  window.onload = function () {
+    if (localStorage.getItem("darkMode") === "1") {
+      document.body.classList.add("dark");
+      document.getElementById("themeBtn").innerText = "🌞 Light";
     }
+  };
+</script>
 
-    function filterTable() {
-      const value = document.getElementById("search").value.toLowerCase();
-      const rows = document.querySelectorAll("#machineTable .check-row");
-      rows.forEach(row => {
-        const text = row.cells[1].textContent.toLowerCase();
-        row.style.display = text.includes(value) ? "" : "none";
-      });
-    }
-
-    function toggleDark() {
-      const body = document.body;
-      const isDark = body.classList.toggle("dark");
-      document.getElementById("modeToggle").textContent = isDark ? "🌞 Light" : "🌓 Dark";
-      localStorage.setItem("darkMode", isDark ? "1" : "0");
-    }
-
-    function toggleControls() {
-      const panel = document.getElementById("extraControls");
-      const btn = document.getElementById("toggleControlsBtn");
-      const isVisible = panel.style.display !== "none";
-      panel.style.display = isVisible ? "none" : "flex";
-      btn.textContent = isVisible ? "➕ Maximize" : "➖ Minimize";
-    }
-
-    async function exportPDF() {
-      const area = document.getElementById("pdfArea");
-      const canvas = await html2canvas(area, { scale: 2 });
-      const pdf = new jspdf.jsPDF("l", "pt", "a4");
-      const width = pdf.internal.pageSize.getWidth();
-      const height = (canvas.height * width) / canvas.width;
-      pdf.addImage(canvas.toDataURL("image/png"), "PNG", 0, 0, width, height);
-      pdf.save("machine_data.pdf");
-    }
-
-    function exportTable() {
-      const table = document.getElementById("machineTable");
-      const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
-      const filename = `machine_data_${new Date().toISOString().slice(0,19).replace(/:/g,"-")}.xlsx`;
-      XLSX.writeFile(wb, filename);
-    }
-
-    window.onload = function () {
-      if (localStorage.getItem("darkMode") === "1") {
-        document.body.classList.add("dark");
-        document.getElementById("modeToggle").textContent = "🌞 Light";
-      }
-      if (window.innerWidth < 768) {
-        document.getElementById("extraControls").style.display = "none";
-      }
-    };
-  </script>
 </body>
 </html>
