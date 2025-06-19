@@ -9,7 +9,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     :root {
-      --header-font-size: 22px;
+      --header-font-size: 18px;
       --controls-font-size: 14px;
       --table-font-size: 14px;
       --bg: #f9f9f9;
@@ -258,8 +258,7 @@
     <button onclick="exportTable()">⬇ Excel</button>
     <button onclick="exportPDF()">🖨️ PDF</button>
     <button onclick="toggleDark()" id="themeBtn">🌓 Dark</button>
-    <input type="text" id="search" placeholder="Search..." oninput="filterTable()" />
-    <button class="toggle" onclick="toggleControls()">🔽 Minimize</button>
+        <button class="toggle" onclick="toggleControls()">🔽 Minimize</button>
   </div>
 
   <div class="table-container" id="pdfArea">
