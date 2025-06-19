@@ -2,249 +2,353 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Machine Data</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     :root {
-      --brand-primary: #003366;
-      --brand-accent: #ffcc00;
+      --header-font-size: 22px;
+      --controls-font-size: 14px;
+      --table-font-size: 14px;
       --bg: #f9f9f9;
-      --text: #222;
-      --header-bg: var(--brand-primary);
+      --text: #333;
+      --header: #004080;
+      --table-header: #036;
       --highlight: #e6f0fa;
-      --button-bg: var(--brand-primary);
-      --button-hover: #005bb5;
-      --button-active: #004a99;
+      --button-bg: #cce5ff;
+      --button-hover-bg: #99ccff;
+      --button-active-bg: #66b2ff;
     }
+
     body.dark {
       --bg: #121212;
       --text: #f0f0f0;
-      --header-bg: #1a1a1a;
+      --header: #1a1a1a;
+      --table-header: #1a3a5a;
       --highlight: #1e2b40;
       --button-bg: #334466;
-      --button-hover: #556688;
-      --button-active: #7799aa;
+      --button-hover-bg: #556688;
+      --button-active-bg: #7799aa;
     }
+
     body {
-      margin:0;
-      padding:0;
-      font-family:'Inter',sans-serif;
-      background:var(--bg);
-      color:var(--text);
-      transition:0.3s;
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+      transition: background 0.3s, color 0.3s;
     }
+
     header {
-      position:fixed; top:0; left:0; right:0;
-      background:var(--header-bg);
-      color:#fff; height:120px;
-      display:flex; align-items:center; justify-content:center;
-      z-index:1000;
-      box-shadow:0 4px 8px rgba(0,0,0,0.15);
+      background: var(--header);
+      color: white;
+      padding: 20px;
+      box-sizing: border-box;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 10;
+      font-size: var(--header-font-size);
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    header .logo {
-      position:absolute; left:20px; display:flex; align-items:center;
+
+    .logo {
+      position: absolute;
+      top: 10px;
+      left: 10px;
     }
-    header .logo img { height:50px; }
-    header .title { font-size:26px; font-weight:600; }
-    .controls-wrap {
-      position:sticky; top:120px;
-      background:var(--bg); padding:10px 20px;
-      display:flex; flex-wrap:wrap; gap:10px;
-      align-items:center;
-      box-shadow:0 2px 10px rgba(0,0,0,0.05);
-      z-index:900;
+
+    .logo img {
+      height: 60px;
     }
-    .controls-wrap > * {
-      padding:8px 12px; border-radius:8px;
-      border:1px solid #ccc; font-size:14px;
-      transition:background 0.2s, transform 0.2s;
+
+    .main-content {
+      padding: 20px;
+      padding-top: 140px;
+      width: 100%;
+      box-sizing: border-box;
+      max-width: 1400px;
+      margin: 0 auto;
     }
-    button, .tab-button {
-      background:var(--button-bg); color:#fff; cursor:pointer;
-      box-shadow:0 2px 4px rgba(0,0,0,0.1);
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      font-size: var(--controls-font-size);
     }
-    button:hover, .tab-button:hover { background:var(--button-hover); transform:translateY(-2px); }
-    button:active, .tab-button:active { background:var(--button-active); transform:translateY(0); }
-    input, select {
-      background:#fff; color:var(--text);
-      min-width:140px;
+
+    .controls button,
+    .controls input[type="text"],
+    .controls select {
+      padding: 10px;
+      font-size: inherit;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      width: 100%;
+      background-color: var(--button-bg);
+      color: inherit;
+      cursor: pointer;
+      user-select: none;
+      box-sizing: border-box;
+      transition: all 0.2s ease;
     }
-    .tabs {
-      display:flex; gap:8px;
+
+    .controls button:hover,
+    .controls input[type="text"]:focus,
+    .controls select:focus {
+      background-color: var(--button-hover-bg);
+      outline: none;
+      border-color: #888;
     }
-    .tab-button.active {
-      background:var(--brand-accent); color:#000;
-      animation:pop 0.2s forwards;
+
+    .controls button:active {
+      background-color: var(--button-active-bg);
+      transform: scale(0.98);
     }
-    @keyframes pop {0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
-    .tab-content { display:none; padding:20px 0; }
-    .tab-content.active { display:block; }
+
     .table-container {
-      overflow-x:auto;
-      background:#fff;
-      border:1px solid #ccc;
-      border-radius:8px;
-      padding:10px;
-      margin:auto;
-      width:var(--table-width,95%);
-      height:var(--table-height,auto);
+      overflow-x: auto;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.075);
     }
-    table { width:100%; border-collapse:collapse; font-size:14px; }
-    th, td { padding:8px; border:1px solid #ccc; white-space:nowrap; text-align:left; }
-    th { background:#eef4fb; font-weight:600; }
-    .thick-group { border:2px solid #333; }
-    .thick-group th, .thick-group td { border:1px solid #ccc; }
-    .centered-header th { text-align:center; }
-    tbody tr:nth-child(even) { background:#f8f8f8; }
-    tbody tr:hover { background:var(--highlight); }
-    footer{ text-align:center; padding:20px; font-size:13px; color:#999; margin-top:40px;}
-    @media(max-width:768px){
-      .controls-wrap, .tabs{ flex-direction:column; align-items:flex-start;}
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+      font-size: var(--table-font-size);
     }
-    .setting-group{margin-bottom:12px;}
-    label{display:block;margin-bottom:4px;font-weight:600;}
-    input[type=number], input[type=color]{width:120px;}
+
+    th, td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .label-cell {
+      background-color: #eef4fb;
+      font-weight: bold;
+    }
+
+    .thick-group {
+      border: 2px solid #333;
+    }
+
+    .thick-group td, .thick-group th {
+      border: 1px solid #ccc;
+    }
+
+    .centered-header th {
+      text-align: center;
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: #f8f8f8;
+    }
+
+    tbody tr:hover {
+      background-color: var(--highlight);
+    }
+
+    body.dark table,
+    body.dark th,
+    body.dark td {
+      color: white;
+      background-color: #1e1e1e;
+      border-color: #444;
+    }
+
+    body.dark .label-cell {
+      background-color: #2a3b4d;
+    }
+
+    @media (max-width: 768px) {
+      .controls {
+        flex-wrap: wrap;
+      }
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 13px;
+      color: #999;
+      margin-top: 40px;
+    }
+
+    @media print {
+      header, footer, .controls {
+        display: none;
+      }
+
+      .main-content {
+        padding-top: 20px;
+      }
+
+      body {
+        background: white;
+        color: black;
+      }
+
+      table {
+        width: 100%;
+        border: 1px solid black;
+      }
+    }
   </style>
 </head>
 <body>
-  <header>
-    <div class="logo"><img src="logo.png" alt="Logo"></div>
-    <div class="title">SPECIAL MACHINE DATA</div>
-  </header>
 
-  <div class="controls-wrap">
+<header>
+  <div class="logo">
+    <img src="logo.png" alt="Logo" />
+  </div>
+  <h1>SPECIAL MACHINE DATA</h1>
+</header>
+
+<div class="main-content">
+  <div class="controls">
     <button onclick="goHome()">🏠 Home</button>
     <input type="text" id="search" placeholder="Search..." oninput="filterTable()" />
-    <button onclick="exportExcel()">⬇ Excel</button>
-    <button onclick="exportPDF()">📄 PDF</button>
-    <button onclick="toggleDark()">🌓 Dark Mode</button>
-    <div class="tabs">
-      <button class="tab-button active" onclick="showTab('tab-machine',this)">Machine Data</button>
-      <button class="tab-button" onclick="showTab('tab-reports',this)">Reports</button>
-      <button class="tab-button" onclick="showTab('tab-settings',this)">Settings</button>
-    </div>
+   
+    <button onclick="exportTable()">⬇ Excel</button>
+    <button onclick="toggleDark()">🌓 Dark/Light</button>
+      </div>
+
+  <div class="table-container">
+    <table id="machineTable">
+      <!-- Grouped rows 1 & 2 with thick outer border -->
+      <tbody class="thick-group">
+        <tr>
+          <th class="label-cell" style="width: 15%;">Machine Number</th>
+          <td style="width: 10%;"></td>
+          <th class="label-cell" style="width: 15%;">Machine Type</th>
+          <td colspan="2" style="width: 60%;"></td>
+        </tr>
+        <tr>
+          <th class="label-cell">Section</th>
+          <td></td>
+          <th class="label-cell">Line No</th>
+          <td colspan="2"></td>
+        </tr>
+      </tbody>
+
+      <!-- Empty row -->
+      <tr><td colspan="5"></td></tr>
+
+      <!-- Grouped rows 4 & 5 with thick outer border -->
+      <tbody class="thick-group">
+        <tr>
+          <th class="label-cell">Style Number</th>
+          <td></td>
+          <th class="label-cell">Operation Name</th>
+          <td colspan="2"></td>
+        </tr>
+        <tr>
+          <th class="label-cell">Seam Width</th>
+          <td></td>
+          <th class="label-cell">Trim</th>
+          <td colspan="2"></td>
+        </tr>
+      </tbody>
+
+      <!-- Empty row -->
+      <tr><td colspan="5"></td></tr>
+
+      <!-- Grouped header + check rows with thick outer border -->
+      <tbody class="thick-group">
+        <tr class="centered-header">
+          <th class="label-cell" style="width: 2%;">No</th>
+          <th class="label-cell" style="width: 28%;">Checking Point</th>
+          <th class="label-cell" style="width: 26%;">Yes</th>
+          <th class="label-cell" style="width: 26%;">No</th>
+          <th class="label-cell" style="width: 18%;">Remarks</th>
+        </tr>
+        <tr class="check-row">
+          <td>1</td>
+          <td>All parts of the machines are tight?</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="check-row">
+          <td>2</td>
+          <td>Machine table clean?</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="check-row">
+          <td>3</td>
+          <td>All safety guard are available?</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="check-row">
+          <td>4</td>
+          <td>All wire and pipes are arranged?</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
   </div>
+</div>
 
-  <!-- MACHINE DATA TAB -->
-  <div id="tab-machine" class="tab-content active">
-    <div class="table-container">
-      <table id="machineTable">
-        <tbody class="thick-group">
-          <tr><th style="width:15%">Machine Number</th><td style="width:8%"></td><th style="width:15%">Machine Type</th><td colspan="2" style="width:62%"></td></tr>
-          <tr><th>Section</th><td></td><th>Line No</th><td colspan="2"></td></tr>
-        </tbody>
-        <tr><td colspan="5"></td></tr>
-        <tbody class="thick-group">
-          <tr><th>Style Number</th><td></td><th>Operation Name</th><td colspan="2"></td></tr>
-          <tr><th>Seam Width</th><td></td><th>Trim</th><td colspan="2"></td></tr>
-        </tbody>
-        <tr><td colspan="5"></td></tr>
-        <tbody class="thick-group">
-          <tr class="centered-header"><th style="width:4%">No</th><th style="width:48%">Checking Point</th><th style="width:16%">Yes</th><th style="width:16%">No</th><th style="width:16%">Remarks</th></tr>
-          <tr class="check-row"><td>1</td><td>All parts of the machines are tight?</td><td></td><td></td><td></td></tr>
-          <tr class="check-row"><td>2</td><td>Machine table clean?</td><td></td><td></td><td></td></tr>
-          <tr class="check-row"><td>3</td><td>All safety guard are available?</td><td></td><td></td><td></td></tr>
-          <tr class="check-row"><td>4</td><td>All wire and pipes are arranged?</td><td></td><td></td><td></td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+<footer>
+  &copy; 2025 Israjul Riad | Smart Machine Monitoring
+</footer>
 
-  <!-- REPORTS TAB -->
-  <div id="tab-reports" class="tab-content">
-    <p>Reports section coming soon...</p>
-  </div>
+<script>
+  function goHome() {
+    window.location.href = "dashboard.html";
+  }
 
-  <!-- SETTINGS TAB -->
-  <div id="tab-settings" class="tab-content">
-    <div class="setting-group">
-      <label>Table Width (%)</label>
-      <input type="number" id="set-table-width" min="50" max="100"> 
-    </div>
-    <div class="setting-group">
-      <label>Table Height (px or auto)</label>
-      <input type="text" id="set-table-height" placeholder="e.g., 500 or auto">
-    </div>
-    <div class="setting-group">
-      <label>Column Width (%)</label>
-      <input type="number" id="set-col-width" min="5" max="50">
-    </div>
-    <div class="setting-group">
-      <label>Row Height (px)</label>
-      <input type="number" id="set-row-height" min="20" max="100">
-    </div>
-    <div class="setting-group">
-      <label>Background Color</label>
-      <input type="color" id="set-bg-color">
-    </div>
-    <button onclick="saveSettings()">💾 Save Settings</button>
-  </div>
+  function filterTable() {
+    const search = document.getElementById("search").value.toLowerCase();
+    const rows = document.querySelectorAll("#machineTable .check-row");
+    rows.forEach(row => {
+      const rowText = row.textContent.toLowerCase();
+      row.style.display = rowText.includes(search) ? "" : "none";
+    });
+  }
 
-  <footer>&copy; 2025 Israjul Riad | Smart Machine Monitoring</footer>
+  function exportTable() {
+    const table = document.getElementById("machineTable");
+    if (!table || !table.innerHTML.trim()) {
+      alert("No data to export!");
+      return;
+    }
+    const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
+    XLSX.writeFile(wb, "machine_data.xlsx");
+  }
 
-  <script>
-    function goHome(){ location.href='dashboard.html'; }
-    function filterTable(){
-      let v=document.getElementById('search').value.toLowerCase();
-      document.querySelectorAll('#machineTable .check-row')
-        .forEach(r=>r.style.display = r.textContent.toLowerCase().includes(v)? '' : 'none');
+  function toggleDark() {
+    document.body.classList.toggle("dark");
+    localStorage.setItem("darkMode", document.body.classList.contains("dark") ? "1" : "0");
+  }
+
+  function logoutAdmin() {
+    localStorage.removeItem("isAdmin");
+    alert("Logged out from admin mode.");
+    location.reload();
+  }
+
+  window.onload = function () {
+    if (localStorage.getItem("darkMode") === "1") {
+      document.body.classList.add("dark");
     }
-    function exportExcel(){
-      let wb=XLSX.utils.table_to_book(document.getElementById('machineTable'));
-      XLSX.writeFile(wb,'machine_data.xlsx');
-    }
-    async function exportPDF(){
-      const { jsPDF }=window.jspdf;
-      let pdf=new jsPDF('landscape');
-      await pdf.html(document.getElementById('machineTable'),{ x:10,y:10, callback:doc=>doc.save('machine_data.pdf') });
-    }
-    function toggleDark(){
-      document.body.classList.toggle('dark');
-      localStorage.setItem('darkMode', document.body.classList.contains('dark') ? '1':'0');
-    }
-    function showTab(id,btn){
-      document.querySelectorAll('.tab-button').forEach(b=>b.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
-      btn.classList.add('active'); document.getElementById(id).classList.add('active');
-    }
-    function loadSettings(){
-      let s=JSON.parse(localStorage.getItem('machineSettings')||'{}');
-      if(s.width) document.documentElement.style.setProperty('--table-width', s.width+'%');
-      if(s.height) document.documentElement.style.setProperty('--table-height', s.height);
-      if(s.colWidth) setAllColWidth(s.colWidth+'%');
-      if(s.rowHeight) setAllRowHeight(s.rowHeight+'px');
-      if(s.bgColor) document.documentElement.style.setProperty('--bg', s.bgColor);
-      ['table-width','table-height','col-width','row-height','bg-color'].forEach(k=>{
-        let el=document.getElementById('set-'+k);
-        if(el && s[k.replace('-','')]) el.value= s[k.replace('-','')];
-      });
-    }
-    function saveSettings(){
-      let s={
-        width: document.getElementById('set-table-width').value,
-        height: document.getElementById('set-table-height').value,
-        colWidth: document.getElementById('set-col-width').value,
-        rowHeight: document.getElementById('set-row-height').value,
-        bgColor: document.getElementById('set-bg-color').value
-      };
-      localStorage.setItem('machineSettings', JSON.stringify(s));
-      loadSettings();
-      alert('Settings saved!');
-    }
-    function setAllColWidth(v){
-      document.querySelectorAll('#machineTable th, #machineTable td').forEach(c=>c.style.width='');
-      document.querySelectorAll('#machineTable th').forEach(c=>c.style.width=v);
-    }
-    function setAllRowHeight(v){
-      document.querySelectorAll('#machineTable tbody tr').forEach(r=>r.style.height=v);
-    }
-    window.onload=function(){
-      if(localStorage.getItem('darkMode')==='1') document.body.classList.add('dark');
-      loadSettings();
-    }
-  </script>
+  };
+</script>
+
 </body>
 </html>
