@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Machine Data</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -33,12 +33,14 @@
       --button-active-bg: #7799aa;
     }
 
-    body {
+    html, body {
+      width: 100%;
+      overflow-x: hidden;
+      margin: 0;
+      padding: 0;
       font-family: "Segoe UI", Roboto, Arial, sans-serif;
       background-color: var(--bg);
       color: var(--text);
-      margin: 0;
-      padding: 0;
       transition: background 0.3s, color 0.3s;
     }
 
@@ -73,17 +75,16 @@
 
     .main-content {
       padding: 20px;
-      padding-top: 80px; /* header + controls height + spacing */
+      padding-top: 80px;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
 
-    /* Controls: fixed width on desktop, full width on smaller */
     .controls {
       position: sticky;
-      top: 80px; /* just below header */
+      top: 80px;
       background: var(--bg);
       z-index: 19;
       padding: 10px 0;
@@ -127,8 +128,9 @@
     }
 
     .table-container {
-      width: 900px;
-      overflow-x: auto;
+      width: 100%;
+      max-width: 900px;
+      overflow-x: hidden;
       border-radius: 8px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.075);
       user-select: text;
@@ -136,6 +138,7 @@
 
     table {
       width: 900px;
+      min-width: 900px;
       border-collapse: collapse;
       background-color: white;
       font-size: var(--table-font-size);
@@ -215,8 +218,17 @@
       }
     }
 
-    /* Responsive tweaks for smaller screens */
+    @media (max-width: 600px) {
+      .main-content {
+        transform: scale(0.75);
+        transform-origin: top center;
+      }
 
+      .controls {
+        transform: scale(0.85);
+        transform-origin: top center;
+      }
+    }
   </style>
 </head>
 <body>
@@ -239,7 +251,6 @@
 
   <div class="table-container" id="pdfArea" role="region" aria-label="Machine data table">
     <table id="machineTable" aria-describedby="tableDescription" role="table" summary="Special machine data and inspection checklist">
-
       <tbody class="thick-group">
         <tr>
           <th class="label-cell" style="width: 15%;">Machine Number</th>
@@ -328,7 +339,7 @@
     const search = document.getElementById("search").value.toLowerCase();
     const rows = document.querySelectorAll("#machineTable .check-row");
     rows.forEach(row => {
-      const checkPointCell = row.cells[1]; // second column: Checking Point
+      const checkPointCell = row.cells[1];
       const text = checkPointCell.textContent.toLowerCase();
       row.style.display = text.includes(search) ? "" : "none";
     });
@@ -350,12 +361,10 @@
     try {
       const canvas = await html2canvas(element, { scale: 2, scrollY: -window.scrollY });
       const imgData = canvas.toDataURL("image/png");
-
       const pdf = new jspdf.jsPDF('l', 'pt', 'a4');
       const margin = 20;
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = (canvas.height * (pdfWidth - margin * 2)) / canvas.width;
-
       pdf.addImage(imgData, 'PNG', margin, margin, pdfWidth - margin * 2, pdfHeight);
       pdf.save(`machine_data_${new Date().toISOString().slice(0,19).replace(/:/g,"-")}.pdf`);
     } catch (e) {
