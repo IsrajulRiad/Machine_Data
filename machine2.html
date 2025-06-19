@@ -217,14 +217,10 @@
   <div class="controls">
     <button onclick="goHome()">🏠 Home</button>
     <input type="text" id="search" placeholder="Search..." oninput="filterTable()" />
-    <select id="statusFilter" onchange="filterTable()">
-      <option value="">All Status</option>
-      <option value="NPI">NPI</option>
-    </select>
+   
     <button onclick="exportTable()">⬇ Excel</button>
     <button onclick="toggleDark()">🌓 Dark/Light</button>
-    <button onclick="logoutAdmin()">Logout</button>
-  </div>
+      </div>
 
   <div class="table-container">
     <table id="machineTable">
@@ -269,11 +265,11 @@
       <!-- Grouped header + check rows with thick outer border -->
       <tbody class="thick-group">
         <tr class="centered-header">
-          <th class="label-cell" style="width: 4%;">No</th>
-          <th class="label-cell" style="width: 48%;">Checking Point</th>
+          <th class="label-cell" style="width: 1%;">No</th>
+          <th class="label-cell" style="width: 33%;">Checking Point</th>
           <th class="label-cell" style="width: 16%;">Yes</th>
           <th class="label-cell" style="width: 16%;">No</th>
-          <th class="label-cell" style="width: 16%;">Remarks</th>
+          <th class="label-cell" style="width: 34%;">Remarks</th>
         </tr>
         <tr class="check-row">
           <td>1</td>
