@@ -218,11 +218,15 @@
     overflow-x: hidden;
   }
 
-  .page-wrapper {
-    transform: scale(0.72); /* Shrinks whole layout to fit narrow phones */
-    transform-origin: top center;
-    width: 214%; /* (100 / 0.42) */
-  }
+.page-wrapper {
+  transform: scale(0.75);
+  transform-origin: top center;
+  width: 214%;
+  margin: 0 auto;              /* center horizontally */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
   header {
     height: 60px;
@@ -241,7 +245,7 @@
   .controls input[type="text"] {
     min-width: 60px;
     padding: 5px;
-    font-size: 12px;
+    fot-size: 12px;
   }
 
   h1 {
