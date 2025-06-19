@@ -45,6 +45,7 @@
       background: var(--header);
       color: white;
       padding: 20px;
+      box-sizing: border-box;
       position: fixed;
       top: 0;
       left: 0;
@@ -64,14 +65,15 @@
     }
 
     .logo img {
-      height: 60px;
+      height: 50px;
     }
 
     .main-content {
       padding: 20px;
-      padding-top: 140px;
-      max-width: 1200px;
+      padding-top: 100px; /* header height + some margin */
+      max-width: 1000px;
       margin: 0 auto;
+      box-sizing: border-box;
     }
 
     .controls {
@@ -80,6 +82,9 @@
       gap: 10px;
       margin-bottom: 20px;
       font-size: var(--controls-font-size);
+      max-width: 1000px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .controls button,
@@ -92,6 +97,8 @@
       color: inherit;
       cursor: pointer;
       transition: all 0.2s ease;
+      flex-grow: 1;
+      min-width: 120px;
     }
 
     .controls button:hover {
@@ -107,6 +114,9 @@
       overflow-x: auto;
       border-radius: 8px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.075);
+      max-width: 1000px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     table {
