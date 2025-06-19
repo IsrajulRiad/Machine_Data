@@ -9,7 +9,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     :root {
-      --header-font-size: 14px;
+      --header-font-size: 22px;
       --controls-font-size: 14px;
       --table-font-size: 14px;
       --bg: #f9f9f9;
@@ -56,6 +56,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      text-align: center;
     }
 
     .logo {
@@ -253,12 +254,13 @@
 </header>
 
 <div class="main-content">
-  <div class="controls" id="controlBar">
+  <div class="controls minimized" id="controlBar">
     <button onclick="goHome()">🏠 Home</button>
     <button onclick="exportTable()">⬇ Excel</button>
     <button onclick="exportPDF()">🖨️ PDF</button>
     <button onclick="toggleDark()" id="themeBtn">🌓 Dark</button>
-        <button class="toggle" onclick="toggleControls()">🔽 Minimize</button>
+    <input type="text" id="search" placeholder="Search..." oninput="filterTable()" />
+    <button class="toggle" onclick="toggleControls()">🔽 Minimize</button>
   </div>
 
   <div class="table-container" id="pdfArea">
@@ -348,13 +350,18 @@
   }
 
   function toggleControls() {
-    document.getElementById("controlBar").classList.toggle("minimized");
+    const bar = document.getElementById("controlBar");
+    bar.classList.toggle("minimized");
+    localStorage.setItem("controlsMinimized", bar.classList.contains("minimized") ? "1" : "0");
   }
 
   window.onload = function () {
     if (localStorage.getItem("darkMode") === "1") {
       document.body.classList.add("dark");
       document.getElementById("themeBtn").innerText = "🌞 Light";
+    }
+    if (localStorage.getItem("controlsMinimized") !== "0") {
+      document.getElementById("controlBar").classList.add("minimized");
     }
   };
 </script>
