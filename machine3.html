@@ -215,8 +215,30 @@
       }
     }
 
-    
-    
+    /* Responsive tweaks for smaller screens */
+    @media (max-width: 1500px) {
+      .controls,
+      .table-container,
+      table {
+        width: 100%;
+        max-width: 100%;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .controls button,
+      .controls input[type="text"] {
+        flex: none;
+        width: 100%;
+      }
+      table {
+        font-size: 12px;
+      }
+    }
   </style>
 </head>
 <body>
