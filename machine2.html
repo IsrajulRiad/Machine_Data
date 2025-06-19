@@ -9,7 +9,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     :root {
-      --header-font-size: 22px;
+      --header-font-size: 20px;
       --controls-font-size: 14px;
       --table-font-size: 14px;
       --bg: #f9f9f9;
@@ -20,6 +20,7 @@
       --button-bg: #cce5ff;
       --button-hover-bg: #99ccff;
       --button-active-bg: #66b2ff;
+      --button-height: 38px;
     }
 
     body.dark {
@@ -57,6 +58,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      text-align: center;
     }
 
     .logo {
@@ -73,24 +75,23 @@
 
     .main-content {
       padding: 20px;
-      padding-top: 80px; /* header + controls height + spacing */
+      padding-top: 100px;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
 
-    /* Controls: fixed width on desktop, full width on smaller */
     .controls {
       position: sticky;
-      top: 80px; /* just below header */
+      top: 80px;
       background: var(--bg);
       z-index: 19;
       padding: 10px 0;
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
       font-size: var(--controls-font-size);
       width: 1450px;
       box-sizing: border-box;
@@ -98,19 +99,24 @@
       user-select: none;
     }
 
+    .controls.minimized {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
     .controls button,
     .controls input[type="text"] {
-      padding: 10px;
+      padding: 6px 8px;
+      height: var(--button-height);
       font-size: inherit;
       border: 1px solid #ccc;
       border-radius: 6px;
       background-color: var(--button-bg);
       color: inherit;
       cursor: pointer;
-      user-select: none;
       transition: all 0.2s ease;
-      flex: 1;
       min-width: 120px;
+      flex: 1;
       text-align: center;
     }
 
@@ -126,12 +132,17 @@
       transform: scale(0.98);
     }
 
+    .toggle-btn {
+      display: none;
+      margin: 0 auto;
+      margin-bottom: 10px;
+    }
+
     .table-container {
       width: 1450px;
       overflow-x: auto;
       border-radius: 8px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.075);
-      user-select: text;
     }
 
     table {
@@ -196,7 +207,7 @@
     }
 
     @media print {
-      header, footer, .controls {
+      header, footer, .controls, .toggle-btn {
         display: none;
       }
 
@@ -215,28 +226,35 @@
       }
     }
 
-    /* Responsive tweaks for smaller screens */
-    @media (max-width: 1500px) {
-      .controls,
-      .table-container,
-      table {
-        width: 100%;
-        max-width: 100%;
-      }
-    }
-
     @media (max-width: 768px) {
+      header {
+        font-size: 18px;
+      }
+
+      .toggle-btn {
+        display: block;
+      }
+
       .controls {
         flex-direction: column;
-        align-items: stretch;
+        width: 100% !important;
       }
+
       .controls button,
       .controls input[type="text"] {
-        flex: none;
         width: 100%;
+        min-width: unset;
+        max-width: 100%;
       }
+
       table {
         font-size: 12px;
+        width: 100%;
+      }
+
+      .table-container {
+        width: 100%;
+        max-width: 100%;
       }
     }
   </style>
@@ -244,24 +262,22 @@
 <body>
 
 <header>
-  <div class="logo">
-    <img src="logo.png" alt="Logo" />
-  </div>
+  <div class="logo"><img src="logo.png" alt="Logo"></div>
   <h1>SPECIAL MACHINE DATA</h1>
 </header>
 
 <div class="main-content">
-  <div class="controls" role="region" aria-label="Table controls">
-    <button onclick="goHome()" tabindex="0" aria-label="Go to Home">🏠 Home</button>
-    <input type="text" id="search" placeholder="Search Checking Point..." oninput="filterTable()" tabindex="0" aria-label="Search checking points" />
-    <button onclick="exportTable()" tabindex="0" aria-label="Export table data to Excel">⬇ Excel</button>
-    <button onclick="exportPDF()" tabindex="0" aria-label="Export table data to PDF">🖨️ PDF</button>
-    <button onclick="toggleDark()" tabindex="0" aria-label="Toggle dark and light mode">🌓 Dark/Light</button>
+  <button class="toggle-btn" onclick="toggleControls()">🔽 Show/Hide Buttons</button>
+  <div class="controls" id="controls">
+    <button onclick="goHome()">🏠 Home</button>
+    <button onclick="exportTable()">⬇ Excel</button>
+    <button onclick="exportPDF()">🖨️ PDF</button>
+    <button onclick="toggleDark()" id="themeBtn">🌓 Dark</button>
+    <input type="text" id="search" placeholder="Search..." oninput="filterTable()">
   </div>
 
-  <div class="table-container" id="pdfArea" role="region" aria-label="Machine data table">
-    <table id="machineTable" aria-describedby="tableDescription" role="table" summary="Special machine data and inspection checklist">
-
+  <div class="table-container" id="pdfArea">
+    <table id="machineTable">
       <tbody class="thick-group">
         <tr>
           <th class="label-cell" style="width: 15%;">Machine Number</th>
@@ -276,9 +292,7 @@
           <td colspan="2"></td>
         </tr>
       </tbody>
-
       <tr><td colspan="5"></td></tr>
-
       <tbody class="thick-group">
         <tr>
           <th class="label-cell">Style Number</th>
@@ -293,9 +307,7 @@
           <td colspan="2"></td>
         </tr>
       </tbody>
-
       <tr><td colspan="5"></td></tr>
-
       <tbody class="thick-group">
         <tr class="centered-header">
           <th class="label-cell" style="width: 4%;">No</th>
@@ -311,35 +323,12 @@
           <td></td>
           <td></td>
         </tr>
-        <tr class="check-row">
-          <td>2</td>
-          <td>Machine table clean?</td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr class="check-row">
-          <td>3</td>
-          <td>All safety guard are available?</td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr class="check-row">
-          <td>4</td>
-          <td>All wire and pipes are arranged?</td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
       </tbody>
     </table>
   </div>
 </div>
 
-<footer>
-  &copy; 2025 Israjul Riad | Smart Machine Monitoring
-</footer>
+<footer>&copy; 2025 Israjul Riad | Smart Machine Monitoring</footer>
 
 <script>
   function goHome() {
@@ -350,7 +339,7 @@
     const search = document.getElementById("search").value.toLowerCase();
     const rows = document.querySelectorAll("#machineTable .check-row");
     rows.forEach(row => {
-      const checkPointCell = row.cells[1]; // second column: Checking Point
+      const checkPointCell = row.cells[1];
       const text = checkPointCell.textContent.toLowerCase();
       row.style.display = text.includes(search) ? "" : "none";
     });
@@ -363,37 +352,36 @@
       return;
     }
     const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
-    const timestamp = new Date().toISOString().slice(0,19).replace(/:/g,"-");
+    const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, "-");
     XLSX.writeFile(wb, `machine_data_${timestamp}.xlsx`);
   }
 
   async function exportPDF() {
     const element = document.getElementById("pdfArea");
-    try {
-      const canvas = await html2canvas(element, { scale: 2, scrollY: -window.scrollY });
-      const imgData = canvas.toDataURL("image/png");
-
-      const pdf = new jspdf.jsPDF('l', 'pt', 'a4');
-      const margin = 20;
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * (pdfWidth - margin * 2)) / canvas.width;
-
-      pdf.addImage(imgData, 'PNG', margin, margin, pdfWidth - margin * 2, pdfHeight);
-      pdf.save(`machine_data_${new Date().toISOString().slice(0,19).replace(/:/g,"-")}.pdf`);
-    } catch (e) {
-      alert("Failed to export PDF. Try again.");
-      console.error(e);
-    }
+    const canvas = await html2canvas(element, { scale: 2, scrollY: -window.scrollY });
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jspdf.jsPDF('l', 'pt', 'a4');
+    const margin = 20;
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (canvas.height * (pdfWidth - margin * 2)) / canvas.width;
+    pdf.addImage(imgData, 'PNG', margin, margin, pdfWidth - margin * 2, pdfHeight);
+    pdf.save(`machine_data_${new Date().toISOString().slice(0, 19).replace(/:/g, "-")}.pdf`);
   }
 
   function toggleDark() {
-    document.body.classList.toggle("dark");
-    localStorage.setItem("darkMode", document.body.classList.contains("dark") ? "1" : "0");
+    const dark = document.body.classList.toggle("dark");
+    document.getElementById("themeBtn").innerText = dark ? "🌞 Light" : "🌓 Dark";
   }
 
-  window.onload = function () {
+  function toggleControls() {
+    const controls = document.getElementById("controls");
+    controls.classList.toggle("minimized");
+  }
+
+  window.onload = () => {
     if (localStorage.getItem("darkMode") === "1") {
       document.body.classList.add("dark");
+      document.getElementById("themeBtn").innerText = "🌞 Light";
     }
   };
 </script>
