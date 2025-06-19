@@ -37,7 +37,6 @@
       color: var(--text);
       margin: 0;
       padding: 0;
-      transition: background 0.3s, color 0.3s;
     }
 
     header {
@@ -47,13 +46,12 @@
       top: 0;
       left: 0;
       right: 0;
-      height: 80px;
+      height: 70px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: var(--header-font-size);
       z-index: 1000;
-      text-align: center;
     }
 
     .logo {
@@ -67,7 +65,7 @@
     }
 
     .main-content {
-      padding-top: 140px;
+      padding-top: 130px; /* header + controls */
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -75,42 +73,41 @@
 
     .controls {
       position: fixed;
-      top: 80px;
+      top: 70px;
       left: 0;
       right: 0;
       background: var(--bg);
       z-index: 999;
       display: flex;
-      flex-wrap: wrap;
       justify-content: center;
-      gap: 10px;
-      padding: 8px 0;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 6px 0;
       width: 1450px;
       margin: 0 auto;
     }
 
     .controls button,
     .controls input[type="text"] {
-      padding: 8px;
-      font-size: inherit;
+      height: 34px;
+      padding: 4px 10px;
+      font-size: 13px;
       border: 1px solid #ccc;
-      border-radius: 6px;
+      border-radius: 5px;
       background-color: var(--button-bg);
       color: inherit;
       cursor: pointer;
       transition: all 0.2s ease;
-      text-align: center;
-      flex: 1;
+      flex: 0 0 auto;
       min-width: 120px;
-      max-width: 180px;
-      height: 36px;
+      max-width: 150px;
+      box-sizing: border-box;
     }
 
     .controls button:hover,
     .controls input[type="text"]:focus {
       background-color: var(--button-hover-bg);
       outline: none;
-      border-color: #888;
     }
 
     .controls button:active {
@@ -122,8 +119,6 @@
       width: 1450px;
       overflow-x: auto;
       margin-top: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.075);
     }
 
     table {
@@ -145,16 +140,16 @@
       font-weight: bold;
     }
 
+    .centered-header th {
+      text-align: center;
+    }
+
     .thick-group {
       border: 2px solid #333;
     }
 
     .thick-group td, .thick-group th {
       border: 1px solid #ccc;
-    }
-
-    .centered-header th {
-      text-align: center;
     }
 
     tbody tr:nth-child(even) {
@@ -220,13 +215,15 @@
         align-items: center;
         width: 100% !important;
         max-width: 100% !important;
+        padding: 4px;
       }
 
       .controls button,
       .controls input[type="text"] {
         width: 90% !important;
+        height: 30px;
+        font-size: 12px;
         max-width: 90% !important;
-        height: 32px;
       }
 
       .table-container,
