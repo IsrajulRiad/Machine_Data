@@ -129,7 +129,7 @@
       font-size: 14px;
     }
     th, td {
-      padding: 12px 14px;
+      padding: 10px 12px;
       border: 1px solid #ccc;
       text-align: left;
       white-space: nowrap;
@@ -150,6 +150,9 @@
       font-size: 13px;
       color: #999;
       margin-top: 40px;
+    }
+    .border-box {
+      border: 2px solid #999;
     }
     @media (max-width: 768px) {
       .controls, .tabs {
@@ -189,7 +192,61 @@
     <div id="tab1" class="tab-content active">
       <div class="table-container">
         <table id="machineTable">
-          <!-- 🔽 Your full machine table goes here -->
+          <tbody>
+            <tr class="border-box">
+              <th style="background-color: #eef;">Machine Number</th>
+              <td style="width: 100px;"></td>
+              <th style="background-color: #eef;">Machine Type</th>
+              <td style="width: 100px;"></td>
+            </tr>
+            <tr class="border-box">
+              <th style="background-color: #eef;">Section</th>
+              <td></td>
+              <th style="background-color: #eef;">Line No</th>
+              <td></td>
+            </tr>
+            <tr><td colspan="4"></td></tr>
+            <tr class="border-box">
+              <th style="background-color: #eef;">Style Number</th>
+              <td></td>
+              <th>Operation Name</th>
+              <td></td>
+            </tr>
+            <tr class="border-box">
+              <th style="background-color: #eef;">Seam Width</th>
+              <td></td>
+              <th>Trim</th>
+              <td></td>
+            </tr>
+            <tr><td colspan="4"></td></tr>
+            <tr class="border-box">
+              <th style="background-color: #eef;">No</th>
+              <th style="background-color: #eef;" colspan="1">Checking Point</th>
+              <th style="background-color: #eef;">Yes</th>
+              <th style="background-color: #eef;">No</th>
+              <th style="background-color: #eef;">Remarks</th>
+            </tr>
+            <tr>
+              <td style="text-align: center;">1</td>
+              <td>All parts of the machines are tight?</td>
+              <td></td><td></td><td></td>
+            </tr>
+            <tr>
+              <td style="text-align: center;">2</td>
+              <td>Machine table clean?</td>
+              <td></td><td></td><td></td>
+            </tr>
+            <tr>
+              <td style="text-align: center;">3</td>
+              <td>All safety guard are available?</td>
+              <td></td><td></td><td></td>
+            </tr>
+            <tr>
+              <td style="text-align: center;">4</td>
+              <td>All wire and pipes are arranged?</td>
+              <td></td><td></td><td></td>
+            </tr>
+          </tbody>
         </table>
       </div>
     </div>
