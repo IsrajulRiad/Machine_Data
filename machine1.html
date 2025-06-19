@@ -9,7 +9,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     :root {
-      --header-font-size: 18px;
+      --header-font-size: 22px;
       --controls-font-size: 14px;
       --table-font-size: 14px;
       --bg: #f9f9f9;
@@ -32,21 +32,19 @@
     }
 
     body {
+      margin: 0;
       font-family: "Segoe UI", Roboto, Arial, sans-serif;
       background-color: var(--bg);
       color: var(--text);
-      margin: 0;
-      padding: 0;
     }
 
     header {
-      background: var(--header);
-      color: white;
       position: fixed;
       top: 0;
-      left: 0;
-      right: 0;
-      height: 70px;
+      width: 100%;
+      background: var(--header);
+      color: white;
+      height: 80px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -65,91 +63,81 @@
     }
 
     .main-content {
-      padding-top: 130px; /* header + controls */
+      padding-top: 120px;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
 
     .controls {
-      position: fixed;
-      top: 70px;
-      left: 0;
-      right: 0;
+      width: 1450px;
+      max-width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      position: sticky;
+      top: 80px;
       background: var(--bg);
       z-index: 999;
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 8px;
-      padding: 6px 0;
-      width: 1450px;
-      margin: 0 auto;
+      padding: 10px 0;
     }
 
     .controls button,
     .controls input[type="text"] {
-      height: 34px;
-      padding: 4px 10px;
-      font-size: 13px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
+      padding: 6px 10px;
+      font-size: 14px;
+      height: 38px;
+      min-width: 120px;
       background-color: var(--button-bg);
-      color: inherit;
+      border: 1px solid #ccc;
+      border-radius: 6px;
       cursor: pointer;
       transition: all 0.2s ease;
-      flex: 0 0 auto;
-      min-width: 120px;
-      max-width: 150px;
-      box-sizing: border-box;
     }
 
     .controls button:hover,
     .controls input[type="text"]:focus {
       background-color: var(--button-hover-bg);
+      border-color: #888;
       outline: none;
     }
 
     .controls button:active {
       background-color: var(--button-active-bg);
-      transform: scale(0.98);
+      transform: scale(0.97);
     }
 
     .table-container {
       width: 1450px;
+      max-width: 100%;
       overflow-x: auto;
-      margin-top: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.075);
     }
 
     table {
-      width: 1450px;
+      width: 100%;
       border-collapse: collapse;
-      background-color: white;
+      background: white;
       font-size: var(--table-font-size);
     }
 
     th, td {
       padding: 10px;
       border: 1px solid #ccc;
-      text-align: left;
       white-space: nowrap;
+      text-align: left;
     }
 
     .label-cell {
-      background-color: #eef4fb;
+      background: #eef4fb;
       font-weight: bold;
-    }
-
-    .centered-header th {
-      text-align: center;
     }
 
     .thick-group {
       border: 2px solid #333;
-    }
-
-    .thick-group td, .thick-group th {
-      border: 1px solid #ccc;
     }
 
     tbody tr:nth-child(even) {
@@ -160,18 +148,6 @@
       background-color: var(--highlight);
     }
 
-    body.dark table,
-    body.dark th,
-    body.dark td {
-      background-color: #1e1e1e;
-      border-color: #444;
-      color: white;
-    }
-
-    body.dark .label-cell {
-      background-color: #2a3b4d;
-    }
-
     footer {
       text-align: center;
       padding: 20px;
@@ -180,13 +156,58 @@
       margin-top: 40px;
     }
 
-    @media print {
-      header, footer, .controls {
+    /* DARK MODE */
+    body.dark table,
+    body.dark th,
+    body.dark td {
+      background-color: #1e1e1e;
+      color: #f0f0f0;
+      border-color: #444;
+    }
+
+    body.dark .label-cell {
+      background-color: #2a3b4d;
+    }
+
+    /* MOBILE */
+    @media (max-width: 768px) {
+      header {
+        font-size: 18px;
+        text-align: center;
+      }
+
+      .controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+        padding: 5px;
+      }
+
+      .controls button,
+      .controls input[type="text"] {
+        height: 34px;
+        font-size: 13px;
+        width: 100%;
+      }
+
+      .controls.minimized button:not(.toggle-btn),
+      .controls.minimized input[type="text"] {
         display: none;
       }
 
+      .controls.minimized .toggle-btn {
+        display: block;
+        width: 100%;
+      }
+
       .main-content {
-        padding-top: 20px;
+        padding-top: 110px;
+      }
+    }
+
+    @media print {
+      header, footer, .controls {
+        display: none;
       }
 
       body {
@@ -194,42 +215,8 @@
         color: black;
       }
 
-      table {
-        width: 100%;
-        border: 1px solid black;
-      }
-    }
-
-    @media (max-width: 768px) {
-      header {
-        font-size: 9px;
-        height: 60px;
-      }
-
       .main-content {
-        padding-top: 120px;
-      }
-
-      .controls {
-        flex-direction: column;
-        align-items: center;
-        width: 100% !important;
-        max-width: 100% !important;
-        padding: 4px;
-      }
-
-      .controls button,
-      .controls input[type="text"] {
-        width: 90% !important;
-        height: 30px;
-        font-size: 12px;
-        max-width: 90% !important;
-      }
-
-      .table-container,
-      table {
-        width: 100%;
-        font-size: 12px;
+        padding-top: 20px;
       }
     }
   </style>
@@ -237,60 +224,51 @@
 <body>
 
 <header>
-  <div class="logo">
-    <img src="logo.png" alt="Logo" />
-  </div>
+  <div class="logo"><img src="logo.png" alt="Logo" /></div>
   <h1>SPECIAL MACHINE DATA</h1>
 </header>
 
 <div class="main-content">
-  <div class="controls">
+  <div class="controls minimized" id="controls">
     <button onclick="goHome()">🏠 Home</button>
-    <input type="text" id="search" placeholder="Search" oninput="filterTable()" />
+    <input type="text" id="search" placeholder="Search..." oninput="filterTable()" />
     <button onclick="exportTable()">⬇ Excel</button>
     <button onclick="exportPDF()">🖨️ PDF</button>
-    <button onclick="toggleDark()" id="darkToggle">🌓 Dark</button>
+    <button onclick="toggleDark()" id="darkBtn">🌓 Dark</button>
+    <button class="toggle-btn" onclick="toggleControls()">🔽 Show Buttons</button>
   </div>
 
   <div class="table-container" id="pdfArea">
     <table id="machineTable">
       <tbody class="thick-group">
         <tr>
-          <th class="label-cell" style="width: 15%;">Machine Number</th>
-          <td style="width: 10%;"></td>
-          <th class="label-cell" style="width: 15%;">Machine Type</th>
-          <td colspan="2" style="width: 60%;"></td>
+          <th class="label-cell">Machine Number</th><td></td>
+          <th class="label-cell">Machine Type</th><td colspan="2"></td>
         </tr>
         <tr>
-          <th class="label-cell">Section</th>
-          <td></td>
-          <th class="label-cell">Line No</th>
-          <td colspan="2"></td>
+          <th class="label-cell">Section</th><td></td>
+          <th class="label-cell">Line No</th><td colspan="2"></td>
         </tr>
       </tbody>
       <tr><td colspan="5"></td></tr>
       <tbody class="thick-group">
         <tr>
-          <th class="label-cell">Style Number</th>
-          <td></td>
-          <th class="label-cell">Operation Name</th>
-          <td colspan="2"></td>
+          <th class="label-cell">Style Number</th><td></td>
+          <th class="label-cell">Operation Name</th><td colspan="2"></td>
         </tr>
         <tr>
-          <th class="label-cell">Seam Width</th>
-          <td></td>
-          <th class="label-cell">Trim</th>
-          <td colspan="2"></td>
+          <th class="label-cell">Seam Width</th><td></td>
+          <th class="label-cell">Trim</th><td colspan="2"></td>
         </tr>
       </tbody>
       <tr><td colspan="5"></td></tr>
       <tbody class="thick-group">
         <tr class="centered-header">
-          <th class="label-cell" style="width: 4%;">No</th>
-          <th class="label-cell" style="width: 33%;">Checking Point</th>
-          <th class="label-cell" style="width: 16%;">Yes</th>
-          <th class="label-cell" style="width: 16%;">No</th>
-          <th class="label-cell" style="width: 31%;">Remarks</th>
+          <th class="label-cell">No</th>
+          <th class="label-cell">Checking Point</th>
+          <th class="label-cell">Yes</th>
+          <th class="label-cell">No</th>
+          <th class="label-cell">Remarks</th>
         </tr>
         <tr class="check-row"><td>1</td><td>All parts of the machines are tight?</td><td></td><td></td><td></td></tr>
         <tr class="check-row"><td>2</td><td>Machine table clean?</td><td></td><td></td><td></td></tr>
@@ -312,46 +290,46 @@
 
   function filterTable() {
     const search = document.getElementById("search").value.toLowerCase();
-    document.querySelectorAll("#machineTable .check-row").forEach(row => {
+    document.querySelectorAll(".check-row").forEach(row => {
       const text = row.cells[1].textContent.toLowerCase();
       row.style.display = text.includes(search) ? "" : "none";
     });
   }
 
   function exportTable() {
-    const table = document.getElementById("machineTable");
-    if (!table.innerHTML.trim()) {
-      alert("No data to export!");
-      return;
-    }
-    const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
-    const timestamp = new Date().toISOString().slice(0,19).replace(/:/g,"-");
-    XLSX.writeFile(wb, `machine_data_${timestamp}.xlsx`);
+    const wb = XLSX.utils.table_to_book(document.getElementById("machineTable"), { sheet: "Sheet1" });
+    XLSX.writeFile(wb, "machine_data.xlsx");
   }
 
   async function exportPDF() {
-    const element = document.getElementById("pdfArea");
-    const canvas = await html2canvas(element, { scale: 2, scrollY: -window.scrollY });
+    const canvas = await html2canvas(document.getElementById("pdfArea"), { scale: 2 });
     const imgData = canvas.toDataURL("image/png");
     const pdf = new jspdf.jsPDF('l', 'pt', 'a4');
     const margin = 20;
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = (canvas.height * (pdfWidth - margin * 2)) / canvas.width;
     pdf.addImage(imgData, 'PNG', margin, margin, pdfWidth - margin * 2, pdfHeight);
-    pdf.save(`machine_data_${new Date().toISOString().slice(0,19).replace(/:/g,"-")}.pdf`);
+    pdf.save("machine_data.pdf");
   }
 
   function toggleDark() {
     document.body.classList.toggle("dark");
-    const mode = document.body.classList.contains("dark");
-    localStorage.setItem("darkMode", mode ? "1" : "0");
-    document.getElementById("darkToggle").textContent = mode ? "🌞 Light" : "🌓 Dark";
+    const isDark = document.body.classList.contains("dark");
+    localStorage.setItem("darkMode", isDark ? "1" : "0");
+    document.getElementById("darkBtn").innerText = isDark ? "🌞 Light" : "🌓 Dark";
+  }
+
+  function toggleControls() {
+    const ctrl = document.getElementById("controls");
+    ctrl.classList.toggle("minimized");
+    const toggleBtn = ctrl.querySelector(".toggle-btn");
+    toggleBtn.textContent = ctrl.classList.contains("minimized") ? "🔽 Show Buttons" : "🔼 Hide Buttons";
   }
 
   window.onload = function () {
     if (localStorage.getItem("darkMode") === "1") {
       document.body.classList.add("dark");
-      document.getElementById("darkToggle").textContent = "🌞 Light";
+      document.getElementById("darkBtn").innerText = "🌞 Light";
     }
   };
 </script>
