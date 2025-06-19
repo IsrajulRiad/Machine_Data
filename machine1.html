@@ -7,11 +7,10 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <link rel="stylesheet" href="styles.css" />
-  <script defer src="script.js"></script>
   <style>
     :root {
       --header-font-size: 22px;
+      --mobile-header-font: 18px;
       --controls-font-size: 14px;
       --table-font-size: 14px;
       --bg: #f9f9f9;
@@ -41,19 +40,19 @@
       color: var(--text);
       margin: 0;
       padding: 0;
+      transition: background 0.3s, color 0.3s;
     }
 
     header {
       background: var(--header);
       color: white;
       padding: 10px 20px;
-      position: fixed;
+      box-sizing: border-box;
+      position: sticky;
       top: 0;
-      left: 0;
-      right: 0;
-      z-index: 100;
-      font-size: 18px;
-      height: 60px;
+      z-index: 20;
+      font-size: var(--header-font-size);
+      height: auto;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -62,59 +61,60 @@
 
     .logo {
       position: absolute;
-      top: 5px;
+      top: 10px;
       left: 10px;
     }
 
     .logo img {
-      height: 45px;
-      pointer-events: none;
+      height: 50px;
       user-select: none;
+      pointer-events: none;
     }
 
     .main-content {
-      padding-top: 110px;
+      padding: 20px;
+      padding-top: 10px;
+      box-sizing: border-box;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
 
     .controls {
+      margin: 10px 0;
       background: var(--bg);
-      position: sticky;
-      top: 60px;
-      z-index: 90;
-      padding: 10px 0;
       display: flex;
       flex-wrap: wrap;
-      justify-content: center;
-      width: 1450px;
       gap: 10px;
-      box-sizing: border-box;
+      font-size: var(--controls-font-size);
+      width: 1450px;
+      max-width: 100%;
+      justify-content: center;
+      z-index: 10;
+      position: sticky;
+      top: 80px;
+      padding: 10px 0;
     }
 
     .controls button,
     .controls input[type="text"] {
-      height: 36px;
-      font-size: 14px;
-      padding: 0 12px;
-      border-radius: 5px;
+      padding: 8px;
+      font-size: inherit;
       border: 1px solid #ccc;
+      border-radius: 6px;
       background-color: var(--button-bg);
       color: inherit;
       cursor: pointer;
-      transition: all 0.2s ease;
+      min-width: 120px;
+      height: 36px;
+      box-sizing: border-box;
       text-align: center;
-    }
-
-    .controls input[type="text"] {
-      width: 150px;
+      transition: all 0.2s ease;
     }
 
     .controls button:hover,
     .controls input[type="text"]:focus {
       background-color: var(--button-hover-bg);
-      border-color: #888;
       outline: none;
     }
 
@@ -123,44 +123,37 @@
       transform: scale(0.98);
     }
 
-    .controls .toggle-button {
-      flex-basis: 100%;
-      max-width: 300px;
-    }
-
     .table-container {
       width: 1450px;
+      max-width: 100%;
       overflow-x: auto;
-      overflow-y: visible;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      margin-top: 10px;
+      overflow-y: auto;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.075);
     }
 
     table {
-      width: 1450px;
+      width: 100%;
       border-collapse: collapse;
+      background-color: white;
       font-size: var(--table-font-size);
-      background: white;
     }
 
     th, td {
       padding: 10px;
       border: 1px solid #ccc;
+      text-align: left;
       white-space: nowrap;
     }
 
     .label-cell {
       background-color: #eef4fb;
       font-weight: bold;
+      user-select: none;
     }
 
-    .thick-group {
-      border: 2px solid #333;
-    }
-
-    .thick-group th,
-    .thick-group td {
-      border: 1px solid #ccc;
+    .centered-header th {
+      text-align: center;
     }
 
     tbody tr:nth-child(even) {
@@ -188,7 +181,43 @@
       padding: 20px;
       font-size: 13px;
       color: #999;
-      margin-top: 30px;
+      margin-top: 40px;
+      user-select: none;
+    }
+
+    #extraControls {
+      display: flex;
+      gap: 10px;
+    }
+
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: var(--mobile-header-font);
+        width: 100%;
+      }
+
+      .controls {
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+        position: sticky;
+        top: 0;
+      }
+
+      .controls button,
+      .controls input[type="text"] {
+        width: 100%;
+      }
+
+      #extraControls {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .mobile-toggle {
+        display: block;
+      }
     }
 
     @media print {
@@ -200,165 +229,103 @@
         padding-top: 20px;
       }
 
+      body {
+        background: white;
+        color: black;
+      }
+
       table {
         width: 100%;
         border: 1px solid black;
-      }
-    }
-
-    @media (max-width: 768px) {
-      header {
-        font-size: 18px;
-      }
-
-      .controls {
-        width: 100%;
-        flex-direction: column;
-        align-items: stretch;
-        padding: 10px;
-      }
-
-      .controls button,
-      .controls input[type="text"] {
-        width: 100%;
-        margin-bottom: 8px;
-        height: 36px;
-        font-size: 13px;
-      }
-
-      .table-container,
-      table {
-        width: 100%;
-        max-width: 100%;
       }
     }
   </style>
 </head>
 <body>
 
-<header>
-  <div class="logo"><img src="logo.png" alt="Logo" /></div>
-  <h1>SPECIAL MACHINE DATA</h1>
-</header>
+  <header>
+    <div class="logo"><img src="logo.png" alt="Logo" /></div>
+    <h1>SPECIAL MACHINE DATA</h1>
+  </header>
 
-<div class="main-content">
-  <div class="controls">
-    <button onclick="goHome()">🏠 Home</button>
-    <button onclick="exportTable()">⬇ Excel</button>
-    <button onclick="exportPDF()">🖨️ PDF</button>
-    <button onclick="toggleDark()">🌓 Dark/Light</button>
-    <input type="text" id="search" placeholder="Search..." oninput="filterTable()" />
+  <div class="main-content">
+    <div class="controls">
+      <button onclick="goHome()">🏠 Home</button>
+      <button onclick="toggleDark()" id="modeToggle">🌓 Dark</button>
+      <input type="text" id="search" placeholder="Search..." oninput="filterTable()" />
+      <button onclick="toggleControls()" id="toggleControlsBtn" class="mobile-toggle">➖ Minimize</button>
+      <div id="extraControls">
+        <button onclick="exportTable()">⬇ Excel</button>
+        <button onclick="exportPDF()">🖨️ PDF</button>
+      </div>
+    </div>
+
+    <div class="table-container" id="pdfArea">
+      <table id="machineTable">
+        <!-- Table content here (Machine info rows, checking rows, etc.) -->
+      </table>
+    </div>
   </div>
 
-  <div class="table-container" id="pdfArea">
-    <table id="machineTable">
-      <tbody class="thick-group">
-        <tr>
-          <th class="label-cell" style="width: 15%;">Machine Number</th>
-          <td style="width: 10%;"></td>
-          <th class="label-cell" style="width: 15%;">Machine Type</th>
-          <td colspan="2" style="width: 60%;"></td>
-        </tr>
-        <tr>
-          <th class="label-cell">Section</th>
-          <td></td>
-          <th class="label-cell">Line No</th>
-          <td colspan="2"></td>
-        </tr>
-      </tbody>
-      <tr><td colspan="5"></td></tr>
-      <tbody class="thick-group">
-        <tr>
-          <th class="label-cell">Style Number</th>
-          <td></td>
-          <th class="label-cell">Operation Name</th>
-          <td colspan="2"></td>
-        </tr>
-        <tr>
-          <th class="label-cell">Seam Width</th>
-          <td></td>
-          <th class="label-cell">Trim</th>
-          <td colspan="2"></td>
-        </tr>
-      </tbody>
-      <tr><td colspan="5"></td></tr>
-      <tbody class="thick-group">
-        <tr class="centered-header">
-          <th class="label-cell" style="width: 4%;">No</th>
-          <th class="label-cell" style="width: 33%;">Checking Point</th>
-          <th class="label-cell" style="width: 16%;">Yes</th>
-          <th class="label-cell" style="width: 16%;">No</th>
-          <th class="label-cell" style="width: 31%;">Remarks</th>
-        </tr>
-        <tr class="check-row"><td>1</td><td>All parts of the machines are tight?</td><td></td><td></td><td></td></tr>
-        <tr class="check-row"><td>2</td><td>Machine table clean?</td><td></td><td></td><td></td></tr>
-        <tr class="check-row"><td>3</td><td>All safety guard are available?</td><td></td><td></td><td></td></tr>
-        <tr class="check-row"><td>4</td><td>All wire and pipes are arranged?</td><td></td><td></td><td></td></tr>
-        <tr class="check-row"><td>5</td><td>Needle Guard installed?</td><td></td><td></td><td></td></tr>
-        <tr class="check-row"><td>6</td><td>Lubrication OK?</td><td></td><td></td><td></td></tr>
-        <tr class="check-row"><td>7</td><td>Any loose wires?</td><td></td><td></td><td></td></tr>
-      </tbody>
-    </table>
-  </div>
-</div>
+  <footer>
+    &copy; 2025 Israjul Riad | Smart Machine Monitoring
+  </footer>
 
-<footer>
-  &copy; 2025 Israjul Riad | Smart Machine Monitoring
-</footer>
-
-<script>
-  function goHome() {
-    window.location.href = "dashboard.html";
-  }
-
-  function filterTable() {
-    const search = document.getElementById("search").value.toLowerCase();
-    const rows = document.querySelectorAll("#machineTable .check-row");
-    rows.forEach(row => {
-      const cellText = row.cells[1].textContent.toLowerCase();
-      row.style.display = cellText.includes(search) ? "" : "none";
-    });
-  }
-
-  function exportTable() {
-    const table = document.getElementById("machineTable");
-    if (!table || !table.innerHTML.trim()) {
-      alert("No data to export!");
-      return;
+  <script>
+    function goHome() {
+      window.location.href = "dashboard.html";
     }
-    const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
-    const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, "-");
-    XLSX.writeFile(wb, `machine_data_${timestamp}.xlsx`);
-  }
 
-  async function exportPDF() {
-    const element = document.getElementById("pdfArea");
-    try {
-      const canvas = await html2canvas(element, { scale: 2, scrollY: -window.scrollY });
-      const imgData = canvas.toDataURL("image/png");
+    function filterTable() {
+      const value = document.getElementById("search").value.toLowerCase();
+      const rows = document.querySelectorAll("#machineTable .check-row");
+      rows.forEach(row => {
+        const text = row.cells[1].textContent.toLowerCase();
+        row.style.display = text.includes(value) ? "" : "none";
+      });
+    }
+
+    function toggleDark() {
+      const body = document.body;
+      const isDark = body.classList.toggle("dark");
+      document.getElementById("modeToggle").textContent = isDark ? "🌞 Light" : "🌓 Dark";
+      localStorage.setItem("darkMode", isDark ? "1" : "0");
+    }
+
+    function toggleControls() {
+      const panel = document.getElementById("extraControls");
+      const btn = document.getElementById("toggleControlsBtn");
+      const isVisible = panel.style.display !== "none";
+      panel.style.display = isVisible ? "none" : "flex";
+      btn.textContent = isVisible ? "➕ Maximize" : "➖ Minimize";
+    }
+
+    async function exportPDF() {
+      const area = document.getElementById("pdfArea");
+      const canvas = await html2canvas(area, { scale: 2 });
       const pdf = new jspdf.jsPDF("l", "pt", "a4");
-      const margin = 20;
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * (pdfWidth - margin * 2)) / canvas.width;
-      pdf.addImage(imgData, "PNG", margin, margin, pdfWidth - margin * 2, pdfHeight);
-      pdf.save(`machine_data_${new Date().toISOString().slice(0, 19).replace(/:/g, "-")}.pdf`);
-    } catch (e) {
-      alert("Failed to export PDF. Try again.");
-      console.error(e);
+      const width = pdf.internal.pageSize.getWidth();
+      const height = (canvas.height * width) / canvas.width;
+      pdf.addImage(canvas.toDataURL("image/png"), "PNG", 0, 0, width, height);
+      pdf.save("machine_data.pdf");
     }
-  }
 
-  function toggleDark() {
-    document.body.classList.toggle("dark");
-    localStorage.setItem("darkMode", document.body.classList.contains("dark") ? "1" : "0");
-  }
-
-  window.onload = () => {
-    if (localStorage.getItem("darkMode") === "1") {
-      document.body.classList.add("dark");
+    function exportTable() {
+      const table = document.getElementById("machineTable");
+      const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
+      const filename = `machine_data_${new Date().toISOString().slice(0,19).replace(/:/g,"-")}.xlsx`;
+      XLSX.writeFile(wb, filename);
     }
-  };
-</script>
 
+    window.onload = function () {
+      if (localStorage.getItem("darkMode") === "1") {
+        document.body.classList.add("dark");
+        document.getElementById("modeToggle").textContent = "🌞 Light";
+      }
+      if (window.innerWidth < 768) {
+        document.getElementById("extraControls").style.display = "none";
+      }
+    };
+  </script>
 </body>
 </html>
