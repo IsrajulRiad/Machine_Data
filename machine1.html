@@ -90,7 +90,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
-      margin-bottom: 10px;
+      margin-bottom: 20px;
       font-size: var(--controls-font-size);
       width: 1450px;
       box-sizing: border-box;
@@ -98,8 +98,9 @@
       user-select: none;
     }
 
-    .controls button {
-      padding: 6px 12px;
+    .controls button,
+    .controls input[type="text"] {
+      padding: 10px;
       font-size: inherit;
       border: 1px solid #ccc;
       border-radius: 6px;
@@ -108,17 +109,13 @@
       cursor: pointer;
       user-select: none;
       transition: all 0.2s ease;
-      flex: none;
+      flex: 1;
       min-width: 120px;
-      height: 36px;
-      line-height: 20px;
       text-align: center;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
     }
 
-    .controls button:hover {
+    .controls button:hover,
+    .controls input[type="text"]:focus {
       background-color: var(--button-hover-bg);
       outline: none;
       border-color: #888;
@@ -135,7 +132,6 @@
       border-radius: 8px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.075);
       user-select: text;
-      scrollbar-width: thin;
     }
 
     table {
@@ -219,58 +215,39 @@
       }
     }
 
-    /* Mobile tweaks for 7cm screen (~270px width) */
-    @media (max-width: 270px) {
-      header {
-        font-size: 18px !important;
-        justify-content: center;
-      }
+    /* Responsive tweaks for smaller screens */
+@media (max-width: 768px) {
+  .main-content {
+    padding: 10px;
+  }
 
-      .controls {
-        width: 100% !important;
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        margin-bottom: 10px;
-        gap: 8px;
-        padding: 6px 5px;
-        justify-content: flex-start !important;
-        user-select: none;
-      }
+  .table-container {
+    overflow-x: auto;
+    width: 100%;
+  }
 
-      .controls button {
-        min-width: 80px;
-        height: 32px;
-        font-size: 12px;
-        flex: none;
-      }
+  table {
+    width: 1450px;
+    transform: none; /* No scale */
+  }
 
-      .controls button:not(.minimize-btn) {
-        width: 80px;
-      }
+  header h1 {
+    font-size: 18px;
+    text-align: center;
+  }
 
-      .controls button.minimize-btn {
-        width: 40px;
-        order: 99;
-      }
+  .controls {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
 
-      /* Container width 100%, no horizontal scroll */
-      .table-container {
-        width: 100% !important;
-        max-width: 100% !important;
-        overflow-x: visible;
-        padding-left: 0;
-      }
-
-      /* Scale table to fit exactly 7cm width without horizontal scroll */
-      table {
-        width: 1450px;
-        /* 7cm = ~270px, so scale = 270/1450 ~ 0.186 */
-        transform: scale(0.186);
-        transform-origin: top left;
-        margin-left: 0;
-      }
-    }
-
+  .controls button {
+    width: 100%;
+    height: 40px;
+    font-size: 14px;
+  }
+}
   </style>
 </head>
 <body>
@@ -285,10 +262,10 @@
 <div class="main-content">
   <div class="controls" role="region" aria-label="Table controls">
     <button onclick="goHome()" tabindex="0" aria-label="Go to Home">🏠 Home</button>
+    <input type="text" id="search" placeholder="Search Checking Point..." oninput="filterTable()" tabindex="0" aria-label="Search checking points" />
     <button onclick="exportTable()" tabindex="0" aria-label="Export table data to Excel">⬇ Excel</button>
     <button onclick="exportPDF()" tabindex="0" aria-label="Export table data to PDF">🖨️ PDF</button>
-    <button id="darkToggle" onclick="toggleDark()" tabindex="0" aria-label="Toggle dark and light mode">🌓 Dark</button>
-    <button class="minimize-btn" id="minimizeBtn" onclick="toggleMinimize()" tabindex="0" aria-label="Minimize or maximize buttons">−</button>
+    <button onclick="toggleDark()" tabindex="0" aria-label="Toggle dark and light mode">🌓 Dark/Light</button>
   </div>
 
   <div class="table-container" id="pdfArea" role="region" aria-label="Machine data table">
@@ -378,6 +355,16 @@
     window.location.href = "dashboard.html";
   }
 
+  function filterTable() {
+    const search = document.getElementById("search").value.toLowerCase();
+    const rows = document.querySelectorAll("#machineTable .check-row");
+    rows.forEach(row => {
+      const checkPointCell = row.cells[1]; // second column: Checking Point
+      const text = checkPointCell.textContent.toLowerCase();
+      row.style.display = text.includes(search) ? "" : "none";
+    });
+  }
+
   function exportTable() {
     const table = document.getElementById("machineTable");
     if (!table || !table.innerHTML.trim()) {
@@ -411,51 +398,11 @@
   function toggleDark() {
     document.body.classList.toggle("dark");
     localStorage.setItem("darkMode", document.body.classList.contains("dark") ? "1" : "0");
-    updateDarkToggleIcon();
-  }
-
-  function updateDarkToggleIcon() {
-    const btn = document.getElementById("darkToggle");
-    btn.textContent = document.body.classList.contains("dark") ? "🌞 Light" : "🌓 Dark";
-  }
-
-  function toggleMinimize() {
-    const controls = document.querySelector(".controls");
-    controls.classList.toggle("minimized");
-    const btn = document.getElementById("minimizeBtn");
-    btn.textContent = controls.classList.contains("minimized") ? "+" : "−";
   }
 
   window.onload = function () {
     if (localStorage.getItem("darkMode") === "1") {
       document.body.classList.add("dark");
-    }
-    updateDarkToggleIcon();
-
-    // Minimize buttons by default on mobile (<=270px)
-    if (window.innerWidth <= 270) {
-      document.querySelector(".controls").classList.add("minimized");
-      document.getElementById("minimizeBtn").textContent = "+";
-    }
-
-    // Sync horizontal scroll of buttons and table container
-    const tableContainer = document.querySelector(".table-container");
-    const controls = document.querySelector(".controls");
-    tableContainer.addEventListener('scroll', () => {
-      controls.scrollLeft = tableContainer.scrollLeft;
-    });
-    controls.addEventListener('scroll', () => {
-      tableContainer.scrollLeft = controls.scrollLeft;
-    });
-  };
-
-  window.onresize = function () {
-    if (window.innerWidth <= 270) {
-      document.querySelector(".controls").classList.add("minimized");
-      document.getElementById("minimizeBtn").textContent = "+";
-    } else {
-      document.querySelector(".controls").classList.remove("minimized");
-      document.getElementById("minimizeBtn").textContent = "−";
     }
   };
 </script>
