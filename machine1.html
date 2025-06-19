@@ -9,7 +9,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     :root {
-      --header-font-size: 20px;
+      --header-font-size: 18px;
       --controls-font-size: 14px;
       --table-font-size: 14px;
       --bg: #f9f9f9;
@@ -38,7 +38,6 @@
       margin: 0;
       padding: 0;
       transition: background 0.3s, color 0.3s;
-      overflow-x: hidden;
     }
 
     header {
@@ -54,6 +53,7 @@
       justify-content: center;
       font-size: var(--header-font-size);
       z-index: 1000;
+      text-align: center;
     }
 
     .logo {
@@ -84,14 +84,14 @@
       flex-wrap: wrap;
       justify-content: center;
       gap: 10px;
-      padding: 10px 0;
+      padding: 8px 0;
       width: 1450px;
       margin: 0 auto;
     }
 
     .controls button,
     .controls input[type="text"] {
-      padding: 10px;
+      padding: 8px;
       font-size: inherit;
       border: 1px solid #ccc;
       border-radius: 6px;
@@ -103,6 +103,7 @@
       flex: 1;
       min-width: 120px;
       max-width: 180px;
+      height: 36px;
     }
 
     .controls button:hover,
@@ -206,9 +207,12 @@
 
     @media (max-width: 768px) {
       header {
-        font-size: 10px;
-        justify-content: center;
-        text-align: center;
+        font-size: 9px;
+        height: 60px;
+      }
+
+      .main-content {
+        padding-top: 120px;
       }
 
       .controls {
@@ -222,6 +226,7 @@
       .controls input[type="text"] {
         width: 90% !important;
         max-width: 90% !important;
+        height: 32px;
       }
 
       .table-container,
