@@ -5,6 +5,8 @@
   <title>Machine Data</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     :root {
       --header-font-size: 22px;
@@ -43,7 +45,7 @@
     header {
       background: var(--header);
       color: white;
-      padding: 20px;
+      padding: 10px 20px;
       box-sizing: border-box;
       position: fixed;
       top: 0;
@@ -51,7 +53,7 @@
       right: 0;
       z-index: 10;
       font-size: var(--header-font-size);
-      height: 120px;
+      height: 80px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -64,44 +66,46 @@
     }
 
     .logo img {
-      height: 60px;
+      height: 50px;
     }
 
     .main-content {
       padding: 20px;
-      padding-top: 140px;
-      width: 100%;
+      padding-top: 100px;
       box-sizing: border-box;
-      max-width: 1400px;
-      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     .controls {
       display: flex;
+      flex-wrap: wrap;
       gap: 10px;
       margin-bottom: 20px;
       font-size: var(--controls-font-size);
+      width: 1450px;
+      box-sizing: border-box;
+      justify-content: center;
     }
 
     .controls button,
-    .controls input[type="text"],
-    .controls select {
+    .controls input[type="text"] {
       padding: 10px;
       font-size: inherit;
       border: 1px solid #ccc;
       border-radius: 6px;
-      width: 100%;
       background-color: var(--button-bg);
       color: inherit;
       cursor: pointer;
       user-select: none;
-      box-sizing: border-box;
       transition: all 0.2s ease;
+      flex: 1;
+      min-width: 120px;
     }
 
     .controls button:hover,
-    .controls input[type="text"]:focus,
-    .controls select:focus {
+    .controls input[type="text"]:focus {
       background-color: var(--button-hover-bg);
       outline: none;
       border-color: #888;
@@ -113,13 +117,14 @@
     }
 
     .table-container {
+      width: 1450px;
       overflow-x: auto;
       border-radius: 8px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.075);
     }
 
     table {
-      width: 100%;
+      width: 1450px;
       border-collapse: collapse;
       background-color: white;
       font-size: var(--table-font-size);
@@ -169,12 +174,6 @@
       background-color: #2a3b4d;
     }
 
-    @media (max-width: 768px) {
-      .controls {
-        flex-wrap: wrap;
-      }
-    }
-
     footer {
       text-align: center;
       padding: 20px;
@@ -217,14 +216,13 @@
   <div class="controls">
     <button onclick="goHome()">🏠 Home</button>
     <input type="text" id="search" placeholder="Search..." oninput="filterTable()" />
-   
     <button onclick="exportTable()">⬇ Excel</button>
+    <button onclick="exportPDF()">🖨️ PDF</button>
     <button onclick="toggleDark()">🌓 Dark/Light</button>
-      </div>
+  </div>
 
-  <div class="table-container">
+  <div class="table-container" id="pdfArea">
     <table id="machineTable">
-      <!-- Grouped rows 1 & 2 with thick outer border -->
       <tbody class="thick-group">
         <tr>
           <th class="label-cell" style="width: 15%;">Machine Number</th>
@@ -240,10 +238,8 @@
         </tr>
       </tbody>
 
-      <!-- Empty row -->
       <tr><td colspan="5"></td></tr>
 
-      <!-- Grouped rows 4 & 5 with thick outer border -->
       <tbody class="thick-group">
         <tr>
           <th class="label-cell">Style Number</th>
@@ -259,17 +255,15 @@
         </tr>
       </tbody>
 
-      <!-- Empty row -->
       <tr><td colspan="5"></td></tr>
 
-      <!-- Grouped header + check rows with thick outer border -->
       <tbody class="thick-group">
         <tr class="centered-header">
-          <th class="label-cell" style="width: 1%;">No</th>
+          <th class="label-cell" style="width: 4%;">No</th>
           <th class="label-cell" style="width: 33%;">Checking Point</th>
           <th class="label-cell" style="width: 16%;">Yes</th>
           <th class="label-cell" style="width: 16%;">No</th>
-          <th class="label-cell" style="width: 34%;">Remarks</th>
+          <th class="label-cell" style="width: 31%;">Remarks</th>
         </tr>
         <tr class="check-row">
           <td>1</td>
@@ -332,15 +326,23 @@
     XLSX.writeFile(wb, "machine_data.xlsx");
   }
 
+  async function exportPDF() {
+    const element = document.getElementById("pdfArea");
+    const canvas = await html2canvas(element, { scale: 2 });
+    const imgData = canvas.toDataURL("image/png");
+
+    const pdf = new jspdf.jsPDF('l', 'pt', 'a4');
+    const margin = 20;
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (canvas.height * (pdfWidth - margin * 2)) / canvas.width;
+
+    pdf.addImage(imgData, 'PNG', margin, margin, pdfWidth - margin * 2, pdfHeight);
+    pdf.save("machine_data.pdf");
+  }
+
   function toggleDark() {
     document.body.classList.toggle("dark");
     localStorage.setItem("darkMode", document.body.classList.contains("dark") ? "1" : "0");
-  }
-
-  function logoutAdmin() {
-    localStorage.removeItem("isAdmin");
-    alert("Logged out from admin mode.");
-    location.reload();
   }
 
   window.onload = function () {
