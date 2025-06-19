@@ -29,7 +29,8 @@
       --button-active: #7799aa;
     }
     body {
-      margin:0; padding:0;
+      margin:0;
+      padding:0;
       font-family:'Inter',sans-serif;
       background:var(--bg);
       color:var(--text);
@@ -48,135 +49,101 @@
     }
     header .logo img { height:50px; }
     header .title { font-size:26px; font-weight:600; }
-    .controls {
+    .controls-wrap {
       position:sticky; top:120px;
-      background:var(--bg); padding:15px;
+      background:var(--bg); padding:10px 20px;
       display:flex; flex-wrap:wrap; gap:10px;
+      align-items:center;
       box-shadow:0 2px 10px rgba(0,0,0,0.05);
       z-index:900;
     }
-    .controls > * {
-      flex:1; min-width:140px;
-      padding:10px 14px; border-radius:8px;
+    .controls-wrap > * {
+      padding:8px 12px; border-radius:8px;
       border:1px solid #ccc; font-size:14px;
       transition:background 0.2s, transform 0.2s;
     }
-    .controls button {
+    button, .tab-button {
       background:var(--button-bg); color:#fff; cursor:pointer;
       box-shadow:0 2px 4px rgba(0,0,0,0.1);
     }
-    .controls button:hover { background:var(--button-hover); transform:translateY(-2px); }
-    .controls button:active { background:var(--button-active); transform:translateY(0); }
-    .controls input, .controls select {
+    button:hover, .tab-button:hover { background:var(--button-hover); transform:translateY(-2px); }
+    button:active, .tab-button:active { background:var(--button-active); transform:translateY(0); }
+    input, select {
       background:#fff; color:var(--text);
+      min-width:140px;
     }
     .tabs {
-      display:flex; gap:10px; margin:20px 0;
-      flex-wrap:wrap;
+      display:flex; gap:8px;
     }
-    .tab-button {
-      padding:10px 16px; border:none; border-radius:4px;
-      background:var(--button-bg); color:#fff; cursor:pointer;
-      transition:background 0.2s, transform 0.2s;
-    }
-    .tab-button:hover { transform:translateY(-2px); }
     .tab-button.active {
       background:var(--brand-accent); color:#000;
       animation:pop 0.2s forwards;
     }
-    @keyframes pop { 0% { transform:scale(1); } 50%{ transform:scale(1.05);} 100% { transform:scale(1); } }
-    .tab-content { display:none; }
+    @keyframes pop {0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
+    .tab-content { display:none; padding:20px 0; }
     .tab-content.active { display:block; }
     .table-container {
       overflow-x:auto;
-      border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.075);
       background:#fff;
+      border:1px solid #ccc;
+      border-radius:8px;
+      padding:10px;
+      margin:auto;
+      width:var(--table-width,95%);
+      height:var(--table-height,auto);
     }
-    table {
-      width:100%; border-collapse:collapse;
-      font-size:14px;
-    }
-    th, td {
-      padding:10px; border:1px solid #ccc;
-      white-space:nowrap;
-      text-align:left;
-    }
-    .label-cell { background:#eef4fb; font-weight:600; }
+    table { width:100%; border-collapse:collapse; font-size:14px; }
+    th, td { padding:8px; border:1px solid #ccc; white-space:nowrap; text-align:left; }
+    th { background:#eef4fb; font-weight:600; }
     .thick-group { border:2px solid #333; }
     .thick-group th, .thick-group td { border:1px solid #ccc; }
     .centered-header th { text-align:center; }
     tbody tr:nth-child(even) { background:#f8f8f8; }
     tbody tr:hover { background:var(--highlight); }
-    footer{ text-align:center; padding:20px; font-size:13px; color:#999; margin-top:40px; }
+    footer{ text-align:center; padding:20px; font-size:13px; color:#999; margin-top:40px;}
     @media(max-width:768px){
-      .controls, .tabs{ flex-direction:column; }
+      .controls-wrap, .tabs{ flex-direction:column; align-items:flex-start;}
     }
+    .setting-group{margin-bottom:12px;}
+    label{display:block;margin-bottom:4px;font-weight:600;}
+    input[type=number], input[type=color]{width:120px;}
   </style>
 </head>
 <body>
   <header>
-    <div class="logo"><img src="logo.png" alt="Logo" /></div>
+    <div class="logo"><img src="logo.png" alt="Logo"></div>
     <div class="title">SPECIAL MACHINE DATA</div>
   </header>
 
-  <div class="controls">
+  <div class="controls-wrap">
     <button onclick="goHome()">🏠 Home</button>
     <input type="text" id="search" placeholder="Search..." oninput="filterTable()" />
-    <select id="statusFilter" onchange="filterTable()">
-      <option value="">All Status</option>
-      <option value="NPI">NPI</option>
-    </select>
     <button onclick="exportExcel()">⬇ Excel</button>
     <button onclick="exportPDF()">📄 PDF</button>
     <button onclick="toggleDark()">🌓 Dark Mode</button>
+    <div class="tabs">
+      <button class="tab-button active" onclick="showTab('tab-machine',this)">Machine Data</button>
+      <button class="tab-button" onclick="showTab('tab-reports',this)">Reports</button>
+      <button class="tab-button" onclick="showTab('tab-settings',this)">Settings</button>
+    </div>
   </div>
 
-  <div class="tabs">
-    <button class="tab-button active" onclick="showTab('tab-machine', this)">Machine Data</button>
-    <button class="tab-button" onclick="showTab('tab-reports', this)">Reports</button>
-  </div>
-
+  <!-- MACHINE DATA TAB -->
   <div id="tab-machine" class="tab-content active">
     <div class="table-container">
       <table id="machineTable">
         <tbody class="thick-group">
-          <tr>
-            <th class="label-cell" style="width:15%;">Machine Number</th>
-            <td style="width:8%;"></td>
-            <th class="label-cell" style="width:15%;">Machine Type</th>
-            <td colspan="2" style="width:62%;"></td>
-          </tr>
-          <tr>
-            <th class="label-cell">Section</th>
-            <td></td>
-            <th class="label-cell">Line No</th>
-            <td colspan="2"></td>
-          </tr>
+          <tr><th style="width:15%">Machine Number</th><td style="width:8%"></td><th style="width:15%">Machine Type</th><td colspan="2" style="width:62%"></td></tr>
+          <tr><th>Section</th><td></td><th>Line No</th><td colspan="2"></td></tr>
         </tbody>
         <tr><td colspan="5"></td></tr>
         <tbody class="thick-group">
-          <tr>
-            <th class="label-cell">Style Number</th>
-            <td></td>
-            <th class="label-cell">Operation Name</th>
-            <td colspan="2"></td>
-          </tr>
-          <tr>
-            <th class="label-cell">Seam Width</th>
-            <td></td>
-            <th class="label-cell">Trim</th>
-            <td colspan="2"></td>
-          </tr>
+          <tr><th>Style Number</th><td></td><th>Operation Name</th><td colspan="2"></td></tr>
+          <tr><th>Seam Width</th><td></td><th>Trim</th><td colspan="2"></td></tr>
         </tbody>
         <tr><td colspan="5"></td></tr>
         <tbody class="thick-group">
-          <tr class="centered-header">
-            <th class="label-cell" style="width:4%;">No</th>
-            <th class="label-cell" style="width:48%;">Checking Point</th>
-            <th class="label-cell" style="width:16%;">Yes</th>
-            <th class="label-cell" style="width:16%;">No</th>
-            <th class="label-cell" style="width:16%;">Remarks</th>
-          </tr>
+          <tr class="centered-header"><th style="width:4%">No</th><th style="width:48%">Checking Point</th><th style="width:16%">Yes</th><th style="width:16%">No</th><th style="width:16%">Remarks</th></tr>
           <tr class="check-row"><td>1</td><td>All parts of the machines are tight?</td><td></td><td></td><td></td></tr>
           <tr class="check-row"><td>2</td><td>Machine table clean?</td><td></td><td></td><td></td></tr>
           <tr class="check-row"><td>3</td><td>All safety guard are available?</td><td></td><td></td><td></td></tr>
@@ -186,42 +153,98 @@
     </div>
   </div>
 
+  <!-- REPORTS TAB -->
   <div id="tab-reports" class="tab-content">
     <p>Reports section coming soon...</p>
+  </div>
+
+  <!-- SETTINGS TAB -->
+  <div id="tab-settings" class="tab-content">
+    <div class="setting-group">
+      <label>Table Width (%)</label>
+      <input type="number" id="set-table-width" min="50" max="100"> 
+    </div>
+    <div class="setting-group">
+      <label>Table Height (px or auto)</label>
+      <input type="text" id="set-table-height" placeholder="e.g., 500 or auto">
+    </div>
+    <div class="setting-group">
+      <label>Column Width (%)</label>
+      <input type="number" id="set-col-width" min="5" max="50">
+    </div>
+    <div class="setting-group">
+      <label>Row Height (px)</label>
+      <input type="number" id="set-row-height" min="20" max="100">
+    </div>
+    <div class="setting-group">
+      <label>Background Color</label>
+      <input type="color" id="set-bg-color">
+    </div>
+    <button onclick="saveSettings()">💾 Save Settings</button>
   </div>
 
   <footer>&copy; 2025 Israjul Riad | Smart Machine Monitoring</footer>
 
   <script>
-    function goHome(){ window.location.href='dashboard.html'; }
+    function goHome(){ location.href='dashboard.html'; }
     function filterTable(){
-      const val = document.getElementById('search').value.toLowerCase();
-      document.querySelectorAll('#machineTable .check-row').forEach(r=>{
-        r.style.display = r.textContent.toLowerCase().includes(val) ? '' : 'none';
-      });
+      let v=document.getElementById('search').value.toLowerCase();
+      document.querySelectorAll('#machineTable .check-row')
+        .forEach(r=>r.style.display = r.textContent.toLowerCase().includes(v)? '' : 'none');
     }
     function exportExcel(){
-      const wb = XLSX.utils.table_to_book(document.getElementById('machineTable'));
+      let wb=XLSX.utils.table_to_book(document.getElementById('machineTable'));
       XLSX.writeFile(wb,'machine_data.xlsx');
     }
     async function exportPDF(){
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF('landscape');
-      await pdf.html(document.getElementById('machineTable'),{x:10,y:10,callback:d=>d.save('machine_data.pdf')});
+      const { jsPDF }=window.jspdf;
+      let pdf=new jsPDF('landscape');
+      await pdf.html(document.getElementById('machineTable'),{ x:10,y:10, callback:doc=>doc.save('machine_data.pdf') });
     }
     function toggleDark(){
       document.body.classList.toggle('dark');
-      localStorage.setItem('darkMode', document.body.classList.contains('dark')? '1':'0');
+      localStorage.setItem('darkMode', document.body.classList.contains('dark') ? '1':'0');
     }
     function showTab(id,btn){
       document.querySelectorAll('.tab-button').forEach(b=>b.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
       btn.classList.add('active'); document.getElementById(id).classList.add('active');
     }
-    window.onload = ()=>{
+    function loadSettings(){
+      let s=JSON.parse(localStorage.getItem('machineSettings')||'{}');
+      if(s.width) document.documentElement.style.setProperty('--table-width', s.width+'%');
+      if(s.height) document.documentElement.style.setProperty('--table-height', s.height);
+      if(s.colWidth) setAllColWidth(s.colWidth+'%');
+      if(s.rowHeight) setAllRowHeight(s.rowHeight+'px');
+      if(s.bgColor) document.documentElement.style.setProperty('--bg', s.bgColor);
+      ['table-width','table-height','col-width','row-height','bg-color'].forEach(k=>{
+        let el=document.getElementById('set-'+k);
+        if(el && s[k.replace('-','')]) el.value= s[k.replace('-','')];
+      });
+    }
+    function saveSettings(){
+      let s={
+        width: document.getElementById('set-table-width').value,
+        height: document.getElementById('set-table-height').value,
+        colWidth: document.getElementById('set-col-width').value,
+        rowHeight: document.getElementById('set-row-height').value,
+        bgColor: document.getElementById('set-bg-color').value
+      };
+      localStorage.setItem('machineSettings', JSON.stringify(s));
+      loadSettings();
+      alert('Settings saved!');
+    }
+    function setAllColWidth(v){
+      document.querySelectorAll('#machineTable th, #machineTable td').forEach(c=>c.style.width='');
+      document.querySelectorAll('#machineTable th').forEach(c=>c.style.width=v);
+    }
+    function setAllRowHeight(v){
+      document.querySelectorAll('#machineTable tbody tr').forEach(r=>r.style.height=v);
+    }
+    window.onload=function(){
       if(localStorage.getItem('darkMode')==='1') document.body.classList.add('dark');
-    };
+      loadSettings();
+    }
   </script>
 </body>
 </html>
-
