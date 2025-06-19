@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>Machine Data</title>
@@ -20,420 +19,139 @@
       --button-bg: #cce5ff;
       --button-hover-bg: #99ccff;
       --button-active-bg: #66b2ff;
-    }
-
-    body.dark {
-      --bg: #121212;
-      --text: #f0f0f0;
-      --header: #1a1a1a;
-      --table-header: #1a3a5a;
-      --highlight: #1e2b40;
-      --button-bg: #334466;
-      --button-hover-bg: #556688;
-      --button-active-bg: #7799aa;
-    }
-
-    body {
-      font-family: "Segoe UI", Roboto, Arial, sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
-      margin: 0;
-      padding: 0;
-      transition: background 0.3s, color 0.3s;
-    }
-
-    header {
-      background: var(--header);
-      color: white;
-      padding: 10px 20px;
-      box-sizing: border-box;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 20;
-      font-size: var(--header-font-size);
-      height: 80px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .logo {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-    }
-
-    .logo img {
-      height: 50px;
-      user-select: none;
-      pointer-events: none;
-    }
-
-    .page-wrapper {
-      padding-top: 80px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .controls {
-      position: sticky;
-      top: 80px;
-      background: var(--bg);
-      z-index: 19;
-      padding: 10px 0;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 20px;
-      font-size: var(--controls-font-size);
-      width: 900px;
-      box-sizing: border-box;
-      justify-content: center;
-      user-select: none;
-    }
-
-    .controls button,
-    .controls input[type="text"] {
-      padding: 10px;
-      font-size: inherit;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      background-color: var(--button-bg);
-      color: inherit;
-      cursor: pointer;
-      user-select: none;
-      transition: all 0.2s ease;
-      flex: 1;
-      min-width: 120px;
-      text-align: center;
-    }
-
-    .controls button:hover,
-    .controls input[type="text"]:focus {
-      background-color: var(--button-hover-bg);
-      outline: none;
-      border-color: #888;
-    }
-
-    .controls button:active {
-      background-color: var(--button-active-bg);
-      transform: scale(0.98);
-    }
-
-    .table-container {
-      width: 900px;
-      overflow-x: auto;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.075);
-      user-select: text;
-    }
-
-    table {
-      width: 900px;
-      border-collapse: collapse;
-      background-color: white;
-      font-size: var(--table-font-size);
-    }
-
-    th, td {
-      padding: 10px;
-      border: 1px solid #ccc;
-      text-align: left;
-      white-space: nowrap;
-    }
-
-    .label-cell {
-      background-color: #eef4fb;
-      font-weight: bold;
-      user-select: none;
-    }
-
-    .thick-group {
-      border: 2px solid #333;
-    }
-
-    .thick-group td, .thick-group th {
-      border: 1px solid #ccc;
-    }
-
-    .centered-header th {
-      text-align: center;
-    }
-
-    tbody tr:nth-child(even) {
-      background-color: #f8f8f8;
-    }
-
-    tbody tr:hover {
-      background-color: var(--highlight);
-    }
-
-    body.dark table,
-    body.dark th,
-    body.dark td {
-      color: white;
-      background-color: #1e1e1e;
-      border-color: #444;
-    }
-
-    body.dark .label-cell {
-      background-color: #2a3b4d;
-    }
-
-    footer {
-      text-align: center;
-      padding: 20px;
-      font-size: 13px;
-      color: #999;
-      margin-top: 40px;
-      user-select: none;
-    }
-
-    @media print {
-      header, footer, .controls {
-        display: none;
-      }
-
-      .page-wrapper {
-        padding-top: 20px;
-      }
-
-      body {
-        background: white;
-        color: black;
-      }
-
-      table {
-        width: 100%;
-        border: 1px solid black;
-      }
-    }
-
-    /* Mobile Optimization (≤450px) */
-@media (max-width: 450px) {
-  
-  table th:nth-child(1) { width: 10% !important; } /* No */
-  table th:nth-child(2) { width: 30% !important; } /* Checking Point */
-  table th:nth-child(3) { width: 15% !important; } /* Yes */
-  table th:nth-child(4) { width: 15% !important; } /* No */
-  table th:nth-child(5) { width: 30% !important; } /* Remarks */
+    }body.dark {
+  --bg: #121212;
+  --text: #f0f0f0;
+  --header: #1a1a1a;
+  --table-header: #1a3a5a;
+  --highlight: #1e2b40;
+  --button-bg: #334466;
+  --button-hover-bg: #556688;
+  --button-active-bg: #7799aa;
 }
 
-
-
-  
-  html, body {
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
-    width: 100vw;
-  }
-
-  .page-wrapper {
-    padding-top: 180px;
-    transform: scale(0.37);
-    transform-origin: top center;
-    width: 214%;
-    display: flex;
-    flex-direction: column; 
-    position: relative;
-    left: 50%;
-    transform: translateX(-50%) scale(0.37); /* 🔥 KEY FIX */
-  }
-
-  header {
-    height: 60px;
-    font-size: 14px;
-  }
-
-  .logo img {
-    height: 30px;
-  }
-
-  .controls {
-    font-size: 12px;
-  }
-
-  .controls button,
-  .controls input[type="text"] {
-    min-width: 60px;
-    padding: 5px;
-    font-size: 12px;
-  }
-
-  h1 {
-    font-size: 16px;
-    text-align: center;
-  }
-
-  table {
-    font-size: 12px;
-  }
-
-  th, td {
-    padding: 6px;
-  }
+body {
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  margin: 0;
+  padding: 0;
+  transition: background 0.3s, color 0.3s;
 }
-  </style>
-</head>
-<body>
 
-<header>
-  <div class="logo">
-    <img src="logo.png" alt="Logo" />
-  </div>
-  <h1>SPECIAL MACHINE DATA</h1>
-</header>
+header {
+  background: var(--header);
+  color: white;
+  padding: 10px 20px;
+  box-sizing: border-box;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  font-size: var(--header-font-size);
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-<div class="page-wrapper">
-  <div class="controls" role="region" aria-label="Table controls">
-    <button onclick="goHome()">🏠 Home</button>
-    <input type="text" id="search" placeholder="Search Checking Point..." oninput="filterTable()" />
-    <button onclick="exportTable()">⬇ Excel</button>
-    <button onclick="exportPDF()">🖨️ PDF</button>
-    <button onclick="toggleDark()">🌓 Dark/Light</button>
-  </div>
+.logo {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
 
-  <div class="table-container" id="pdfArea">
-    <table id="machineTable">
-      <tbody class="thick-group">
-        <tr>
-          <th class="label-cell">Machine Number</th>
-          <td></td>
-          <th class="label-cell">Machine Type</th>
-          <td colspan="2"></td>
-        </tr>
-        <tr>
-          <th class="label-cell">Section</th>
-          <td></td>
-          <th class="label-cell">Line No</th>
-          <td colspan="2"></td>
-        </tr>
-      </tbody>
+.logo img {
+  height: 50px;
+  user-select: none;
+  pointer-events: none;
+}
 
-      <tr><td colspan="5"></td></tr>
+.page-wrapper {
+  padding-top: 100px;
+  width: 900px;
+  margin: 0 auto;
+  transform: none;
+}
 
-      <tbody class="thick-group">
-        <tr>
-          <th class="label-cell">Style Number</th>
-          <td></td>
-          <th class="label-cell">Operation Name</th>
-          <td colspan="2"></td>
-        </tr>
-        <tr>
-          <th class="label-cell">Seam Width</th>
-          <td></td>
-          <th class="label-cell">Trim</th>
-          <td colspan="2"></td>
-        </tr>
-      </tbody>
+.controls {
+  position: sticky;
+  top: 80px;
+  background: var(--bg);
+  z-index: 19;
+  padding: 10px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+  font-size: var(--controls-font-size);
+  width: 900px;
+  box-sizing: border-box;
+  justify-content: center;
+  user-select: none;
+}
 
-      <tr><td colspan="5"></td></tr>
+.controls button,
+.controls input[type="text"] {
+  padding: 10px;
+  font-size: inherit;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: var(--button-bg);
+  color: inherit;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s ease;
+  flex: 1;
+  min-width: 120px;
+  text-align: center;
+}
 
-      <tbody class="thick-group">
-        <tr class="centered-header">
-          <th class="label-cell">No</th>
-          <th class="label-cell">Checking Point</th>
-          <th class="label-cell">Yes</th>
-          <th class="label-cell">No</th>
-          <th class="label-cell">Remarks</th>
-        </tr>
-        <tr class="check-row">
-          <td>1</td>
-          <td>All parts of the machines are tight?</td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr class="check-row">
-          <td>2</td>
-          <td>Machine table clean?</td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr class="check-row">
-          <td>3</td>
-          <td>All safety guard are available?</td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr class="check-row">
-          <td>4</td>
-          <td>All wire and pipes are arranged?</td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
+.controls button:hover,
+.controls input[type="text"]:focus {
+  background-color: var(--button-hover-bg);
+  outline: none;
+  border-color: #888;
+}
 
-<footer>
-  &copy; 2025 Israjul Riad | Smart Machine Monitoring
-</footer>
+.controls button:active {
+  background-color: var(--button-active-bg);
+  transform: scale(0.98);
+}
 
-<script>
-  function goHome() {
-    window.location.href = "dashboard.html";
-  }
+.table-container {
+  width: 900px;
+  overflow-x: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.075);
+  user-select: text;
+}
 
-  function filterTable() {
-    const search = document.getElementById("search").value.toLowerCase();
-    const rows = document.querySelectorAll("#machineTable .check-row");
-    rows.forEach(row => {
-      const checkPointCell = row.cells[1];
-      const text = checkPointCell.textContent.toLowerCase();
-      row.style.display = text.includes(search) ? "" : "none";
-    });
-  }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  font-size: var(--table-font-size);
+}
 
-  function exportTable() {
-    const table = document.getElementById("machineTable");
-    if (!table || !table.innerHTML.trim()) {
-      alert("No data to export!");
-      return;
-    }
-    const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
-    const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, "-");
-    XLSX.writeFile(wb, `machine_data_${timestamp}.xlsx`);
-  }
+th, td {
+  padding: 10px;
+  border: 1px solid #ccc;
+  text-align: left;
+  white-space: nowrap;
+}
 
-  async function exportPDF() {
-    const element = document.getElementById("pdfArea");
-    try {
-      const canvas = await html2canvas(element, { scale: 2, scrollY: -window.scrollY });
-      const imgData = canvas.toDataURL("image/png");
+.label-cell {
+  background-color: #eef4fb;
+  font-weight: bold;
+  user-select: none;
+}
 
-      const pdf = new jspdf.jsPDF('l', 'pt', 'a4');
-      const margin = 20;
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * (pdfWidth - margin * 2)) / canvas.width;
+.thick-group {
+  border: 2px solid #333;
+}
 
-      pdf.addImage(imgData, 'PNG', margin, margin, pdfWidth - margin * 2, pdfHeight);
-      pdf.save(`machine_data_${new Date().toISOString().slice(0, 19).replace(/:/g, "-")}.pdf`);
-    } catch (e) {
-      alert("Failed to export PDF. Try again.");
-      console.error(e);
-    }
-  }
+.thick-group td, .thick-group th {
+  border: 1px
 
-  function toggleDark() {
-    document.body.classList.toggle("dark");
-    localStorage.setItem("darkMode", document.body.classList.contains("dark") ? "1" : "0");
-  }
-
-  window.onload = function () {
-    if (localStorage.getItem("darkMode") === "1") {
-      document.body.classList.add("dark");
-    }
-  };
-</script>
-
-</body>
-</html>
