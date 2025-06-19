@@ -135,7 +135,6 @@
       border-radius: 8px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.075);
       user-select: text;
-      /* Keep scrollbar visible */
       scrollbar-width: thin;
     }
 
@@ -220,8 +219,8 @@
       }
     }
 
-    /* Responsive tweaks for smaller screens */
-    @media (max-width: 768px) {
+    /* Mobile tweaks for 7cm screen (~270px width) */
+    @media (max-width: 270px) {
       header {
         font-size: 18px !important;
         justify-content: center;
@@ -245,35 +244,33 @@
         flex: none;
       }
 
-      /* Keep buttons same height and width */
       .controls button:not(.minimize-btn) {
         width: 80px;
       }
 
       .controls button.minimize-btn {
         width: 40px;
-      }
-
-      /* Move minimize button to last */
-      .controls button.minimize-btn {
         order: 99;
       }
 
-      /* Scale down table */
+      /* Container width 100%, no horizontal scroll */
       .table-container {
         width: 100% !important;
         max-width: 100% !important;
         overflow-x: visible;
-        padding-left: 10px;
+        padding-left: 0;
       }
 
+      /* Scale table to fit exactly 7cm width without horizontal scroll */
       table {
         width: 1450px;
-        transform: scale(0.7);
+        /* 7cm = ~270px, so scale = 270/1450 ~ 0.186 */
+        transform: scale(0.186);
         transform-origin: top left;
         margin-left: 0;
       }
     }
+
   </style>
 </head>
 <body>
@@ -426,11 +423,7 @@
     const controls = document.querySelector(".controls");
     controls.classList.toggle("minimized");
     const btn = document.getElementById("minimizeBtn");
-    if (controls.classList.contains("minimized")) {
-      btn.textContent = "+";
-    } else {
-      btn.textContent = "−";
-    }
+    btn.textContent = controls.classList.contains("minimized") ? "+" : "−";
   }
 
   window.onload = function () {
@@ -439,13 +432,13 @@
     }
     updateDarkToggleIcon();
 
-    // Minimize buttons by default on mobile
-    if (window.innerWidth <= 768) {
+    // Minimize buttons by default on mobile (<=270px)
+    if (window.innerWidth <= 270) {
       document.querySelector(".controls").classList.add("minimized");
       document.getElementById("minimizeBtn").textContent = "+";
     }
 
-    // Sync scroll: keep controls and table horizontally aligned
+    // Sync horizontal scroll of buttons and table container
     const tableContainer = document.querySelector(".table-container");
     const controls = document.querySelector(".controls");
     tableContainer.addEventListener('scroll', () => {
@@ -456,9 +449,8 @@
     });
   };
 
-  // Optional: update minimize state on resize
   window.onresize = function () {
-    if (window.innerWidth <= 768) {
+    if (window.innerWidth <= 270) {
       document.querySelector(".controls").classList.add("minimized");
       document.getElementById("minimizeBtn").textContent = "+";
     } else {
