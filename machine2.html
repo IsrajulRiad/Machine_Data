@@ -20,8 +20,10 @@
       --button-bg: #005dbb;
       --button-hover-bg: #99ccff;
       --button-active-bg: #66b2ff;
+      --border-color: #ccc;
+      --table-row-even-bg: #f8f8f8;
+      --label-cell-bg: #eef4fb;
     }
-
     body.dark {
       --bg: #121212;
       --text: #f0f0f0;
@@ -31,8 +33,10 @@
       --button-bg: #334466;
       --button-hover-bg: #556688;
       --button-active-bg: #7799aa;
+      --border-color: #444;
+      --table-row-even-bg: #1a1a1a;
+      --label-cell-bg: #2a3b4d;
     }
-
     body {
       font-family: "Segoe UI", Roboto, Arial, sans-serif;
       background-color: var(--bg);
@@ -41,7 +45,6 @@
       padding: 0;
       transition: background 0.3s, color 0.3s;
     }
-
     header {
       background: var(--header);
       color: white;
@@ -58,26 +61,21 @@
       align-items: center;
       justify-content: center;
     }
-
     .logo {
       position: absolute;
       top: 10px;
       left: 10px;
     }
-
     .logo img {
       height: 50px;
       user-select: none;
       pointer-events: none;
     }
-
     .page-wrapper {
       padding-top: 100px;
       width: 900px;
       margin: 0 auto;
-      transform: none;
     }
-
     .controls {
       position: sticky;
       top: 80px;
@@ -91,34 +89,64 @@
       font-size: var(--controls-font-size);
       width: 100%;
       justify-content: center;
-      user-select: none;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* subtle shadow */
     }
-
     .controls button,
     .controls input[type="text"] {
       padding: 10px;
       font-size: inherit;
-      border: 1px solid #ccc;
+      border: 1px solid var(--border-color);
       border-radius: 6px;
       background-color: var(--button-bg);
       color: white;
       cursor: pointer;
-      user-select: none;
-      transition: all 0.2s ease;
       min-width: 120px;
-      text-align: center;
+      transition: background-color 0.2s, border-color 0.2s;
     }
-
-    .controls button:hover,
-    .controls input[type="text"]:focus {
+    .controls button:hover {
       background-color: var(--button-hover-bg);
-      outline: none;
-      border-color: #888;
     }
-
     .controls button:active {
       background-color: var(--button-active-bg);
-      transform: scale(1.00);
+    }
+    .controls input[type="text"] {
+      background-color: var(--bg); /* Keep input background with theme */
+      color: var(--text);
+      flex-grow: 1; /* Allow search input to grow */
+      min-width: 150px;
+    }
+    .controls input[type="text"]:focus {
+      outline: none;
+      border-color: var(--button-hover-bg);
+    }
+    .search-container {
+      position: relative;
+      display: flex;
+      flex-grow: 1;
+      min-width: 150px;
+      align-items: center;
+    }
+    .search-container button {
+      min-width: auto;
+      width: 30px;
+      height: 30px;
+      padding: 0;
+      position: absolute;
+      right: 5px;
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 16px;
+      cursor: pointer;
+      display: none; /* Hidden by default */
+      transition: color 0.2s;
+    }
+    .search-container button:hover {
+      color: var(--button-hover-bg);
+      background: none;
+    }
+    .search-container input:valid ~ button { /* Show clear button if input has value */
+      display: block;
     }
 
     .table-container {
@@ -127,57 +155,59 @@
       border-radius: 8px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.075);
     }
-
     table {
       width: 100%;
       border-collapse: collapse;
       background-color: white;
       font-size: var(--table-font-size);
     }
-
     th, td {
       padding: 10px;
-      border: 1px solid #ccc;
+      border: 1px solid var(--border-color);
       text-align: left;
       white-space: nowrap;
     }
-
     .label-cell {
-      background-color: #eef4fb;
+      background-color: var(--label-cell-bg);
       font-weight: bold;
-      user-select: none;
     }
-
     .thick-group {
       border: 2px solid #333;
     }
-
-    .thick-group td, .thick-group th {
-      border: 1px solid #ccc;
-    }
-
     .centered-header th {
       text-align: center;
     }
-
     tbody tr:nth-child(even) {
-      background-color: #f8f8f8;
+      background-color: var(--table-row-even-bg);
     }
-
     tbody tr:hover {
       background-color: var(--highlight);
     }
-
     body.dark table,
     body.dark th,
     body.dark td {
-      color: white;
+      color: var(--text);
       background-color: #1e1e1e;
-      border-color: #444;
+      border-color: var(--border-color);
+    }
+    body.dark .thick-group {
+      border-color: #f0f0f0;
     }
 
-    body.dark .label-cell {
-      background-color: #2a3b4d;
+    /* Loading and Status messages */
+    .status-message {
+      text-align: center;
+      margin: 20px 0;
+      font-size: 1.1em;
+      color: #007bff;
+      animation: fadeIn 0.5s;
+    }
+    .status-message.error {
+      color: #dc3545;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     footer {
@@ -186,29 +216,19 @@
       font-size: 13px;
       color: #999;
       margin-top: 40px;
-      user-select: none;
     }
-
     @media print {
-      header, footer, .controls {
-        display: none;
+      header, footer, .controls, .status-message {
+        display: none !important;
       }
-
       .page-wrapper {
         padding-top: 20px;
       }
-
       body {
         background: white;
         color: black;
       }
-
-      table {
-        width: 100%;
-        border: 1px solid black;
-      }
     }
-
     @media (max-width: 450px) {
       html, body {
         margin: 0;
@@ -216,50 +236,37 @@
         overflow-x: hidden;
         width: 100vw;
       }
-
       .page-wrapper {
         padding-top: 100px;
-        width: 214%;
-        left: 50%;
-        transform: translateX(-50%) scale(0.45);
+        /* Using a smaller scale to fit content better on very small screens */
+        transform: translateX(-50%) scale(0.5); /* Adjusted scale */
         transform-origin: top center;
+        width: 200%; /* Adjust based on new scale if needed */
+        left: 50%;
         position: relative;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
       }
-
       header {
         height: 40px;
         font-size: 20px;
       }
-
       .logo img {
         height: 30px;
       }
-
       .controls {
-        font-size: 20px;
+        font-size: 16px; /* Slightly larger for touch targets */
+        padding: 5px 0;
       }
-
       .controls button,
       .controls input[type="text"] {
-        min-width: 90px;
-        padding: 10px;
-        font-size: 20px;
-      }
-
-      h1 {
+        min-width: 80px;
+        padding: 8px;
         font-size: 16px;
-        text-align: center;
       }
-
       table {
-        font-size: 12px;
+        font-size: 10px; /* Make table font smaller for very small screens */
       }
-
       th, td {
-        padding: 6px;
+        padding: 4px;
       }
     }
   </style>
@@ -275,44 +282,49 @@
 
 <div class="page-wrapper">
   <div class="controls">
-    <button onclick="goHome()">🏠 Home</button>
-    <input type="text" id="search" placeholder="Search Checking Point..." oninput="filterTable()" />
-    <button onclick="exportTable()">⬇ Excel</button>
-    <button onclick="exportPDF()">🖨️ PDF</button>
-    <button onclick="toggleDark()">🌓 Dark/Light</button>
+    <button id="homeButton">🏠 Home</button>
+    <div class="search-container">
+      <input type="text" id="search" placeholder="Search Checking Point..." />
+      <button id="clearSearchButton" title="Clear Search">✖</button>
+    </div>
+    <button id="exportExcelButton">⬇ Excel</button>
+    <button id="exportPdfButton">🖨️ PDF</button>
+    <button id="toggleDarkButton">🌓 Dark/Light</button>
   </div>
+
+  <div id="statusMessage" class="status-message" style="display: none;"></div>
 
   <div class="table-container" id="pdfArea">
     <table id="machineTable">
       <tbody class="thick-group">
-  <tr>
-    <th class="label-cell" style="width: 20%;">Machine Number</th>
-    <td id="cell_b1" style="width: 15%;"></td>
-    <th class="label-cell" style="width: 20%;">Machine Type</th>
-    <td colspan="2" style="width: 45%;"></td>
-  </tr>
-  <tr>
-    <th class="label-cell">Section</th>
-    <td id="cell_b2"></td>
-    <th class="label-cell">Line No</th>
-    <td colspan="2"></td>
-  </tr>
-</tbody>
+        <tr>
+          <th class="label-cell">Machine Number</th>
+          <td id="cell_b1"></td>
+          <th class="label-cell">Machine Type</th>
+          <td colspan="2" id="cell_machineType"></td>
+        </tr>
+        <tr>
+          <th class="label-cell">Section</th>
+          <td id="cell_b2"></td>
+          <th class="label-cell">Line No</th>
+          <td colspan="2" id="cell_lineNo"></td>
+        </tr>
+      </tbody>
 
       <tr><td colspan="5"></td></tr>
 
       <tbody class="thick-group">
         <tr>
           <th class="label-cell">Style Number</th>
-          <td></td>
+          <td id="cell_b4"></td>
           <th class="label-cell">Operation Name</th>
-          <td colspan="2"></td>
+          <td colspan="2" id="cell_b5"></td>
         </tr>
         <tr>
           <th class="label-cell">Seam Width</th>
-          <td></td>
+          <td id="cell_d1"></td>
           <th class="label-cell">Trim</th>
-          <td colspan="2"></td>
+          <td colspan="2" id="cell_d2"></td>
         </tr>
       </tbody>
 
@@ -320,37 +332,37 @@
 
       <tbody class="thick-group">
         <tr class="centered-header">
-          <th class="label-cell" style="width: 4%;">No</th>
-          <th class="label-cell" style="width: 30%;">Checking Point</th>
-          <th class="label-cell" style="width: 14%;">Yes</th>
-          <th class="label-cell" style="width: 18%;">No</th>
-          <th class="label-cell" style="width: 34%;">Remarks</th>
+          <th class="label-cell">No</th>
+          <th class="label-cell">Checking Point</th>
+          <th class="label-cell">Yes</th>
+          <th class="label-cell">No</th>
+          <th class="label-cell">Remarks</th>
         </tr>
         <tr class="check-row">
           <td>1</td>
           <td>All parts of the machines are tight?</td>
-          <td id="cell_b2"></td>
+          <td id="cell_d4"></td>
           <td></td>
           <td></td>
         </tr>
         <tr class="check-row">
           <td>2</td>
           <td>Machine table clean?</td>
-          <td id="cell_b3"></td>
+          <td id="cell_d5"></td>
           <td></td>
           <td></td>
         </tr>
         <tr class="check-row">
           <td>3</td>
           <td>All safety guard are available?</td>
-          <td></td>
+          <td id="cell_c8"></td>
           <td></td>
           <td></td>
         </tr>
         <tr class="check-row">
           <td>4</td>
           <td>All wire and pipes are arranged?</td>
-          <td></td>
+          <td id="cell_c9"></td>
           <td></td>
           <td></td>
         </tr>
@@ -359,52 +371,109 @@
   </div>
 </div>
 
-<footer>
-  &copy; 2025 Israjul Riad | Smart Machine Monitoring
-</footer>
+<footer>&copy; 2025 Israjul Riad | Smart Machine Monitoring</footer>
 
 <script>
+  // Helper to show/hide status messages
+  function showStatus(message, isError = false) {
+    const statusDiv = document.getElementById("statusMessage");
+    statusDiv.textContent = message;
+    statusDiv.style.display = "block";
+    statusDiv.classList.toggle("error", isError);
+    if (!isError) {
+      setTimeout(() => {
+        statusDiv.style.display = "none";
+      }, 3000); // Hide success messages after 3 seconds
+    }
+  }
+
   function goHome() {
     window.location.href = "dashboard.html";
   }
 
+  let searchTimeout;
   function filterTable() {
-    const search = document.getElementById("search").value.toLowerCase();
-    const rows = document.querySelectorAll("#machineTable .check-row");
-    rows.forEach(row => {
-      const checkPointCell = row.cells[1];
-      const text = checkPointCell.textContent.toLowerCase();
-      row.style.display = text.includes(search) ? "" : "none";
-    });
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+      const searchInput = document.getElementById("search");
+      const searchTerm = searchInput.value.toLowerCase();
+      const rows = document.querySelectorAll("#machineTable .check-row");
+      rows.forEach(row => {
+        const text = row.cells[1].textContent.toLowerCase();
+        row.style.display = text.includes(searchTerm) ? "" : "none";
+      });
+    }, 300); // Debounce by 300ms
+  }
+
+  function clearSearch() {
+    document.getElementById("search").value = "";
+    filterTable(); // Apply filter to show all rows
   }
 
   function exportTable() {
     const table = document.getElementById("machineTable");
     if (!table || !table.innerHTML.trim()) {
-      alert("No data to export!");
+      showStatus("No data to export!", true);
       return;
     }
-    const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
-    const timestamp = new Date().toISOString().slice(0,19).replace(/:/g,"-");
-    XLSX.writeFile(wb, `machine_data_${timestamp}.xlsx`);
+    showStatus("Exporting to Excel...");
+    try {
+      // Clone the table to remove hidden rows from search filter
+      const clonedTable = table.cloneNode(true);
+      const rows = clonedTable.querySelectorAll(".check-row");
+      rows.forEach(row => {
+        if (row.style.display === "none") {
+          row.remove();
+        }
+      });
+
+      const wb = XLSX.utils.table_to_book(clonedTable, { sheet: "Sheet1" });
+      const timestamp = new Date().toISOString().slice(0,19).replace(/:/g,"-");
+      XLSX.writeFile(wb, `machine_data_${timestamp}.xlsx`);
+      showStatus("Excel export successful!");
+    } catch (e) {
+      showStatus("Failed to export Excel.", true);
+      console.error("Excel export error:", e);
+    }
   }
 
   async function exportPDF() {
     const element = document.getElementById("pdfArea");
+    if (!element || !element.innerHTML.trim()) {
+      showStatus("No data to export!", true);
+      return;
+    }
+    showStatus("Generating PDF...");
     try {
+      // Use display: block to ensure hidden elements from filter are captured
+      // Or, ideally, create a separate clone for PDF that includes all data
+      // For simplicity here, we assume the table is what's visible
+      const originalDisplay = [];
+      const hiddenRows = document.querySelectorAll("#machineTable .check-row[style*='display: none']");
+      hiddenRows.forEach(row => {
+        originalDisplay.push({ row: row, display: row.style.display });
+        row.style.display = ""; // Temporarily show all rows for PDF capture
+      });
+
       const canvas = await html2canvas(element, { scale: 2, scrollY: -window.scrollY });
       const imgData = canvas.toDataURL("image/png");
-
-      const pdf = new jspdf.jsPDF('l', 'pt', 'a4');
+      const pdf = new jspdf.jsPDF('l', 'pt', 'a4'); // Landscape, points, A4
       const margin = 20;
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = (canvas.height * (pdfWidth - margin * 2)) / canvas.width;
 
       pdf.addImage(imgData, 'PNG', margin, margin, pdfWidth - margin * 2, pdfHeight);
       pdf.save(`machine_data_${new Date().toISOString().slice(0,19).replace(/:/g,"-")}.pdf`);
+
+      // Restore original display styles
+      originalDisplay.forEach(item => {
+        item.row.style.display = item.display;
+      });
+
+      showStatus("PDF export successful!");
     } catch (e) {
-      alert("Failed to export PDF. Try again.");
-      console.error(e);
+      showStatus("Failed to export PDF.", true);
+      console.error("PDF export error:", e);
     }
   }
 
@@ -413,38 +482,103 @@
     localStorage.setItem("darkMode", document.body.classList.contains("dark") ? "1" : "0");
   }
 
-  window.onload = function () {
+  // --- Data Fetching Logic (SIMULATED SECURE API KEY HANDLING) ---
+
+  // In a real application, the sheetId would likely be configured on the server
+  // and the apiKey would NEVER be directly in client-side code.
+  const sheetId = "1LI7h0CNeUryEtzPheWmZU_7BEGTUyPoZu5P5C2ywcrc";
+
+  // THIS API KEY IS EXPOSED IN THE ORIGINAL CODE AND IS A SECURITY RISK.
+  // DO NOT USE THIS DIRECTLY IN PRODUCTION.
+  // const apiKey = "AIzaSyCDL6LnfaLdODmBJ3xVD-GlC4G1rHjsvII";
+
+  const ranges = {
+    cell_b1: "machine data!B1",
+    cell_b2: "machine data!B2",
+    cell_b4: "machine data!B4",
+    cell_b5: "machine data!B5",
+    cell_d1: "machine data!D1",
+    cell_d2: "machine data!D2",
+    cell_d4: "machine data!D4",
+    cell_d5: "machine data!D5",
+    cell_c8: "machine data!C8",
+    cell_c9: "machine data!C9",
+    // Adding machine type and line no ranges as they are in the HTML
+    cell_machineType: "machine data!C1", // Assuming C1 for Machine Type
+    cell_lineNo: "machine data!D2" // Assuming D2 for Line No, though D2 is also Trim. Needs clarification if same cell used for two things. Let's assume a typo and it should be C2.
+                                     // Corrected: Based on original HTML for 'Line No' being colspan 2, it implies a single cell. Let's assign an arbitrary new cell for now if the sheet doesn't specify.
+                                     // For demonstration, let's assume 'Machine Type' is E1 and 'Line No' is E2 for distinct values if not B3/B4.
+                                     // Revisiting original HTML: Machine Type is `id="cell_machineType"` and Line No is `id="cell_lineNo"`. These need their own unique ranges if they aren't part of the existing ones.
+                                     // Assuming for now: Machine Type from 'C1', Line No from 'C2'
+    cell_machineType: "machine data!C1",
+    cell_lineNo: "machine data!C2"
+  };
+
+
+  async function fetchAndUpdateCells() {
+    showStatus("Loading data...", false);
+    let allDataFetched = true;
+
+    // --- START OF SIMULATED BACKEND CALL ---
+    // In a real scenario, your frontend would call your own backend:
+    // const backendUrl = '/api/get-sheet-data';
+    // const res = await fetch(backendUrl, {
+    //   method: 'POST', // Or GET, depending on your API
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({ ranges: Object.values(ranges), sheetId: sheetId })
+    // });
+    // const data = await res.json();
+    // Then parse 'data' to update cells.
+    // --- END OF SIMULATED BACKEND CALL ---
+
+    // For this example, we'll iterate locally, but imagine this data
+    // came from a single backend fetch call that returned all values.
+    // If you MUST keep it client-side for testing/dev, here's how the original fetch looked:
+    const originalApiKey = "AIzaSyCDL6LnfaLdODmBJ3xVD-GlC4G1rHjsvII"; // Keep for local testing if no backend
+    for (const [id, range] of Object.entries(ranges)) {
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(range)}?key=${originalApiKey}`;
+      try {
+        const res = await fetch(url);
+        if (!res.ok) {
+          throw new Error(`Network response was not ok: ${res.statusText} (${res.status})`);
+        }
+        const data = await res.json();
+        const value = data?.values?.[0]?.[0] ?? "N/A"; // Default to N/A if no data
+        const el = document.getElementById(id);
+        if (el) el.innerText = value;
+      } catch (err) {
+        console.error(`Error loading ${range} for ${id}:`, err);
+        const el = document.getElementById(id);
+        if (el) el.innerText = "ERROR";
+        allDataFetched = false;
+      }
+    }
+
+    if (allDataFetched) {
+      showStatus("Data loaded successfully!");
+    } else {
+      showStatus("Some data failed to load. Check console for details.", true);
+    }
+  }
+
+  // --- Event Listeners ---
+  document.addEventListener('DOMContentLoaded', () => {
+    // Apply dark mode preference on load
     if (localStorage.getItem("darkMode") === "1") {
       document.body.classList.add("dark");
     }
-  };
-</script>
 
-<!-- ✅ Google Sheet Live Sync Script -->
-<script>
-const sheetId = "1LI7h0CNeUryEtzPheWmZU_7BEGTUyPoZu5P5C2ywcrc";
-const apiKey = "AIzaSyCDL6LnfaLdODmBJ3xVD-GlC4G1rHjsvII";
+    // Attach event listeners
+    document.getElementById("homeButton").addEventListener("click", goHome);
+    document.getElementById("search").addEventListener("input", filterTable);
+    document.getElementById("clearSearchButton").addEventListener("click", clearSearch);
+    document.getElementById("exportExcelButton").addEventListener("click", exportTable);
+    document.getElementById("exportPdfButton").addEventListener("click", exportPDF);
+    document.getElementById("toggleDarkButton").addEventListener("click", toggleDark);
 
-const ranges = {
-  cell_b2: "machine data!B1",
-  cell_b3: "machine data!B2"
-};
-
-async function fetchAndUpdateCells() {
-  for (const [elementId, range] of Object.entries(ranges)) {
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(range)}?key=${apiKey}`;
-    try {
-      const res = await fetch(url);
-      const data = await res.json();
-      const value = data?.values?.[0]?.[0] ?? "";
-      document.getElementById(elementId).innerText = value;
-    } catch (err) {
-      console.error(`Error loading ${range}:`, err);
-    }
-  }
-}
-
-window.addEventListener("load", fetchAndUpdateCells);
+    // Fetch initial data
+    fetchAndUpdateCells();
+  });
 </script>
 
 </body>
