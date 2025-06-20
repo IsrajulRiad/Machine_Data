@@ -285,19 +285,19 @@
   <div class="table-container" id="pdfArea">
     <table id="machineTable">
       <tbody class="thick-group">
-        <tr>
-          <th class="label-cell" style="width: 20%;">Machine Number</th>
-          <td style="width: 15%;"></td>
-          <th class="label-cell" style="width: 20%;">Machine Type</th>
-          <td colspan="2" style="width: 45%;"></td>
-        </tr>
-        <tr>
-          <th class="label-cell">Section</th>
-          <td></td>
-          <th class="label-cell">Line No</th>
-          <td colspan="2"></td>
-        </tr>
-      </tbody>
+  <tr>
+    <th class="label-cell" style="width: 20%;">Machine Number</th>
+    <td id="cell_b1" style="width: 15%;"></td>
+    <th class="label-cell" style="width: 20%;">Machine Type</th>
+    <td colspan="2" style="width: 45%;"></td>
+  </tr>
+  <tr>
+    <th class="label-cell">Section</th>
+    <td id="cell_b2"></td>
+    <th class="label-cell">Line No</th>
+    <td colspan="2"></td>
+  </tr>
+</tbody>
 
       <tr><td colspan="5"></td></tr>
 
@@ -426,8 +426,8 @@ const sheetId = "1LI7h0CNeUryEtzPheWmZU_7BEGTUyPoZu5P5C2ywcrc";
 const apiKey = "AIzaSyCDL6LnfaLdODmBJ3xVD-GlC4G1rHjsvII";
 
 const ranges = {
-  cell_b2: "machine data!B2",
-  cell_b3: "machine data!B3"
+  cell_b2: "machine data!B1",
+  cell_b3: "machine data!B2"
 };
 
 async function fetchAndUpdateCells() {
