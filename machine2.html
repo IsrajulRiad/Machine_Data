@@ -9,7 +9,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     :root {
-      --header-font-size: 20px;
+      --header-font-size: 22px;
       --controls-font-size: 14px;
       --table-font-size: 14px;
       --bg: #f9f9f9;
@@ -17,10 +17,9 @@
       --header: #004080;
       --table-header: #036;
       --highlight: #e6f0fa;
-      --button-bg: #cce5ff;
+      --button-bg: #005dbb;
       --button-hover-bg: #99ccff;
       --button-active-bg: #66b2ff;
-      --button-height: 38px;
     }
 
     body.dark {
@@ -58,7 +57,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      text-align: center;
     }
 
     .logo {
@@ -73,13 +71,11 @@
       pointer-events: none;
     }
 
-    .main-content {
-      padding: 20px;
+    .page-wrapper {
       padding-top: 100px;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      width: 900px;
+      margin: 0 auto;
+      transform: none;
     }
 
     .controls {
@@ -91,32 +87,25 @@
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
-      margin-bottom: 10px;
+      margin-bottom: 20px;
       font-size: var(--controls-font-size);
-      width: 1450px;
-      box-sizing: border-box;
+      width: 100%;
       justify-content: center;
       user-select: none;
     }
 
-    .controls.minimized {
-      flex-direction: column;
-      align-items: stretch;
-    }
-
     .controls button,
     .controls input[type="text"] {
-      padding: 6px 8px;
-      height: var(--button-height);
+      padding: 10px;
       font-size: inherit;
       border: 1px solid #ccc;
       border-radius: 6px;
       background-color: var(--button-bg);
-      color: inherit;
+      color: white;
       cursor: pointer;
+      user-select: none;
       transition: all 0.2s ease;
       min-width: 120px;
-      flex: 1;
       text-align: center;
     }
 
@@ -129,24 +118,18 @@
 
     .controls button:active {
       background-color: var(--button-active-bg);
-      transform: scale(0.98);
-    }
-
-    .toggle-btn {
-      display: none;
-      margin: 0 auto;
-      margin-bottom: 10px;
+      transform: scale(1.00);
     }
 
     .table-container {
-      width: 1450px;
+      width: 100%;
       overflow-x: auto;
       border-radius: 8px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.075);
     }
 
     table {
-      width: 1450px;
+      width: 100%;
       border-collapse: collapse;
       background-color: white;
       font-size: var(--table-font-size);
@@ -207,11 +190,11 @@
     }
 
     @media print {
-      header, footer, .controls, .toggle-btn {
+      header, footer, .controls {
         display: none;
       }
 
-      .main-content {
+      .page-wrapper {
         padding-top: 20px;
       }
 
@@ -226,35 +209,57 @@
       }
     }
 
-    @media (max-width: 768px) {
-      header {
-        font-size: 18px;
+    @media (max-width: 450px) {
+      html, body {
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        width: 100vw;
       }
 
-      .toggle-btn {
-        display: block;
+      .page-wrapper {
+        padding-top: 100px;
+        width: 214%;
+        left: 50%;
+        transform: translateX(-50%) scale(0.45);
+        transform-origin: top center;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      header {
+        height: 40px;
+        font-size: 20px;
+      }
+
+      .logo img {
+        height: 30px;
       }
 
       .controls {
-        flex-direction: column;
-        width: 100% !important;
+        font-size: 20px;
       }
 
       .controls button,
       .controls input[type="text"] {
-        width: 100%;
-        min-width: unset;
-        max-width: 100%;
+        min-width: 90px;
+        padding: 10px;
+        font-size: 20px;
+      }
+
+      h1 {
+        font-size: 16px;
+        text-align: center;
       }
 
       table {
         font-size: 12px;
-        width: 100%;
       }
 
-      .table-container {
-        width: 100%;
-        max-width: 100%;
+      th, td {
+        padding: 6px;
       }
     }
   </style>
@@ -262,28 +267,29 @@
 <body>
 
 <header>
-  <div class="logo"><img src="logo.png" alt="Logo"></div>
+  <div class="logo">
+    <img src="logo.png" alt="Logo" />
+  </div>
   <h1>SPECIAL MACHINE DATA</h1>
 </header>
 
-<div class="main-content">
-  <button class="toggle-btn" onclick="toggleControls()">🔽 Show/Hide Buttons</button>
-  <div class="controls" id="controls">
+<div class="page-wrapper">
+  <div class="controls">
     <button onclick="goHome()">🏠 Home</button>
+    <input type="text" id="search" placeholder="Search Checking Point..." oninput="filterTable()" />
     <button onclick="exportTable()">⬇ Excel</button>
     <button onclick="exportPDF()">🖨️ PDF</button>
-    <button onclick="toggleDark()" id="themeBtn">🌓 Dark</button>
-    <input type="text" id="search" placeholder="Search..." oninput="filterTable()">
+    <button onclick="toggleDark()">🌓 Dark/Light</button>
   </div>
 
   <div class="table-container" id="pdfArea">
     <table id="machineTable">
       <tbody class="thick-group">
         <tr>
-          <th class="label-cell" style="width: 15%;">Machine Number</th>
-          <td style="width: 10%;"></td>
-          <th class="label-cell" style="width: 15%;">Machine Type</th>
-          <td colspan="2" style="width: 60%;"></td>
+          <th class="label-cell" style="width: 20%;">Machine Number</th>
+          <td style="width: 15%;"></td>
+          <th class="label-cell" style="width: 20%;">Machine Type</th>
+          <td colspan="2" style="width: 45%;"></td>
         </tr>
         <tr>
           <th class="label-cell">Section</th>
@@ -292,7 +298,9 @@
           <td colspan="2"></td>
         </tr>
       </tbody>
+
       <tr><td colspan="5"></td></tr>
+
       <tbody class="thick-group">
         <tr>
           <th class="label-cell">Style Number</th>
@@ -307,18 +315,41 @@
           <td colspan="2"></td>
         </tr>
       </tbody>
+
       <tr><td colspan="5"></td></tr>
+
       <tbody class="thick-group">
         <tr class="centered-header">
           <th class="label-cell" style="width: 4%;">No</th>
-          <th class="label-cell" style="width: 33%;">Checking Point</th>
-          <th class="label-cell" style="width: 16%;">Yes</th>
-          <th class="label-cell" style="width: 16%;">No</th>
-          <th class="label-cell" style="width: 31%;">Remarks</th>
+          <th class="label-cell" style="width: 30%;">Checking Point</th>
+          <th class="label-cell" style="width: 14%;">Yes</th>
+          <th class="label-cell" style="width: 18%;">No</th>
+          <th class="label-cell" style="width: 34%;">Remarks</th>
         </tr>
         <tr class="check-row">
           <td>1</td>
           <td>All parts of the machines are tight?</td>
+          <td id="cell_b2"></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="check-row">
+          <td>2</td>
+          <td>Machine table clean?</td>
+          <td id="cell_b3"></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="check-row">
+          <td>3</td>
+          <td>All safety guard are available?</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="check-row">
+          <td>4</td>
+          <td>All wire and pipes are arranged?</td>
           <td></td>
           <td></td>
           <td></td>
@@ -328,7 +359,9 @@
   </div>
 </div>
 
-<footer>&copy; 2025 Israjul Riad | Smart Machine Monitoring</footer>
+<footer>
+  &copy; 2025 Israjul Riad | Smart Machine Monitoring
+</footer>
 
 <script>
   function goHome() {
@@ -352,38 +385,66 @@
       return;
     }
     const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
-    const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, "-");
+    const timestamp = new Date().toISOString().slice(0,19).replace(/:/g,"-");
     XLSX.writeFile(wb, `machine_data_${timestamp}.xlsx`);
   }
 
   async function exportPDF() {
     const element = document.getElementById("pdfArea");
-    const canvas = await html2canvas(element, { scale: 2, scrollY: -window.scrollY });
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jspdf.jsPDF('l', 'pt', 'a4');
-    const margin = 20;
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (canvas.height * (pdfWidth - margin * 2)) / canvas.width;
-    pdf.addImage(imgData, 'PNG', margin, margin, pdfWidth - margin * 2, pdfHeight);
-    pdf.save(`machine_data_${new Date().toISOString().slice(0, 19).replace(/:/g, "-")}.pdf`);
+    try {
+      const canvas = await html2canvas(element, { scale: 2, scrollY: -window.scrollY });
+      const imgData = canvas.toDataURL("image/png");
+
+      const pdf = new jspdf.jsPDF('l', 'pt', 'a4');
+      const margin = 20;
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * (pdfWidth - margin * 2)) / canvas.width;
+
+      pdf.addImage(imgData, 'PNG', margin, margin, pdfWidth - margin * 2, pdfHeight);
+      pdf.save(`machine_data_${new Date().toISOString().slice(0,19).replace(/:/g,"-")}.pdf`);
+    } catch (e) {
+      alert("Failed to export PDF. Try again.");
+      console.error(e);
+    }
   }
 
   function toggleDark() {
-    const dark = document.body.classList.toggle("dark");
-    document.getElementById("themeBtn").innerText = dark ? "🌞 Light" : "🌓 Dark";
+    document.body.classList.toggle("dark");
+    localStorage.setItem("darkMode", document.body.classList.contains("dark") ? "1" : "0");
   }
 
-  function toggleControls() {
-    const controls = document.getElementById("controls");
-    controls.classList.toggle("minimized");
-  }
-
-  window.onload = () => {
+  window.onload = function () {
     if (localStorage.getItem("darkMode") === "1") {
       document.body.classList.add("dark");
-      document.getElementById("themeBtn").innerText = "🌞 Light";
     }
   };
+</script>
+
+<!-- ✅ Google Sheet Live Sync Script -->
+<script>
+const sheetId = "1LI7h0CNeUryEtzPheWmZU_7BEGTUyPoZu5P5C2ywcrc";
+const apiKey = "AIzaSyCDL6LnfaLdODmBJ3xVD-GlC4G1rHjsvII";
+
+const ranges = {
+  cell_b2: "machine data!B2",
+  cell_b3: "machine data!B3"
+};
+
+async function fetchAndUpdateCells() {
+  for (const [elementId, range] of Object.entries(ranges)) {
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(range)}?key=${apiKey}`;
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+      const value = data?.values?.[0]?.[0] ?? "";
+      document.getElementById(elementId).innerText = value;
+    } catch (err) {
+      console.error(`Error loading ${range}:`, err);
+    }
+  }
+}
+
+window.addEventListener("load", fetchAndUpdateCells);
 </script>
 
 </body>
