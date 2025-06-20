@@ -1,4 +1,3 @@
-<!-- 🔧 SPECIAL MACHINE DATA DASHBOARD -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -70,6 +69,7 @@
       padding-top: 100px;
       width: 900px;
       margin: 0 auto;
+      transform: none;
     }
     .controls {
       position: sticky;
@@ -84,6 +84,7 @@
       font-size: var(--controls-font-size);
       width: 100%;
       justify-content: center;
+      user-select: none;
     }
     .controls button,
     .controls input[type="text"] {
@@ -94,7 +95,10 @@
       background-color: var(--button-bg);
       color: white;
       cursor: pointer;
+      user-select: none;
+      transition: all 0.2s ease;
       min-width: 120px;
+      text-align: center;
     }
     .controls button:hover,
     .controls input[type="text"]:focus {
@@ -104,6 +108,7 @@
     }
     .controls button:active {
       background-color: var(--button-active-bg);
+      transform: scale(1.00);
     }
     .table-container {
       width: 100%;
@@ -126,9 +131,13 @@
     .label-cell {
       background-color: #eef4fb;
       font-weight: bold;
+      user-select: none;
     }
     .thick-group {
       border: 2px solid #333;
+    }
+    .thick-group td, .thick-group th {
+      border: 1px solid #ccc;
     }
     .centered-header th {
       text-align: center;
@@ -155,6 +164,7 @@
       font-size: 13px;
       color: #999;
       margin-top: 40px;
+      user-select: none;
     }
     @media print {
       header, footer, .controls {
@@ -166,6 +176,10 @@
       body {
         background: white;
         color: black;
+      }
+      table {
+        width: 100%;
+        border: 1px solid black;
       }
     }
     @media (max-width: 450px) {
@@ -182,6 +196,9 @@
         transform: translateX(-50%) scale(0.45);
         transform-origin: top center;
         position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
       }
       header {
         height: 40px;
@@ -198,6 +215,10 @@
         min-width: 90px;
         padding: 10px;
         font-size: 20px;
+      }
+      h1 {
+        font-size: 16px;
+        text-align: center;
       }
       table {
         font-size: 12px;
@@ -230,16 +251,16 @@
     <table id="machineTable">
       <tbody class="thick-group">
         <tr>
-          <th class="label-cell">Machine Number</th>
-          <td id="cell_b1"></td>
-          <th class="label-cell">Machine Type</th>
-          <td colspan="2" id="cell_machineType"></td>
+          <th class="label-cell" style="width: 20%;">Machine Number</th>
+          <td id="cell_b1" style="width: 15%;"></td>
+          <th class="label-cell" style="width: 20%;">Machine Type</th>
+          <td colspan="2" style="width: 45%;"></td>
         </tr>
         <tr>
           <th class="label-cell">Section</th>
           <td id="cell_b2"></td>
           <th class="label-cell">Line No</th>
-          <td colspan="2" id="cell_lineNo"></td>
+          <td colspan="2"></td>
         </tr>
       </tbody>
 
@@ -254,9 +275,9 @@
         </tr>
         <tr>
           <th class="label-cell">Seam Width</th>
-          <td id="cell_d1"></td>
+          <td id="cell_b6"></td>
           <th class="label-cell">Trim</th>
-          <td colspan="2" id="cell_d2"></td>
+          <td colspan="2" id="cell_b7"></td>
         </tr>
       </tbody>
 
@@ -264,37 +285,37 @@
 
       <tbody class="thick-group">
         <tr class="centered-header">
-          <th class="label-cell">No</th>
-          <th class="label-cell">Checking Point</th>
-          <th class="label-cell">Yes</th>
-          <th class="label-cell">No</th>
-          <th class="label-cell">Remarks</th>
+          <th class="label-cell" style="width: 4%;">No</th>
+          <th class="label-cell" style="width: 30%;">Checking Point</th>
+          <th class="label-cell" style="width: 14%;">Yes</th>
+          <th class="label-cell" style="width: 18%;">No</th>
+          <th class="label-cell" style="width: 34%;">Remarks</th>
         </tr>
         <tr class="check-row">
           <td>1</td>
           <td>All parts of the machines are tight?</td>
-          <td id="cell_d4"></td>
+          <td id="cell_b8"></td>
           <td></td>
           <td></td>
         </tr>
         <tr class="check-row">
           <td>2</td>
           <td>Machine table clean?</td>
-          <td id="cell_d5"></td>
+          <td id="cell_b9"></td>
           <td></td>
           <td></td>
         </tr>
         <tr class="check-row">
           <td>3</td>
           <td>All safety guard are available?</td>
-          <td id="cell_c8"></td>
+          <td id="cell_b10"></td>
           <td></td>
           <td></td>
         </tr>
         <tr class="check-row">
           <td>4</td>
           <td>All wire and pipes are arranged?</td>
-          <td id="cell_c9"></td>
+          <td id="cell_b11"></td>
           <td></td>
           <td></td>
         </tr>
@@ -303,7 +324,9 @@
   </div>
 </div>
 
-<footer>&copy; 2025 Israjul Riad | Smart Machine Monitoring</footer>
+<footer>
+  &copy; 2025 Israjul Riad | Smart Machine Monitoring
+</footer>
 
 <script>
   function goHome() {
@@ -314,7 +337,8 @@
     const search = document.getElementById("search").value.toLowerCase();
     const rows = document.querySelectorAll("#machineTable .check-row");
     rows.forEach(row => {
-      const text = row.cells[1].textContent.toLowerCase();
+      const checkPointCell = row.cells[1];
+      const text = checkPointCell.textContent.toLowerCase();
       row.style.display = text.includes(search) ? "" : "none";
     });
   }
@@ -335,14 +359,16 @@
     try {
       const canvas = await html2canvas(element, { scale: 2, scrollY: -window.scrollY });
       const imgData = canvas.toDataURL("image/png");
+
       const pdf = new jspdf.jsPDF('l', 'pt', 'a4');
       const margin = 20;
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = (canvas.height * (pdfWidth - margin * 2)) / canvas.width;
+
       pdf.addImage(imgData, 'PNG', margin, margin, pdfWidth - margin * 2, pdfHeight);
       pdf.save(`machine_data_${new Date().toISOString().slice(0,19).replace(/:/g,"-")}.pdf`);
     } catch (e) {
-      alert("Failed to export PDF.");
+      alert("Failed to export PDF. Try again.");
       console.error(e);
     }
   }
@@ -360,32 +386,34 @@
   };
 </script>
 
+<!-- ✅ Google Sheet Live Sync Script -->
 <script>
 const sheetId = "1LI7h0CNeUryEtzPheWmZU_7BEGTUyPoZu5P5C2ywcrc";
 const apiKey = "AIzaSyCDL6LnfaLdODmBJ3xVD-GlC4G1rHjsvII";
 
+// Map of element IDs to Google Sheet ranges:
 const ranges = {
-  cell_b1: "machine data!B1",
-  cell_b2: "machine data!B2",
-  cell_b4: "machine data!B4",
-  cell_b5: "machine data!B5",
-  cell_d1: "machine data!D1",
-  cell_d2: "machine data!D2",
-  cell_d4: "machine data!D4",
-  cell_d5: "machine data!D5",
-  cell_c8: "machine data!C8",
-  cell_c9: "machine data!C9"
+  cell_b1: "machine data!B1",  // Machine Number
+  cell_b2: "machine data!B2",  // Section
+  cell_b4: "machine data!B4",  // Style Number
+  cell_b5: "machine data!B5",  // Operation Name
+  cell_d1: "machine data!D1",  // Seam Width
+  cell_d2: "machine data!D2",  // Trim
+  cell_d4: "machine data!D4",  // Checking Point 1 Yes
+  cell_d5: "machine data!D5",  // Checking Point 2 Yes
+  cell_c8: "machine data!C8",  // Checking Point 3 Yes
+  cell_c9: "machine data!c9"   // Checking Point 4 Yes
 };
 
 async function fetchAndUpdateCells() {
-  for (const [id, range] of Object.entries(ranges)) {
+  for (const [elementId, range] of Object.entries(ranges)) {
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(range)}?key=${apiKey}`;
     try {
       const res = await fetch(url);
       const data = await res.json();
       const value = data?.values?.[0]?.[0] ?? "";
-      const el = document.getElementById(id);
-      if (el) el.innerText = value;
+      const el = document.getElementById(elementId);
+      if(el) el.innerText = value;
     } catch (err) {
       console.error(`Error loading ${range}:`, err);
     }
