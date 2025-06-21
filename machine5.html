@@ -298,11 +298,50 @@
 }
 
 
+/* === Card Layout for a Futuristic, Clean Look === */
+.controls,
+.table-container,
+footer {
+  background-color: var(--bg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  padding: 16px;
+  transition: all 0.3s ease;
+}
+
+/* Optional: Card hover effect (for future animation upgrade) */
+.table-container:hover {
+  transform: translateY(-2px);
+  transition: transform 0.2s ease;
+}
+
+/* === Dark Mode Support === */
+body.dark .controls,
+body.dark .table-container,
+body.dark footer {
+  background-color: #1e1e1e;
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.05);
+}
+</style>
+
+
     /* existing CSS styles unchanged */
   </style>
 </head>
 <body>
 
+
+
+
+
+
+
+
+
+
+
+
+  
 <header>
   <div class="logo">
     <img src="logo.png" alt="Logo" />
