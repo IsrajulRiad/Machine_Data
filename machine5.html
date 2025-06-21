@@ -9,6 +9,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
+    /* Your existing styles here... (kept unchanged) */
+
     :root {
       --header-font-size: 22px;
       --controls-font-size: 14px;
@@ -343,19 +345,26 @@
       padding: 20px;
       border-radius: 10px;
       text-align: center;
-      border: 3px solid #005dbb;
-      box-shadow: 0 0 15px rgba(0,93,187,0.7);
+      /* border changed to black with rounded corners */
+      border: 3px solid black;
+      border-radius: 16px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
       max-width: 260px;
       margin: 20px;
       user-select: none;
     }
 
     #qrTitle {
+      margin-top: 12px;
+      user-select: none;
+      /* text color white, black background with padding and round edges */
+      color: white;
+      background-color: black;
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
       font-weight: bold;
       font-size: 18px;
-      margin-top: 12px; /* moved from bottom margin */
-      color: #004080;
-      user-select: none;
     }
 
     #qrcode {
@@ -381,7 +390,6 @@
     #qrModal button:hover {
       background-color: var(--button-hover-bg);
     }
-
   </style>
 </head>
 <body>
@@ -545,7 +553,7 @@
     localStorage.setItem("darkMode", document.body.classList.contains("dark") ? "1" : "0");
   }
 
-  // Google Sheets data fetch - fixed version
+  // Google Sheets data fetch
   const sheetId = "1LI7h0CNeUryEtzPheWmZU_7BEGTUyPoZu5P5C2ywcrc";
   const apiKey = "AIzaSyCDL6LnfaLdODmBJ3xVD-GlC4G1rHjsvII";
   const ranges = {
@@ -623,11 +631,12 @@
 
   async function downloadQR() {
     try {
-      // Create a canvas that includes QR code, text, and border
+      // Create a canvas that includes QR code, text, and border with rounded corners
       const canvas = document.createElement("canvas");
-      const size = 220; // border + qr + text space
+      const size = 220; // QR + padding
+      const textHeight = 30;
       canvas.width = size;
-      canvas.height = size + 30; // extra height for text
+      canvas.height = size + textHeight;
 
       const ctx = canvas.getContext("2d");
 
@@ -635,12 +644,25 @@
       ctx.fillStyle = "white";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Draw border
-      ctx.strokeStyle = "#005dbb";
+      // Rounded black border
+      const radius = 20;
       ctx.lineWidth = 6;
-      ctx.strokeRect(3, 3, size - 6, size - 6);
+      ctx.strokeStyle = "black";
 
-      // Draw QR code canvas inside temp div
+      ctx.beginPath();
+      ctx.moveTo(radius, 0);
+      ctx.lineTo(canvas.width - radius, 0);
+      ctx.quadraticCurveTo(canvas.width, 0, canvas.width, radius);
+      ctx.lineTo(canvas.width, canvas.height - textHeight - radius);
+      ctx.quadraticCurveTo(canvas.width, canvas.height - textHeight, canvas.width - radius, canvas.height - textHeight);
+      ctx.lineTo(radius, canvas.height - textHeight);
+      ctx.quadraticCurveTo(0, canvas.height - textHeight, 0, canvas.height - textHeight - radius);
+      ctx.lineTo(0, radius);
+      ctx.quadraticCurveTo(0, 0, radius, 0);
+      ctx.closePath();
+      ctx.stroke();
+
+      // Draw QR code inside with some padding
       const qrCanvas = qrContainer.querySelector("canvas");
       if (!qrCanvas) {
         alert("QR code not generated yet.");
@@ -648,16 +670,30 @@
       }
       ctx.drawImage(qrCanvas, 20, 20, 180, 180);
 
-      // Draw text centered below QR code
-      ctx.fillStyle = "#004080";
+      // Draw black background block behind text
+      const text = qrTitle.textContent;
+      ctx.fillStyle = "black";
+      const paddingX = 14;
+      const paddingY = 6;
       ctx.font = "bold 18px Segoe UI, Arial, sans-serif";
+      const textWidth = ctx.measureText(text).width;
+      const rectX = (canvas.width - textWidth) / 2 - paddingX / 2;
+      const rectY = canvas.height - textHeight + 6;
+      const rectWidth = textWidth + paddingX;
+      const rectHeight = 24;
+
+      ctx.fillRect(rectX, rectY, rectWidth, rectHeight);
+
+      // Draw white text
+      ctx.fillStyle = "white";
       ctx.textAlign = "center";
-      ctx.fillText(qrTitle.textContent, canvas.width / 2, size + 22);
+      ctx.textBaseline = "middle";
+      ctx.fillText(text, canvas.width / 2, rectY + rectHeight / 2);
 
       // Save image
       const link = document.createElement("a");
       link.href = canvas.toDataURL("image/png");
-      link.download = (qrTitle.textContent.trim() || "qr_code") + ".png";
+      link.download = (text.trim() || "qr_code") + ".png";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
