@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>Machine Data</title>
@@ -8,8 +9,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
 
-
-    :root {
+:root {
       --header-font-size: 22px;
       --controls-font-size: 14px;
       --table-font-size: 14px;
@@ -264,30 +264,40 @@
         padding: 6px;
       }
     }
-  </style>
+
+
+
+
     
-    /* All your CSS remains unchanged */
+   
+  </style>
 </head>
-<body><header>
+<body>
+
+<header>
   <div class="logo">
     <img src="logo.png" alt="Logo" />
   </div>
   <h1>SPECIAL MACHINE DATA</h1>
-</header><div class="page-wrapper">
+</header>
+
+<div class="page-wrapper">
   <div class="controls">
     <button onclick="goHome()">🏠 Home</button>
     <input type="text" id="search" placeholder="Search Checking Point..." oninput="filterTable()" />
     <button onclick="exportTable()">⬇ Excel</button>
     <button onclick="exportPDF()">🖨️ PDF</button>
     <button onclick="toggleDark()">🌓 Dark/Light</button>
-  </div>  <div class="table-container" id="pdfArea">
+  </div>
+
+  <div class="table-container" id="pdfArea">
     <table id="machineTable">
       <tbody class="thick-group">
         <tr>
           <th class="label-cell" style="width: 20%;">Machine Number</th>
           <td id="cell_b1" style="width: 15%;"></td>
           <th class="label-cell" style="width: 20%;">Machine Type</th>
-          <td colspan="2" style="width: 45%;"></td>
+          <td colspan="2"></td>
         </tr>
         <tr>
           <th class="label-cell">Section</th>
@@ -295,61 +305,87 @@
           <th class="label-cell">Line No</th>
           <td colspan="2"></td>
         </tr>
-      </tbody><tr><td colspan="5"></td></tr>
+      </tbody>
 
-  <tbody class="thick-group">
-    <tr>
-      <th class="label-cell">Style Number</th>
-      <td id="cell_b4"></td>
-      <th class="label-cell">Operation Name</th>
-      <td colspan="2" id="cell_b5"></td>
-    </tr>
-    <tr>
-      <th class="label-cell">Seam Width</th>
-      <td id="cell_d1"></td>
-      <th class="label-cell">Trim</th>
-      <td colspan="2" id="cell_d2"></td>
-    </tr>
-  </tbody>
+      <tr><td colspan="5"></td></tr>
 
-  <tr><td colspan="5"></td></tr>
+      <tbody class="thick-group">
+        <tr>
+          <th class="label-cell">Style Number</th>
+          <td id="cell_b4"></td>
+          <th class="label-cell">Operation Name</th>
+          <td colspan="2" id="cell_b5"></td>
+        </tr>
+        <tr>
+          <th class="label-cell">Seam Width</th>
+          <td colspan="2" id="cell_d1"></td>
+          <th class="label-cell">Trim</th>
+          <td colspan="2" id="cell_d2"></td>
+        </tr>
+      </tbody>
 
-  <tbody class="thick-group">
-    <tr class="centered-header">
-      <th class="label-cell" style="width: 4%;">No</th>
-      <th class="label-cell" style="width: 30%;">Checking Point</th>
-      <th class="label-cell" style="width: 14%;">Yes</th>
-      <th class="label-cell" style="width: 18%;">No</th>
-      <th class="label-cell" style="width: 34%;">Remarks</th>
-    </tr>
-    <tr class="check-row">
-      <td>1</td>
-      <td>All parts of the machines are tight?</td>
-      <td id="cell_d4"></td>
-      <td id="cell_c8"></td>
-      <td></td>
-    </tr>
-    <tr class="check-row">
-      <td>2</td>
-      <td>Machine table clean?</td>
-      <td id="cell_d5"></td>
-      <td id="cell_c9"></td>
-      <td></td>
-    </tr>
-    <tr class="check-row">
-      <td>3</td>
-      <td>All safety guard are available?</td>
-      <td id="cell_c10"></td>
-      <td id="cell_c11"></td>
-      <td></td>
-    </tr>
-  </tbody>
-</table>
+      <tr><td colspan="5"></td></tr>
 
+      <tbody class="thick-group">
+        <tr class="centered-header">
+          <th class="label-cell">No</th>
+          <th class="label-cell">Checking Point</th>
+          <th class="label-cell">Yes</th>
+          <th class="label-cell">No</th>
+          <th class="label-cell">Remarks</th>
+        </tr>
+        <tr class="check-row">
+          <td>1</td>
+          <td>All parts of the machines are tight?</td>
+          <td id="cell_d4"></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="check-row">
+          <td>2</td>
+          <td>Machine table clean?</td>
+          <td id="cell_d5"></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="check-row">
+          <td>3</td>
+          <td>All safety guard are available?</td>
+          <td id="cell_c8"></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="check-row">
+          <td>4</td>
+          <td>All wire and pipes are arranged?</td>
+          <td id="cell_c9"></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="check-row">
+          <td>5</td>
+          <td>Needle Guard Present?</td>
+          <td id="cell_c10"></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="check-row">
+          <td>6</td>
+          <td>Thread Cutter Functioning?</td>
+          <td id="cell_c11"></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-</div><footer>
+</div>
+
+<footer>
   &copy; 2025 Israjul Riad | Smart Machine Monitoring
-</footer><script>
+</footer>
+
+<script>
   function goHome() {
     window.location.href = "dashboard.html";
   }
@@ -403,7 +439,9 @@
     }
     fetchAndUpdateCells();
   };
-</script><script>
+</script>
+
+<script>
 const sheetId = "1LI7h0CNeUryEtzPheWmZU_7BEGTUyPoZu5P5C2ywcrc";
 const apiKey = "AIzaSyCDL6LnfaLdODmBJ3xVD-GlC4G1rHjsvII";
 
@@ -412,14 +450,14 @@ const ranges = {
   cell_b2: "machine data!B2",
   cell_b4: "machine data!B4",
   cell_b5: "machine data!B5",
-  cell_d1: "machine data!D1",
-  cell_d2: "machine data!D2",
-  cell_d4:E4: "machine data!D4:E4",
-  cell_d5: "machine data!D5:E5",
   cell_c8: "machine data!C8",
   cell_c9: "machine data!C9",
   cell_c10: "machine data!C10",
-  cell_c11: "machine data!C11"
+  cell_c11: "machine data!C11",
+  cell_d1: "machine data!D1",
+  cell_d2: "machine data!D2",
+  cell_d4: "machine data!D4",
+  cell_d5: "machine data!D5"
 };
 
 async function fetchAndUpdateCells() {
@@ -430,11 +468,13 @@ async function fetchAndUpdateCells() {
       const data = await res.json();
       const value = data?.values?.[0]?.[0] ?? "";
       const el = document.getElementById(elementId);
-      if(el) el.innerText = value;
+      if (el) el.innerText = value;
     } catch (err) {
       console.error(`Error loading ${range}:`, err);
     }
   }
 }
-</script></body>
+</script>
+
+</body>
 </html>
