@@ -7,9 +7,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <style>
 
-:root {
+  <style>
+    :root {
       --header-font-size: 22px;
       --controls-font-size: 14px;
       --table-font-size: 14px;
@@ -108,6 +108,10 @@
       transition: all 0.2s ease;
       min-width: 150px;
       text-align: center;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
 
     .controls button:hover,
@@ -120,6 +124,12 @@
     .controls button:active {
       background-color: var(--button-active-bg);
       transform: scale(1.00);
+      filter: brightness(110%);
+    }
+
+    .controls button:disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
     }
 
     .table-container {
@@ -267,38 +277,74 @@
   
     /* Center all cells that receive data from Google Sheets */
 
-#cell_b1,
-#cell_b2,
-#cell_b4,
-#cell_b5,
-#cell_d1,
-#cell_d2,
-#cell_d4,
-#cell_d5,
-#cell_c8,
-#cell_d8,
-#cell_e8,
-#cell_c9,
-#cell_d9,
-#cell_e9,
-#cell_c10,
-#cell_d10,
-#cell_e10,
-#cell_c11,
-#cell_d11,
-#cell_e11 {
-  text-align: center;
-}
+    #cell_b1,
+    #cell_b2,
+    #cell_b4,
+    #cell_b5,
+    #cell_d1,
+    #cell_d2,
+    #cell_d4,
+    #cell_d5,
+    #cell_c8,
+    #cell_d8,
+    #cell_e8,
+    #cell_c9,
+    #cell_d9,
+    #cell_e9,
+    #cell_c10,
+    #cell_d10,
+    #cell_e10,
+    #cell_c11,
+    #cell_d11,
+    #cell_e11 {
+      text-align: center;
+    }
 
-#machineTable tbody tr:nth-child(2) td:first-child,
-#machineTable tbody tr:nth-child(3) td:first-child,
-#machineTable tbody tr:nth-child(4) td:first-child,
-#machineTable tbody tr:nth-child(5) td:first-child {
-  text-align: center;
-}
+    #machineTable tbody tr:nth-child(2) td:first-child,
+    #machineTable tbody tr:nth-child(3) td:first-child,
+    #machineTable tbody tr:nth-child(4) td:first-child,
+    #machineTable tbody tr:nth-child(5) td:first-child {
+      text-align: center;
+    }
 
+    /* Animated Icons Always */
+    .spinner-icon {
+      display: inline-block;
+      margin-right: 6px;
+      user-select: none;
+    }
 
-    /* existing CSS styles unchanged */
+    #excelBtn .spinner-icon {
+      animation: slowSpin 2s linear infinite;
+    }
+
+    #pdfBtn .spinner-icon {
+      animation: flipSpin 2s ease-in-out infinite;
+    }
+
+    #darkBtn .spinner-icon {
+      animation: pulseGlowIcon 2.5s ease-in-out infinite;
+    }
+
+    @keyframes slowSpin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes flipSpin {
+      0% { transform: rotateY(0deg); }
+      50% { transform: rotateY(180deg); }
+      100% { transform: rotateY(360deg); }
+    }
+
+    @keyframes pulseGlowIcon {
+      0%, 100% {
+        text-shadow: 0 0 0px rgba(0, 153, 255, 0.2);
+      }
+      50% {
+        text-shadow: 0 0 8px rgba(0, 153, 255, 0.6);
+      }
+    }
   </style>
 </head>
 <body>
@@ -314,22 +360,26 @@
   <div class="controls">
     <button onclick="goHome()">🏠 Home</button>
     <input type="text" id="search" placeholder="Search Checking Point..." oninput="filterTable()" />
-    <button onclick="exportTable()">⬇ Excel</button>
-    <button onclick="exportPDF()">🖨️ PDF</button>
-    <button onclick="toggleDark()">🌓 Dark/Light</button>
+    <button id="excelBtn" onclick="exportTable()">
+      <span class="spinner-icon">⬇</span><span class="btn-content">Excel</span>
+    </button>
+    <button id="pdfBtn" onclick="exportPDF()">
+      <span class="spinner-icon">🖨️</span><span class="btn-content">PDF</span>
+    </button>
+    <button id="darkBtn" onclick="toggleDark()">
+      <span class="spinner-icon">🌓</span><span class="btn-content">Dark/Light</span>
+    </button>
   </div>
 
   <div class="table-container" id="pdfArea">
     <table id="machineTable">
-      
-    <colgroup>
-    <col style="width: 8%;">
-    <col style="width: 36%;">
-    <col style="width: 16%;">
-    <col style="width: 16%;">
-    <col style="width: 24%;">
-  </colgroup>
-      
+      <colgroup>
+        <col style="width: 8%;" />
+        <col style="width: 36%;" />
+        <col style="width: 16%;" />
+        <col style="width: 16%;" />
+        <col style="width: 24%;" />
+      </colgroup>
       <tbody class="thick-group">
         <tr>
           <th class="label-cell">Machine Number</th>
@@ -406,7 +456,7 @@
 </div>
 
 <footer>
-  &copy; 2025 Israjul Riad | Smart Machine Monitoring
+  &copy; 2025 Israjul Riad | Critical Machine Monitoring
 </footer>
 
 <script>
@@ -418,25 +468,41 @@
     const search = document.getElementById("search").value.toLowerCase();
     const rows = document.querySelectorAll("#machineTable .check-row");
     rows.forEach(row => {
-      const checkPointCell = row.cells[1];
-      const text = checkPointCell.textContent.toLowerCase();
+      const text = row.cells[1].textContent.toLowerCase();
       row.style.display = text.includes(search) ? "" : "none";
     });
   }
 
-  function exportTable() {
+  async function exportTable() {
+    const btn = document.getElementById("excelBtn");
+    const content = btn.querySelector(".btn-content");
     const table = document.getElementById("machineTable");
+
     if (!table || !table.innerHTML.trim()) {
       alert("No data to export!");
       return;
     }
+
+    content.textContent = "Exporting...";
+    btn.disabled = true;
+
+    await new Promise(r => setTimeout(r, 300));
     const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
     const timestamp = new Date().toISOString().slice(0,19).replace(/:/g,"-");
     XLSX.writeFile(wb, `machine_data_${timestamp}.xlsx`);
+
+    content.textContent = "Excel";
+    btn.disabled = false;
   }
 
   async function exportPDF() {
+    const btn = document.getElementById("pdfBtn");
+    const content = btn.querySelector(".btn-content");
     const element = document.getElementById("pdfArea");
+
+    content.textContent = "Generating...";
+    btn.disabled = true;
+
     try {
       const canvas = await html2canvas(element, { scale: 2, scrollY: -window.scrollY });
       const imgData = canvas.toDataURL("image/png");
@@ -452,6 +518,9 @@
       alert("Failed to export PDF. Try again.");
       console.error(e);
     }
+
+    content.textContent = "PDF";
+    btn.disabled = false;
   }
 
   function toggleDark() {
@@ -459,11 +528,10 @@
     localStorage.setItem("darkMode", document.body.classList.contains("dark") ? "1" : "0");
   }
 
-  
   const sheetId = "1LI7h0CNeUryEtzPheWmZU_7BEGTUyPoZu5P5C2ywcrc";
   const apiKey = "AIzaSyCDL6LnfaLdODmBJ3xVD-GlC4G1rHjsvII";
   const ranges = {
-    cell_b1: "machine data!T1",
+    cell_b1: "machine data!B1",
     cell_b2: "machine data!B2",
     cell_b4: "machine data!B4",
     cell_b5: "machine data!B5",
