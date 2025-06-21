@@ -7,9 +7,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
   <style>
-    :root {
+
+:root {
       --header-font-size: 22px;
       --controls-font-size: 14px;
       --table-font-size: 14px;
@@ -60,6 +60,14 @@
       justify-content: center;
     }
 
+    header h1 {
+  text-shadow: 0 0 6px rgba(255,255,255,0.4);
+}
+body.dark header h1 {
+  text-shadow: 0 0 10px rgba(0, 153, 255, 0.6);
+}
+
+
     .logo {
       position: absolute;
       top: 10px;
@@ -67,13 +75,13 @@
     }
 
     .logo img {
-      height: 50px;
+      height: 100px;
       user-select: none;
       pointer-events: none;
     }
 
     .page-wrapper {
-      padding-top: 100px;
+      padding-top: 80px; /* header height + 20px gap */
       width: 900px;
       margin: 0 auto;
       transform: none;
@@ -95,54 +103,19 @@
       user-select: none;
     }
 
-    /* Animated glowing button */
-    .controls button {
-      position: relative;
-      transition: color 0.3s ease;
-      z-index: 0;
+    .controls button,
+    .controls input[type="text"] {
+      padding: 10px;
+      font-size: inherit;
+      border: 1px solid #ccc;
       border-radius: 6px;
-      overflow: hidden;
       background-color: var(--button-bg);
       color: white;
       cursor: pointer;
       user-select: none;
-      min-width: 120px;
+      transition: all 0.2s ease;
+      min-width: 150px;
       text-align: center;
-      padding: 10px;
-      font-size: inherit;
-      border: 1px solid #ccc;
-    }
-
-    .controls button::before {
-      content: "";
-      position: absolute;
-      top: -4px;
-      bottom: -4px;
-      left: -4px;
-      right: -4px;
-      border-radius: 8px;
-      background: linear-gradient(45deg, #33aaff, #005dbb, #33aaff);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      filter: blur(8px);
-      z-index: -1;
-      animation: pulseGlow 3s infinite;
-      pointer-events: none;
-    }
-
-    .controls button:hover::before {
-      opacity: 1;
-    }
-
-    @keyframes pulseGlow {
-      0%, 100% {
-        filter: blur(8px);
-        opacity: 0.6;
-      }
-      50% {
-        filter: blur(14px);
-        opacity: 1;
-      }
     }
 
     .controls button:hover,
@@ -155,16 +128,6 @@
     .controls button:active {
       background-color: var(--button-active-bg);
       transform: scale(1.00);
-    }
-
-    .controls input[type="text"] {
-      padding: 10px;
-      font-size: inherit;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      min-width: 120px;
-      text-align: center;
-      color: black;
     }
 
     .table-container {
@@ -235,17 +198,6 @@
       user-select: none;
     }
 
-    /* Table rows fade and slide up on load */
-    #machineTable tbody.tr-visible tr {
-      opacity: 1 !important;
-      transform: translateY(0) !important;
-    }
-    #machineTable tbody tr {
-      opacity: 0;
-      transform: translateY(15px);
-      transition: opacity 0.5s ease, transform 0.5s ease;
-    }
-
     @media print {
       header, footer, .controls {
         display: none;
@@ -266,7 +218,8 @@
       }
     }
 
-    @media (max-width: 450px) {
+    /* 🔧 Mobile view with scale and centering */
+    @media (max-width: 750px) {
       html, body {
         margin: 0;
         padding: 0;
@@ -275,7 +228,7 @@
       }
 
       .page-wrapper {
-        padding-top: 100px;
+        padding-top: 85px;
         width: 214%;
         left: 50%;
         transform: translateX(-50%) scale(0.45);
@@ -319,6 +272,41 @@
         padding: 6px;
       }
     }
+  
+    /* Center all cells that receive data from Google Sheets */
+
+#cell_b1,
+#cell_b2,
+#cell_b4,
+#cell_b5,
+#cell_d1,
+#cell_d2,
+#cell_d4,
+#cell_d5,
+#cell_c8,
+#cell_d8,
+#cell_e8,
+#cell_c9,
+#cell_d9,
+#cell_e9,
+#cell_c10,
+#cell_d10,
+#cell_e10,
+#cell_c11,
+#cell_d11,
+#cell_e11 {
+  text-align: center;
+}
+
+#machineTable tbody tr:nth-child(2) td:first-child,
+#machineTable tbody tr:nth-child(3) td:first-child,
+#machineTable tbody tr:nth-child(4) td:first-child,
+#machineTable tbody tr:nth-child(5) td:first-child {
+  text-align: center;
+}
+
+
+    /* existing CSS styles unchanged */
   </style>
 </head>
 <body>
@@ -341,13 +329,92 @@
 
   <div class="table-container" id="pdfArea">
     <table id="machineTable">
-      <!-- Your table rows here, exactly as before -->
+      
+    <colgroup>
+    <col style="width: 8%;">
+    <col style="width: 36%;">
+    <col style="width: 16%;">
+    <col style="width: 16%;">
+    <col style="width: 24%;">
+  </colgroup>
+      
+      <tbody class="thick-group">
+        <tr>
+          <th class="label-cell">Machine Number</th>
+          <td id="cell_b1"></td>
+          <th class="label-cell">Machine Type</th>
+          <td colspan="2" id="cell_d1"></td>
+        </tr>
+        <tr>
+          <th class="label-cell">Section</th>
+          <td id="cell_b2"></td>
+          <th class="label-cell">Line No</th>
+          <td colspan="2" id="cell_d2"></td>
+        </tr>
+      </tbody>
+
+      <tr><td colspan="5"></td></tr>
+
+      <tbody class="thick-group">
+        <tr>
+          <th class="label-cell">Style Number</th>
+          <td id="cell_b4"></td>
+          <th class="label-cell">Operation Name</th>
+          <td colspan="2" id="cell_d4"></td>
+        </tr>
+        <tr>
+          <th class="label-cell">Seam Width</th>
+          <td id="cell_b5"></td>
+          <th class="label-cell">Trim</th>
+          <td colspan="2" id="cell_d5"></td>
+        </tr>
+      </tbody>
+
+      <tr><td colspan="5"></td></tr>
+
+      <tbody class="thick-group">
+        <tr class="centered-header">
+          <th class="label-cell">No</th>
+          <th class="label-cell">Checking Point</th>
+          <th class="label-cell">Yes</th>
+          <th class="label-cell">No</th>
+          <th class="label-cell">Remarks</th>
+        </tr>
+        <tr class="check-row">
+          <td>1</td>
+          <td>All parts of the machines are tight?</td>
+          <td id="cell_c8"></td>
+          <td id="cell_d8"></td>
+          <td id="cell_e8"></td>
+        </tr>
+        <tr class="check-row">
+          <td>2</td>
+          <td>Machine table clean?</td>
+          <td id="cell_c9"></td>
+          <td id="cell_d9"></td>
+          <td id="cell_e9"></td>
+        </tr>
+        <tr class="check-row">
+          <td>3</td>
+          <td>All safety guard are available?</td>
+          <td id="cell_c10"></td>
+          <td id="cell_d10"></td>
+          <td id="cell_e10"></td>
+        </tr>
+        <tr class="check-row">
+          <td>4</td>
+          <td>All wire and pipes are arranged?</td>
+          <td id="cell_c11"></td>
+          <td id="cell_d11"></td>
+          <td id="cell_e11"></td>
+        </tr>
+      </tbody>
     </table>
   </div>
 </div>
 
 <footer>
-  &copy; 2025 Israjul Riad | Smart Machine Monitoring
+  &copy; 2025 Israjul Riad | Critical Machine Monitoring
 </footer>
 
 <script>
@@ -400,53 +467,51 @@
     localStorage.setItem("darkMode", document.body.classList.contains("dark") ? "1" : "0");
   }
 
+  
+  const sheetId = "1LI7h0CNeUryEtzPheWmZU_7BEGTUyPoZu5P5C2ywcrc";
+  const apiKey = "AIzaSyCDL6LnfaLdODmBJ3xVD-GlC4G1rHjsvII";
+  const ranges = {
+    cell_b1: "machine data!B1",
+    cell_b2: "machine data!B2",
+    cell_b4: "machine data!B4",
+    cell_b5: "machine data!B5",
+    cell_d1: "machine data!D1",
+    cell_d2: "machine data!D2",
+    cell_d4: "machine data!D4",
+    cell_d5: "machine data!D5",
+    cell_c8: "machine data!C8",
+    cell_d8: "machine data!D8",
+    cell_e8: "machine data!E8",
+    cell_c9: "machine data!C9",
+    cell_d9: "machine data!D9",
+    cell_e9: "machine data!E9",
+    cell_c10: "machine data!C10",
+    cell_d10: "machine data!D10",
+    cell_e10: "machine data!E10",
+    cell_c11: "machine data!C11",
+    cell_d11: "machine data!D11",
+    cell_e11: "machine data!E11"
+  };
+
+  async function fetchAndUpdateCells() {
+    for (const [id, range] of Object.entries(ranges)) {
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(range)}?key=${apiKey}`;
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        document.getElementById(id).textContent = data.values?.[0]?.[0] || "";
+      } catch (err) {
+        console.error("Error loading range", range, err);
+      }
+    }
+  }
+
   window.onload = function () {
+    fetchAndUpdateCells();
     if (localStorage.getItem("darkMode") === "1") {
       document.body.classList.add("dark");
     }
-    // Trigger table rows animation
-    const tbody = document.querySelector("#machineTable tbody");
-    if (tbody) {
-      tbody.classList.add("tr-visible");
-    }
   };
-
-
-
-
-#cell_b1,
-#cell_b2,
-#cell_b4,
-#cell_b5,
-#cell_d1,
-#cell_d2,
-#cell_d4,
-#cell_d5,
-#cell_c8,
-#cell_d8,
-#cell_e8,
-#cell_c9,
-#cell_d9,
-#cell_e9,
-#cell_c10,
-#cell_d10,
-#cell_e10,
-#cell_c11,
-#cell_d11,
-#cell_e11 {
-  text-align: center;
-}
-
-#machineTable tbody tr:nth-child(2) td:first-child,
-#machineTable tbody tr:nth-child(3) td:first-child,
-#machineTable tbody tr:nth-child(4) td:first-child,
-#machineTable tbody tr:nth-child(5) td:first-child {
-  text-align: center;
-}
-
-
-
-  
 </script>
 
 </body>
