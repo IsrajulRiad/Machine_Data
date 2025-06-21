@@ -110,6 +110,37 @@
       text-align: center;
     }
 
+    .controls button {
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.controls button::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 300%;
+  background: rgba(255, 255, 255, 0.15);
+  transform: translate(-50%, -50%) rotate(45deg);
+  transition: width 0.4s ease;
+  z-index: -1;
+}
+
+.controls button:hover::before {
+  width: 300%;
+}
+
+.controls button:hover {
+  background-color: var(--button-hover-bg);
+  color: #fff;
+  box-shadow: 0 0 10px rgba(0, 125, 255, 0.5);
+}
+
+    
+
     .controls button:hover,
     .controls input[type="text"]:focus {
       background-color: var(--button-hover-bg);
