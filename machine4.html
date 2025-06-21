@@ -9,9 +9,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
-
-
-           :root {
+    :root {
       --header-font-size: 22px;
       --controls-font-size: 14px;
       --table-font-size: 14px;
@@ -24,6 +22,7 @@
       --button-hover-bg: #99ccff;
       --button-active-bg: #66b2ff;
     }
+
     body.dark {
       --bg: #121212;
       --text: #f0f0f0;
@@ -34,6 +33,7 @@
       --button-hover-bg: #556688;
       --button-active-bg: #7799aa;
     }
+
     body {
       font-family: "Segoe UI", Roboto, Arial, sans-serif;
       background-color: var(--bg);
@@ -42,6 +42,7 @@
       padding: 0;
       transition: background 0.3s, color 0.3s;
     }
+
     header {
       background: var(--header);
       color: white;
@@ -58,30 +59,44 @@
       align-items: center;
       justify-content: center;
     }
+
     header h1 {
-      text-shadow: 0 0 3px #ffffff;
+      text-shadow: 0 0 6px rgba(255,255,255,0.4);
       animation: headerPulse 1.5s ease-in-out infinite;
     }
-    @keyframes headerPulse {
-      0%, 100% { text-shadow: 0 0 3px #ffffff; }
-      50% { text-shadow: 0 0 10px #99ccff; }
+
+    body.dark header h1 {
+      text-shadow: 0 0 10px rgba(0, 153, 255, 0.6);
     }
+
+    @keyframes headerPulse {
+      0%, 100% {
+        text-shadow: 0 0 3px #ffffff;
+      }
+      50% {
+        text-shadow: 0 0 10px #99ccff;
+      }
+    }
+
     .logo {
       position: absolute;
       top: 10px;
       left: 10px;
     }
+
     .logo img {
       height: 100px;
       user-select: none;
       pointer-events: none;
     }
+
     .page-wrapper {
-      padding-top: 80px;
+      padding-top: 80px; /* header height + 20px gap */
       width: 900px;
       margin: 0 auto;
       transform: none;
     }
+
     .controls {
       position: sticky;
       top: 80px;
@@ -97,7 +112,9 @@
       justify-content: center;
       user-select: none;
     }
-    .controls button {
+
+    .controls button,
+    .controls input[type="text"] {
       padding: 10px;
       font-size: inherit;
       border: 1px solid #ccc;
@@ -110,52 +127,76 @@
       min-width: 150px;
       text-align: center;
     }
+
     .controls button:hover {
       box-shadow: 0 0 12px rgba(0, 153, 255, 0.4), 0 0 0 2px rgba(0, 153, 255, 0.15) inset;
       background: linear-gradient(135deg, #66b2ff, #005dbb);
     }
+
     .controls button:active {
       background-color: var(--button-active-bg);
       transform: scale(1.00);
     }
+
+    /* Spinning animation for QR and download icons */
+    .btn-icon.spin {
+      display: inline-block;
+      animation: spin 2s linear infinite;
+      margin-left: 6px;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
     .table-container {
       width: 100%;
       overflow-x: auto;
       border-radius: 8px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.075);
     }
+
     table {
       width: 100%;
       border-collapse: collapse;
       background-color: white;
       font-size: var(--table-font-size);
     }
+
     th, td {
       padding: 10px;
       border: 1px solid #ccc;
       text-align: left;
       white-space: nowrap;
     }
+
     .label-cell {
       background-color: #eef4fb;
       font-weight: bold;
       user-select: none;
     }
+
     .thick-group {
       border: 2px solid #333;
     }
+
     .thick-group td, .thick-group th {
       border: 1px solid #ccc;
     }
+
     .centered-header th {
       text-align: center;
     }
+
     tbody tr:nth-child(even) {
       background-color: #f8f8f8;
     }
+
     tbody tr:hover {
       background-color: var(--highlight);
     }
+
     body.dark table,
     body.dark th,
     body.dark td {
@@ -163,9 +204,11 @@
       background-color: #1e1e1e;
       border-color: #444;
     }
+
     body.dark .label-cell {
       background-color: #2a3b4d;
     }
+
     footer {
       text-align: center;
       padding: 20px;
@@ -174,29 +217,42 @@
       margin-top: 40px;
       user-select: none;
     }
+
     @media print {
       header, footer, .controls {
         display: none;
       }
+
       .page-wrapper {
         padding-top: 20px;
       }
+
       body {
         background: white;
         color: black;
       }
+
       table {
         width: 100%;
         border: 1px solid black;
       }
     }
+
+    /* 🔧 Mobile view with scale and centering */
     @media (max-width: 750px) {
+      header {
+        background: rgba(0, 64, 128, 0.75);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+      }
+
       html, body {
         margin: 0;
         padding: 0;
         overflow-x: hidden;
         width: 100vw;
       }
+
       .page-wrapper {
         padding-top: 85px;
         width: 214%;
@@ -208,61 +264,42 @@
         flex-direction: column;
         align-items: center;
       }
+
       header {
         height: 40px;
         font-size: 20px;
       }
+
       .logo img {
         height: 30px;
       }
+
       .controls {
         font-size: 20px;
       }
-      .controls button {
+
+      .controls button,
+      .controls input[type="text"] {
         min-width: 90px;
         padding: 10px;
         font-size: 20px;
       }
+
       h1 {
         font-size: 16px;
         text-align: center;
       }
+
       table {
         font-size: 12px;
       }
+
       th, td {
         padding: 6px;
       }
     }
-    #qrModal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-    #qrModalContent {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      text-align: center;
-    }
-    #qrModalContent img {
-      width: 180px;
-      height: 180px;
-    }
-    #qrModalContent button {
-      margin-top: 10px;
-      margin-left: 10px;
-    }
-    
-    /* Existing CSS remains unchanged */
 
+    /* Center all cells that receive data from Google Sheets */
     #cell_b1,
     #cell_b2,
     #cell_b4,
@@ -302,204 +339,323 @@
       to { background-color: transparent; }
     }
 
-    
-    /* CSS unchanged, already handled above */
+    /* QR Modal styles */
+    #qrModal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #qrModalContent {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      border: 3px solid #005dbb;
+      box-shadow: 0 0 15px rgba(0,93,187,0.7);
+      max-width: 260px;
+      margin: 20px;
+    }
+
+    #qrTitle {
+      font-weight: bold;
+      font-size: 18px;
+      margin-bottom: 15px;
+      color: #004080;
+      user-select: none;
+    }
+
+    #qrcode {
+      margin: 0 auto 10px auto;
+      width: 180px;
+      height: 180px;
+    }
+
+    #qrModal button {
+      margin: 5px;
+      padding: 8px 15px;
+      border-radius: 6px;
+      border: none;
+      background-color: var(--button-bg);
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+
+    #qrModal button:hover {
+      background-color: var(--button-hover-bg);
+    }
+
   </style>
 </head>
 <body>
-  <div id="qrModal">
-    <div id="qrModalContent">
-      <div id="qrcode"></div>
-      <br />
-      <button onclick="downloadQR()">Download</button>
-      <button onclick="closeQRModal()">Close</button>
-    </div>
+
+<header>
+  <div class="logo">
+    <img src="logo.png" alt="Logo" />
   </div>
-  <header>
-    <div class="logo">
-      <img src="logo.png" alt="Logo" />
-    </div>
-    <h1>SPECIAL MACHINE DATA</h1>
-  </header>
-  <div class="page-wrapper">
-    <div class="controls">
-      <button onclick="goHome()">🏠 Home</button>
-      <button onclick="exportTable()">⬇ Excel</button>
-      <button onclick="exportPDF()">🖨️ PDF</button>
-      <button onclick="generateQRCode()">🔳 QR</button>
-      <button onclick="toggleDark()">🌓 Dark/Light</button>
-    </div>
-    <div class="table-container" id="pdfArea">
-      <table id="machineTable">
-        <colgroup>
-          <col style="width: 8%;">
-          <col style="width: 36%;">
-          <col style="width: 16%;">
-          <col style="width: 16%;">
-          <col style="width: 24%;">
-        </colgroup>
-        <tbody class="thick-group">
-          <tr>
-            <th class="label-cell">Machine Number</th>
-            <td id="cell_b1"></td>
-            <th class="label-cell">Machine Type</th>
-            <td colspan="2" id="cell_d1"></td>
-          </tr>
-          <tr>
-            <th class="label-cell">Section</th>
-            <td id="cell_b2"></td>
-            <th class="label-cell">Line No</th>
-            <td colspan="2" id="cell_d2"></td>
-          </tr>
-        </tbody>
-        <tr><td colspan="5"></td></tr>
-        <tbody class="thick-group">
-          <tr>
-            <th class="label-cell">Style Number</th>
-            <td id="cell_b4"></td>
-            <th class="label-cell">Operation Name</th>
-            <td colspan="2" id="cell_d4"></td>
-          </tr>
-          <tr>
-            <th class="label-cell">Seam Width</th>
-            <td id="cell_b5"></td>
-            <th class="label-cell">Trim</th>
-            <td colspan="2" id="cell_d5"></td>
-          </tr>
-        </tbody>
-        <tr><td colspan="5"></td></tr>
-        <tbody class="thick-group">
-          <tr class="centered-header">
-            <th class="label-cell">No</th>
-            <th class="label-cell">Checking Point</th>
-            <th class="label-cell">Yes</th>
-            <th class="label-cell">No</th>
-            <th class="label-cell">Remarks</th>
-          </tr>
-          <tr class="check-row">
-            <td>1</td>
-            <td>All parts of the machines are tight?</td>
-            <td id="cell_c8"></td>
-            <td id="cell_d8"></td>
-            <td id="cell_e8"></td>
-          </tr>
-          <tr class="check-row">
-            <td>2</td>
-            <td>Machine table clean?</td>
-            <td id="cell_c9"></td>
-            <td id="cell_d9"></td>
-            <td id="cell_e9"></td>
-          </tr>
-          <tr class="check-row">
-            <td>3</td>
-            <td>All safety guard are available?</td>
-            <td id="cell_c10"></td>
-            <td id="cell_d10"></td>
-            <td id="cell_e10"></td>
-          </tr>
-          <tr class="check-row">
-            <td>4</td>
-            <td>All wire and pipes are arranged?</td>
-            <td id="cell_c11"></td>
-            <td id="cell_d11"></td>
-            <td id="cell_e11"></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+  <h1>SPECIAL MACHINE DATA</h1>
+</header>
+
+<div class="page-wrapper">
+  <div class="controls">
+    <button onclick="goHome()">🏠 Home</button>
+
+    <!-- QR Code button replaces search -->
+    <button id="qrButton" onclick="openQRModal()">
+      QR <span class="btn-icon spin">🔲</span>
+    </button>
+
+    <button onclick="exportTable()">
+      ⬇ Excel <span class="btn-icon spin">⬇️</span>
+    </button>
+
+    <button onclick="exportPDF()">🖨️ PDF</button>
+
+    <button onclick="toggleDark()">🌓 Dark/Light</button>
   </div>
-  <footer>
-    &copy; 2025 Israjul Riad | Critical Machine Monitoring
-  </footer>
-  <script>
-    const sheetId = "1LI7h0CNeUryEtzPheWmZU_7BEGTUyPoZu5P5C2ywcrc";
-    const apiKey = "AIzaSyCDL6LnfaLdODmBJ3xVD-GlC4G1rHjsvII";
-    const ranges = {
-      cell_b1: "machine data!B1",
-      cell_b2: "machine data!B2",
-      cell_b4: "machine data!B4",
-      cell_b5: "machine data!B5",
-      cell_d1: "machine data!D1",
-      cell_d2: "machine data!D2",
-      cell_d4: "machine data!D4",
-      cell_d5: "machine data!D5",
-      cell_c8: "machine data!C8",
-      cell_d8: "machine data!D8",
-      cell_e8: "machine data!E8",
-      cell_c9: "machine data!C9",
-      cell_d9: "machine data!D9",
-      cell_e9: "machine data!E9",
-      cell_c10: "machine data!C10",
-      cell_d10: "machine data!D10",
-      cell_e10: "machine data!E10",
-      cell_c11: "machine data!C11",
-      cell_d11: "machine data!D11",
-      cell_e11: "machine data!E11"
-    };
 
-    async function fetchAndUpdateCells() {
-      for (const [id, range] of Object.entries(ranges)) {
-        const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(range)}?key=${apiKey}`;
-        try {
-          const res = await fetch(url);
-          const data = await res.json();
-          document.getElementById(id).textContent = data.values?.[0]?.[0] || "";
-        } catch (err) {
-          console.error("Error loading range", range, err);
-        }
-      }
+  <div class="table-container" id="pdfArea">
+    <table id="machineTable">
+      <colgroup>
+        <col style="width: 8%;">
+        <col style="width: 36%;">
+        <col style="width: 16%;">
+        <col style="width: 16%;">
+        <col style="width: 24%;">
+      </colgroup>
+
+      <tbody class="thick-group">
+        <tr>
+          <th class="label-cell">Machine Number</th>
+          <td id="cell_b1"></td>
+          <th class="label-cell">Machine Type</th>
+          <td colspan="2" id="cell_d1"></td>
+        </tr>
+        <tr>
+          <th class="label-cell">Section</th>
+          <td id="cell_b2"></td>
+          <th class="label-cell">Line No</th>
+          <td colspan="2" id="cell_d2"></td>
+        </tr>
+      </tbody>
+
+      <tr><td colspan="5"></td></tr>
+
+      <tbody class="thick-group">
+        <tr>
+          <th class="label-cell">Style Number</th>
+          <td id="cell_b4"></td>
+          <th class="label-cell">Operation Name</th>
+          <td colspan="2" id="cell_d4"></td>
+        </tr>
+        <tr>
+          <th class="label-cell">Seam Width</th>
+          <td id="cell_b5"></td>
+          <th class="label-cell">Trim</th>
+          <td colspan="2" id="cell_d5"></td>
+        </tr>
+      </tbody>
+
+      <tr><td colspan="5"></td></tr>
+
+      <tbody class="thick-group">
+        <tr class="centered-header">
+          <th class="label-cell">No</th>
+          <th class="label-cell">Checking Point</th>
+          <th class="label-cell">Yes</th>
+          <th class="label-cell">No</th>
+          <th class="label-cell">Remarks</th>
+        </tr>
+        <tr class="check-row">
+          <td>1</td>
+          <td>All parts of the machines are tight?</td>
+          <td id="cell_c8"></td>
+          <td id="cell_d8"></td>
+          <td id="cell_e8"></td>
+        </tr>
+        <tr class="check-row">
+          <td>2</td>
+          <td>Machine table clean?</td>
+          <td id="cell_c9"></td>
+          <td id="cell_d9"></td>
+          <td id="cell_e9"></td>
+        </tr>
+        <tr class="check-row">
+          <td>3</td>
+          <td>All safety guard are available?</td>
+          <td id="cell_c10"></td>
+          <td id="cell_d10"></td>
+          <td id="cell_e10"></td>
+        </tr>
+        <tr class="check-row">
+          <td>4</td>
+          <td>All wire and pipes are arranged?</td>
+          <td id="cell_c11"></td>
+          <td id="cell_d11"></td>
+          <td id="cell_e11"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<footer>
+  &copy; 2025 Israjul Riad | Critical Machine Monitoring
+</footer>
+
+<!-- QR Modal -->
+<div id="qrModal">
+  <div id="qrModalContent">
+    <div id="qrTitle">QR Code</div>
+    <div id="qrcode"></div>
+    <button onclick="downloadQR()">Download</button>
+    <button onclick="closeQRModal()">Close</button>
+  </div>
+</div>
+
+<script>
+  // Navigation
+  function goHome() {
+    window.location.href = "dashboard.html";
+  }
+
+  // Export Excel
+  function exportTable() {
+    const table = document.getElementById("machineTable");
+    if (!table || !table.innerHTML.trim()) {
+      alert("No data to export!");
+      return;
     }
+    const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
+    const timestamp = new Date().toISOString().slice(0,19).replace(/:/g,"-");
+    XLSX.writeFile(wb, `machine_data_${timestamp}.xlsx`);
+  }
 
-    function goHome() {
-      window.location.href = "dashboard.html";
-    }
-
-    function exportTable() {
-      const table = document.getElementById("machineTable");
-      const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
-      XLSX.writeFile(wb, "machine_data.xlsx");
-    }
-
-    async function exportPDF() {
-      const element = document.getElementById("pdfArea");
-      const canvas = await html2canvas(element);
+  // Export PDF
+  async function exportPDF() {
+    const element = document.getElementById("pdfArea");
+    try {
+      const canvas = await html2canvas(element, { scale: 2, scrollY: -window.scrollY });
       const imgData = canvas.toDataURL("image/png");
+
       const pdf = new jspdf.jsPDF('l', 'pt', 'a4');
-      pdf.addImage(imgData, 'PNG', 20, 20, 800, 550);
-      pdf.save("machine_data.pdf");
-    }
+      const margin = 20;
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * (pdfWidth - margin * 2)) / canvas.width;
 
-    function toggleDark() {
-      document.body.classList.toggle("dark");
-      localStorage.setItem("darkMode", document.body.classList.contains("dark") ? "1" : "0");
+      pdf.addImage(imgData, 'PNG', margin, margin, pdfWidth - margin * 2, pdfHeight);
+      pdf.save(`machine_data_${new Date().toISOString().slice(0,19).replace(/:/g,"-")}.pdf`);
+    } catch (e) {
+      alert("Failed to export PDF. Try again.");
+      console.error(e);
     }
+  }
 
-    function generateQRCode() {
-      const url = window.location.href;
-      const qrContainer = document.getElementById("qrcode");
-      qrContainer.innerHTML = "";
-      new QRCode(qrContainer, { text: url, width: 180, height: 180 });
-      document.getElementById("qrModal").style.display = "flex";
-    }
+  // Dark mode toggle
+  function toggleDark() {
+    document.body.classList.toggle("dark");
+    localStorage.setItem("darkMode", document.body.classList.contains("dark") ? "1" : "0");
+  }
 
-    function closeQRModal() {
-      document.getElementById("qrModal").style.display = "none";
-    }
+  // Google Sheets data fetch
+  const sheetId = "1LI7h0CNeUryEtzPheWmZU_7BEGTUyPoZu5P5C2ywcrc";
+  const apiKey = "AIzaSyCDL6LnfaLdODmBJ3xVD-GlC4G1rHjsvII";
+  const ranges = {
+    cell_b1: "machine data!B1",
+    cell_b2: "machine data!B2",
+    cell_b4: "machine data!B4",
+    cell_b5: "machine data!B5",
+    cell_d1: "machine data!D1",
+    cell_d2: "machine data!D2",
+    cell_d4: "machine data!D4",
+    cell_d5: "machine data!D5",
+    cell_c8: "machine data!C8",
+    cell_d8: "machine data!D8",
+    cell_e8: "machine data!E8",
+    cell_c9: "machine data!C9",
+    cell_d9: "machine data!D9",
+    cell_e9: "machine data!E9",
+    cell_c10: "machine data!C10",
+    cell_d10: "machine data!D10",
+    cell_e10: "machine data!E10",
+    cell_c11: "machine data!C11",
+    cell_d11: "machine data!D11",
+    cell_e11: "machine data!E11"
+  };
 
-    function downloadQR() {
-      const canvas = document.querySelector("#qrcode canvas");
-      const link = document.createElement("a");
-      link.download = "qr_code.png";
-      link.href = canvas.toDataURL("image/png");
-      link.click();
-    }
-
-    window.onload = function () {
-      fetchAndUpdateCells();
-      if (localStorage.getItem("darkMode") === "1") {
-        document.body.classList.add("dark");
+  async function fetchAndUpdateCells() {
+    for (const [id, range] of Object.entries(ranges)) {
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(range)}?key=${apiKey}`;
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        document.getElementById(id).textContent = data.values?.[0]?.[0] || "";
+      } catch (err) {
+        console.error("Error loading range", range, err);
       }
-    };
-  </script>
+    }
+  }
+
+  window.onload = function () {
+    fetchAndUpdateCells();
+    if (localStorage.getItem("darkMode") === "1") {
+      document.body.classList.add("dark");
+    }
+  };
+
+  // QR Code Modal controls
+  const qrModal = document.getElementById("qrModal");
+  const qrTitle = document.getElementById("qrTitle");
+  const qrContainer = document.getElementById("qrcode");
+
+  function openQRModal() {
+    const url = window.location.href;
+    const machineNumber = document.getElementById("cell_b1").textContent.trim() || "QR Code";
+    qrTitle.textContent = machineNumber;
+    qrContainer.innerHTML = "";
+    new QRCode(qrContainer, {
+      text: url,
+      width: 180,
+      height: 180,
+      colorDark: "#000000",
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.H
+    });
+    qrModal.style.display = "flex";
+  }
+
+  function closeQRModal() {
+    qrModal.style.display = "none";
+    qrContainer.innerHTML = "";
+  }
+
+  function downloadQR() {
+    try {
+      // QRCode.js creates a <canvas> or <img> inside #qrcode, get canvas element
+      const canvas = qrContainer.querySelector("canvas");
+      if (!canvas) {
+        alert("QR code not generated yet.");
+        return;
+      }
+      const link = document.createElement("a");
+      link.href = canvas.toDataURL("image/png");
+      link.download = (document.getElementById("cell_b1").textContent.trim() || "qr_code") + ".png";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (e) {
+      alert("Failed to download QR code.");
+      console.error(e);
+    }
+  }
+</script>
+
 </body>
 </html>
