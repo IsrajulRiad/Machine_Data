@@ -67,13 +67,13 @@
     }
 
     .logo img {
-      height: 50px;
+      height: 100px;
       user-select: none;
       pointer-events: none;
     }
 
     .page-wrapper {
-      padding-top: 100px; /* header height + 20px gap */
+      padding-top: 80px; /* header height + 20px gap */
       width: 900px;
       margin: 0 auto;
       transform: none;
@@ -106,7 +106,7 @@
       cursor: pointer;
       user-select: none;
       transition: all 0.2s ease;
-      min-width: 120px;
+      min-width: 150px;
       text-align: center;
     }
 
@@ -211,7 +211,7 @@
     }
 
     /* 🔧 Mobile view with scale and centering */
-    @media (max-width: 450px) {
+    @media (max-width: 750px) {
       html, body {
         margin: 0;
         padding: 0;
@@ -220,7 +220,7 @@
       }
 
       .page-wrapper {
-        padding-top: 100px;
+        padding-top: 85px;
         width: 214%;
         left: 50%;
         transform: translateX(-50%) scale(0.45);
@@ -266,10 +266,7 @@
     }
   
     /* Center all cells that receive data from Google Sheets */
-#cell_a8,
-#cell_a9,
-#cell_a10,
-#cell_a11, 
+
 #cell_b1,
 #cell_b2,
 #cell_b4,
@@ -292,6 +289,14 @@
 #cell_e11 {
   text-align: center;
 }
+
+#machineTable tbody tr:nth-child(2) td:first-child,
+#machineTable tbody tr:nth-child(3) td:first-child,
+#machineTable tbody tr:nth-child(4) td:first-child,
+#machineTable tbody tr:nth-child(5) td:first-child {
+  text-align: center;
+}
+
 
     /* existing CSS styles unchanged */
   </style>
@@ -316,6 +321,15 @@
 
   <div class="table-container" id="pdfArea">
     <table id="machineTable">
+      
+    <colgroup>
+    <col style="width: 8%;">
+    <col style="width: 36%;">
+    <col style="width: 16%;">
+    <col style="width: 16%;">
+    <col style="width: 24%;">
+  </colgroup>
+      
       <tbody class="thick-group">
         <tr>
           <th class="label-cell">Machine Number</th>
