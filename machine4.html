@@ -138,18 +138,6 @@
       transform: scale(1.00);
     }
 
-    /* Spinning animation for QR and download icons */
-    .btn-icon.spin {
-      display: inline-block;
-      animation: spin 2s linear infinite;
-      margin-left: 6px;
-    }
-
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-
     .table-container {
       width: 100%;
       overflow-x: auto;
@@ -406,18 +394,9 @@
 <div class="page-wrapper">
   <div class="controls">
     <button onclick="goHome()">🏠 Home</button>
-
-    <!-- QR Code button replaces search -->
-    <button id="qrButton" onclick="openQRModal()">
-      QR <span class="btn-icon spin">🔲</span>
-    </button>
-
-    <button onclick="exportTable()">
-      ⬇ Excel <span class="btn-icon spin">⬇️</span>
-    </button>
-
+    <button id="qrButton" onclick="openQRModal()">QR 🔲</button>
+    <button onclick="exportTable()">⬇ Excel</button>
     <button onclick="exportPDF()">🖨️ PDF</button>
-
     <button onclick="toggleDark()">🌓 Dark/Light</button>
   </div>
 
@@ -564,7 +543,7 @@
     localStorage.setItem("darkMode", document.body.classList.contains("dark") ? "1" : "0");
   }
 
-  // Google Sheets data fetch
+  // Google Sheets data fetch - fixed version
   const sheetId = "1LI7h0CNeUryEtzPheWmZU_7BEGTUyPoZu5P5C2ywcrc";
   const apiKey = "AIzaSyCDL6LnfaLdODmBJ3xVD-GlC4G1rHjsvII";
   const ranges = {
@@ -591,19 +570,23 @@
   };
 
   async function fetchAndUpdateCells() {
-    for (const [id, range] of Object.entries(ranges)) {
+    const promises = Object.entries(ranges).map(async ([id, range]) => {
       const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(range)}?key=${apiKey}`;
       try {
         const res = await fetch(url);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
-        document.getElementById(id).textContent = data.values?.[0]?.[0] || "";
+        const value = data.values?.[0]?.[0] ?? "";
+        const el = document.getElementById(id);
+        if (el) el.textContent = value;
       } catch (err) {
         console.error("Error loading range", range, err);
       }
-    }
+    });
+    await Promise.all(promises);
   }
 
-  window.onload = function () {
+  window.onload = () => {
     fetchAndUpdateCells();
     if (localStorage.getItem("darkMode") === "1") {
       document.body.classList.add("dark");
@@ -638,7 +621,6 @@
 
   function downloadQR() {
     try {
-      // QRCode.js creates a <canvas> or <img> inside #qrcode, get canvas element
       const canvas = qrContainer.querySelector("canvas");
       if (!canvas) {
         alert("QR code not generated yet.");
