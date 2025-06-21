@@ -232,9 +232,43 @@
         padding: 6px;
       }
     }
+    #qrModal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    #qrModalContent {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+    }
+    #qrModalContent img {
+      width: 180px;
+      height: 180px;
+    }
+    #qrModalContent button {
+      margin-top: 10px;
+      margin-left: 10px;
+    }
   </style>
 </head>
 <body>
+  <div id="qrModal">
+    <div id="qrModalContent">
+      <div id="qrcode"></div>
+      <br />
+      <button onclick="downloadQR()">Download</button>
+      <button onclick="closeQRModal()">Close</button>
+    </div>
+  </div>
   <header>
     <div class="logo">
       <img src="logo.png" alt="Logo" />
@@ -249,7 +283,6 @@
       <button onclick="generateQRCode()">🔳 QR</button>
       <button onclick="toggleDark()">🌓 Dark/Light</button>
     </div>
-    <div id="qrcode" style="text-align:center; margin-bottom: 20px;"></div>
     <div class="table-container" id="pdfArea">
       <table id="machineTable">
         <thead>
@@ -318,6 +351,7 @@
       localStorage.setItem("darkMode", document.body.classList.contains("dark") ? "1" : "0");
     }
     function generateQRCode() {
+      const modal = document.getElementById("qrModal");
       const qrContainer = document.getElementById("qrcode");
       qrContainer.innerHTML = "";
       const currentUrl = window.location.href;
@@ -329,13 +363,19 @@
         colorLight: "#ffffff",
         correctLevel: QRCode.CorrectLevel.H
       });
-      setTimeout(() => {
-        const img = qrContainer.querySelector("img");
+      modal.style.display = "flex";
+    }
+    function closeQRModal() {
+      document.getElementById("qrModal").style.display = "none";
+    }
+    function downloadQR() {
+      const img = document.querySelector("#qrcode img");
+      if (img) {
         const a = document.createElement("a");
         a.href = img.src;
         a.download = "page_qr_code.png";
         a.click();
-      }, 1000);
+      }
     }
     window.onload = function () {
       if (localStorage.getItem("darkMode") === "1") {
