@@ -8,7 +8,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
-  
   :root {
     --header-font-size: 22px;
     --controls-font-size: 14px;
@@ -19,7 +18,7 @@
     --table-header: #036;
     --highlight: #e6f0fa;
     --button-bg: #005dbb;
-    --button-hover-bg: #99ccff;
+    --button-hover-bg: #0077ff;
     --button-active-bg: #66b2ff;
   }
 
@@ -97,52 +96,42 @@
 
   .controls button,
   .controls input[type="text"] {
-    padding: 10px;
+    position: relative;
+    overflow: hidden;
+    padding: 10px 16px;
     font-size: inherit;
     border: 1px solid #ccc;
     border-radius: 6px;
     background-color: var(--button-bg);
     color: white;
     cursor: pointer;
-    user-select: none;
-    transition: all 0.2s ease;
     min-width: 120px;
     text-align: center;
-  }
-
-  .controls button:active {
-    background-color: var(--button-active-bg);
-    transform: scale(1.00);
-  }
-
-  /* 🔥 Animated Button Hover Effect */
-  .controls button {
-    position: relative;
-    overflow: hidden;
     z-index: 1;
+    transition: background-color 0.3s, transform 0.3s;
   }
 
-  .controls button::after {
+  .controls button:hover {
+    background-color: var(--button-hover-bg);
+    transform: scale(1.03);
+  }
+
+  .controls button::before {
     content: "";
     position: absolute;
     top: 0;
     left: -75%;
-    width: 50%;
     height: 100%;
-    background: rgba(255, 255, 255, 0.25);
+    width: 50%;
+    background: rgba(255, 255, 255, 0.3);
     transform: skewX(-20deg);
+    z-index: 2;
     transition: left 0.5s ease;
-    z-index: 0;
+    pointer-events: none;
   }
 
-  .controls button:hover::after {
+  .controls button:hover::before {
     left: 125%;
-  }
-
-  .controls input[type="text"]:focus {
-    background-color: var(--button-hover-bg);
-    outline: none;
-    border-color: #888;
   }
 
   .table-container {
