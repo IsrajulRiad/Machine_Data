@@ -9,7 +9,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
-    :root {
+
+
+        :root {
       --header-font-size: 22px;
       --controls-font-size: 14px;
       --table-font-size: 14px;
@@ -258,6 +260,7 @@
       margin-top: 10px;
       margin-left: 10px;
     }
+    /* Same CSS as before */
   </style>
 </head>
 <body>
@@ -285,29 +288,75 @@
     </div>
     <div class="table-container" id="pdfArea">
       <table id="machineTable">
-        <thead>
+        <tbody class="thick-group">
+          <tr>
+            <th class="label-cell">Machine Number</th>
+            <td id="cell_b1"></td>
+            <th class="label-cell">Machine Type</th>
+            <td colspan="2" id="cell_d1"></td>
+          </tr>
+          <tr>
+            <th class="label-cell">Section</th>
+            <td id="cell_b2"></td>
+            <th class="label-cell">Line No</th>
+            <td colspan="2" id="cell_d2"></td>
+          </tr>
+        </tbody>
+
+        <tr><td colspan="5"></td></tr>
+
+        <tbody class="thick-group">
+          <tr>
+            <th class="label-cell">Style Number</th>
+            <td id="cell_b4"></td>
+            <th class="label-cell">Operation Name</th>
+            <td colspan="2" id="cell_d4"></td>
+          </tr>
+          <tr>
+            <th class="label-cell">Seam Width</th>
+            <td id="cell_b5"></td>
+            <th class="label-cell">Trim</th>
+            <td colspan="2" id="cell_d5"></td>
+          </tr>
+        </tbody>
+
+        <tr><td colspan="5"></td></tr>
+
+        <tbody class="thick-group">
           <tr class="centered-header">
-            <th>No</th>
-            <th>Checking Point</th>
-            <th>Yes</th>
-            <th>No</th>
-            <th>Remarks</th>
+            <th class="label-cell">No</th>
+            <th class="label-cell">Checking Point</th>
+            <th class="label-cell">Yes</th>
+            <th class="label-cell">No</th>
+            <th class="label-cell">Remarks</th>
           </tr>
-        </thead>
-        <tbody>
-          <tr>
+          <tr class="check-row">
             <td>1</td>
-            <td>Machine clean?</td>
-            <td>✔</td>
-            <td></td>
-            <td>OK</td>
+            <td>All parts of the machines are tight?</td>
+            <td id="cell_c8"></td>
+            <td id="cell_d8"></td>
+            <td id="cell_e8"></td>
           </tr>
-          <tr>
+          <tr class="check-row">
             <td>2</td>
-            <td>Wire secure?</td>
-            <td>✔</td>
-            <td></td>
-            <td>OK</td>
+            <td>Machine table clean?</td>
+            <td id="cell_c9"></td>
+            <td id="cell_d9"></td>
+            <td id="cell_e9"></td>
+          </tr>
+          <tr class="check-row">
+            <td>3</td>
+            <td>All safety guard are available?</td>
+            <td id="cell_c10"></td>
+            <td id="cell_d10"></td>
+            <td id="cell_e10"></td>
+          </tr>
+          <tr class="check-row">
+            <td>4</td>
+            <td>All wire and pipes are arranged?</td>
+            <td id="cell_c11"></td>
+            <td id="cell_d11"></td>
+            <td id="cell_e11"></td>
           </tr>
         </tbody>
       </table>
@@ -355,7 +404,7 @@
       const qrContainer = document.getElementById("qrcode");
       qrContainer.innerHTML = "";
       const currentUrl = window.location.href;
-      const qr = new QRCode(qrContainer, {
+      new QRCode(qrContainer, {
         text: currentUrl,
         width: 180,
         height: 180,
