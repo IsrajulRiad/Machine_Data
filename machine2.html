@@ -9,7 +9,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
 
-    :root {
+:root {
       --header-font-size: 22px;
       --controls-font-size: 14px;
       --table-font-size: 14px;
@@ -264,7 +264,9 @@
         padding: 6px;
       }
     }
-    /* styles omitted for brevity, keep as-is */
+  
+    
+    /* existing CSS styles unchanged */
   </style>
 </head>
 <body>
@@ -289,10 +291,10 @@
     <table id="machineTable">
       <tbody class="thick-group">
         <tr>
-          <th class="label-cell" style="width: 20%;">Machine Number</th>
-          <td id="cell_b1" style="width: 15%;"></td>
-          <th class="label-cell" style="width: 20%;">Machine Type</th>
-          <td colspan="2" id="cell_d1" style="width: 45%;"></td>
+          <th class="label-cell">Machine Number</th>
+          <td id="cell_b1"></td>
+          <th class="label-cell">Machine Type</th>
+          <td colspan="2" id="cell_d1"></td>
         </tr>
         <tr>
           <th class="label-cell">Section</th>
@@ -323,39 +325,39 @@
 
       <tbody class="thick-group">
         <tr class="centered-header">
-          <th class="label-cell" style="width: 4%;">No</th>
-          <th class="label-cell" style="width: 30%;">Checking Point</th>
-          <th class="label-cell" style="width: 14%;">Yes</th>
-          <th class="label-cell" style="width: 18%;">No</th>
-          <th class="label-cell" style="width: 34%;">Remarks</th>
+          <th class="label-cell">No</th>
+          <th class="label-cell">Checking Point</th>
+          <th class="label-cell">Yes</th>
+          <th class="label-cell">No</th>
+          <th class="label-cell">Remarks</th>
         </tr>
         <tr class="check-row">
           <td>1</td>
           <td>All parts of the machines are tight?</td>
           <td id="cell_c8"></td>
-          <td></td>
-          <td></td>
+          <td id="cell_d8"></td>
+          <td id="cell_e8"></td>
         </tr>
         <tr class="check-row">
           <td>2</td>
           <td>Machine table clean?</td>
           <td id="cell_c9"></td>
-          <td></td>
-          <td></td>
+          <td id="cell_d9"></td>
+          <td id="cell_e9"></td>
         </tr>
         <tr class="check-row">
           <td>3</td>
           <td>All safety guard are available?</td>
           <td id="cell_c10"></td>
-          <td></td>
-          <td></td>
+          <td id="cell_d10"></td>
+          <td id="cell_e10"></td>
         </tr>
         <tr class="check-row">
           <td>4</td>
           <td>All wire and pipes are arranged?</td>
           <td id="cell_c11"></td>
-          <td></td>
-          <td></td>
+          <td id="cell_d11"></td>
+          <td id="cell_e11"></td>
         </tr>
       </tbody>
     </table>
@@ -367,39 +369,6 @@
 </footer>
 
 <script>
-  const sheetId = "1LI7h0CNeUryEtzPheWmZU_7BEGTUyPoZu5P5C2ywcrc";
-  const apiKey = "AIzaSyCDL6LnfaLdODmBJ3xVD-GlC4G1rHjsvII";
-
-  const cellMap = {
-    cell_b1: "machine data!B1",
-    cell_b2: "machine data!B2",
-    cell_b4: "machine data!B4",
-    cell_b5: "machine data!B5",
-    cell_d1: "machine data!D1",
-    cell_d2: "machine data!D2",
-    cell_d4: "machine data!D4",
-    cell_d5: "machine data!D5",
-    cell_c8: "machine data!C8",
-    cell_c9: "machine data!C9",
-    cell_c10: "machine data!C10",
-    cell_c11: "machine data!C11"
-  };
-
-  async function fetchAndInject() {
-    for (const [id, range] of Object.entries(cellMap)) {
-      try {
-        const res = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(range)}?key=${apiKey}`);
-        const data = await res.json();
-        const el = document.getElementById(id);
-        if (el && data.values && data.values.length > 0) {
-          el.innerText = data.values[0][0];
-        }
-      } catch (err) {
-        console.error(`Error fetching range ${range}:`, err);
-      }
-    }
-  }
-
   function goHome() {
     window.location.href = "dashboard.html";
   }
@@ -449,11 +418,49 @@
     localStorage.setItem("darkMode", document.body.classList.contains("dark") ? "1" : "0");
   }
 
+  const sheetId = "YOUR_SHEET_ID_HERE";
+  const apiKey = "YOUR_API_KEY_HERE";
+  const ranges = {
+    cell_b1: "machine data!B1",
+    cell_b2: "machine data!B2",
+    cell_b4: "machine data!B4",
+    cell_b5: "machine data!B5",
+    cell_d1: "machine data!D1",
+    cell_d2: "machine data!D2",
+    cell_d4: "machine data!D4",
+    cell_d5: "machine data!D5",
+    cell_c8: "machine data!C8",
+    cell_d8: "machine data!D8",
+    cell_e8: "machine data!E8",
+    cell_c9: "machine data!C9",
+    cell_d9: "machine data!D9",
+    cell_e9: "machine data!E9",
+    cell_c10: "machine data!C10",
+    cell_d10: "machine data!D10",
+    cell_e10: "machine data!E10",
+    cell_c11: "machine data!C11",
+    cell_d11: "machine data!D11",
+    cell_e11: "machine data!E11"
+  };
+
+  async function fetchAndUpdateCells() {
+    for (const [id, range] of Object.entries(ranges)) {
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(range)}?key=${apiKey}`;
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        document.getElementById(id).textContent = data.values?.[0]?.[0] || "";
+      } catch (err) {
+        console.error("Error loading range", range, err);
+      }
+    }
+  }
+
   window.onload = function () {
+    fetchAndUpdateCells();
     if (localStorage.getItem("darkMode") === "1") {
       document.body.classList.add("dark");
     }
-    fetchAndInject();
   };
 </script>
 
