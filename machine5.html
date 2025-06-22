@@ -333,14 +333,11 @@ F<!DOCTYPE html>
     #qrModal {
       display: none;
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: black; /* make entire background outside the border black */
-      justify-content: center;
-      align-items: center;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
       z-index: 9999;
+      align-items: center;
+      justify-content: center;
     }
 
     #qrModalContent {
@@ -360,15 +357,15 @@ F<!DOCTYPE html>
     }
 
     #qrTitle {
-      margin-top: 5px;
+      margin-top: 12px;
       user-select: none;
       color: white;
       background-color: black;
       display: inline-block;
-      padding: 4px 20px;
-      border-radius: 20px;
+      padding: 4px 12px;
+      border-radius: 12px;
       font-weight: bold;
-      font-size: 20px;
+      font-size: 18px;
     }
 
     #qrcode {
