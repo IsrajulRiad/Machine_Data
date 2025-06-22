@@ -351,9 +351,9 @@
         0 0 20px rgba(0, 153, 255, 0.5),
         0 0 40px rgba(0, 153, 255, 0.3);
       transition: box-shadow 0.3s ease;
+      user-select: none;
       max-width: 260px;
       margin: 20px;
-      user-select: none;
     }
 
     #qrTitle {
@@ -577,151 +577,63 @@
     cell_e10: "machine data!E10",
     cell_c11: "machine data!C11",
     cell_d11: "machine data!D11",
-    cell_e11: "machine data!E11"
+    cell_e11: "machine data!E11",
   };
 
-  // Fetch and populate data from Google Sheets
-  async function fetchSheetData() {
-    for (const [id, range] of Object.entries(ranges)) {
-      const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(range)}?key=${apiKey}`;
-      try {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error(`HTTP error ${response.status}`);
-        const data = await response.json();
-        const value = (data.values && data.values[0][0]) || "";
-        document.getElementById(id).textContent = value;
-      } catch (e) {
-        console.error(`Failed to load ${id} from ${range}:`, e);
-        document.getElementById(id).textContent = "—";
-      }
-    }
+  async function fetchData() {
+    const rangeKeys = Object.keys(ranges);
+    const requests = rangeKeys.map(key =>
+      fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${ranges[key]}?key=${apiKey}`)
+        .then(res => res.json())
+        .then(data => {
+          const el = document.getElementById(key);
+          if (el && data.values && data.values[0]) {
+            el.textContent = data.values[0][0];
+          }
+        })
+        .catch(err => console.error("Error fetching", key, err))
+    );
+    await Promise.all(requests);
   }
 
-  // Call fetch on page load
-  window.addEventListener("load", fetchSheetData);
-
-  // QR Code Modal
-  const qrModal = document.getElementById("qrModal");
-  const qrcodeContainer = document.getElementById("qrcode");
-  const qrTitle = document.getElementById("qrTitle");
-  let qrCodeInstance = null;
-
+  // QR Modal
   function openQRModal() {
-    // Get machine number from cell_b1
-    const machineNumber = document.getElementById("cell_b1").textContent.trim() || "UNKNOWN";
-
-    // Clear previous QR code if any
-    qrcodeContainer.innerHTML = "";
-    qrTitle.textContent = machineNumber;
-
-    // Generate QR code with specific size and style
-    qrCodeInstance = new QRCode(qrcodeContainer, {
-      text: machineNumber,
+    document.getElementById("qrModal").style.display = "flex";
+    const qrContainer = document.getElementById("qrcode");
+    qrContainer.innerHTML = "";
+    const machineId = document.getElementById("cell_b1").textContent.trim() || "machine";
+    const currentUrl = window.location.href;
+    new QRCode(qrContainer, {
+      text: currentUrl,
       width: 180,
       height: 180,
-      colorDark: "#000000",
-      colorLight: "#ffffff",
+      colorDark: "#000",
+      colorLight: "#fff",
       correctLevel: QRCode.CorrectLevel.H
     });
-
-    qrModal.style.display = "flex";
+    document.getElementById("qrTitle").textContent = machineId;
   }
 
   function closeQRModal() {
-    qrModal.style.display = "none";
+    document.getElementById("qrModal").style.display = "none";
+    document.getElementById("qrcode").innerHTML = "";
   }
 
-  // Download QR code as PNG with black border and centered white text on black background
-  async function downloadQR() {
-    if (!qrCodeInstance) return;
-
-    // The QR code canvas or img is inside qrcodeContainer
-    // The QRCode.js generates <img> by default or <canvas>, but in our case it's <img>
-
-    const qrImg = qrcodeContainer.querySelector("img") || qrcodeContainer.querySelector("canvas");
-    if (!qrImg) {
-      alert("QR code not generated yet!");
-      return;
-    }
-
-    // Create offscreen canvas to add border and title text
-    const size = 220;  // bigger canvas size for border and text
-    const borderSize = 10;
-    const textHeight = 30;
-
-    // Create a new canvas
-    const canvas = document.createElement("canvas");
-    canvas.width = size;
-    canvas.height = size + textHeight;
-    const ctx = canvas.getContext("2d");
-
-    // Fill background black
-    ctx.fillStyle = "black";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Draw white border rectangle inside black background
-    ctx.strokeStyle = "white";
-    ctx.lineWidth = borderSize;
-    const borderOffset = borderSize / 2;
-    ctx.strokeRect(borderOffset, borderOffset, size - borderSize, size - borderSize);
-
-    // Draw the QR code image in center inside border
-    // Calculate position for QR code (180x180)
-    const qrX = (size - 180) / 2;
-    const qrY = borderSize + (size - 180 - borderSize * 2) / 2;
-
-    // Draw QR code image (img or canvas)
-    if (qrImg.tagName.toLowerCase() === "img") {
-      // Wait for image load if needed (usually already loaded)
-      ctx.drawImage(qrImg, qrX, qrY, 180, 180);
-    } else {
-      // qrImg is canvas
-      ctx.drawImage(qrImg, qrX, qrY, 180, 180);
-    }
-
-    // Draw centered white text below QR code
-    const machineNumber = qrTitle.textContent || "UNKNOWN";
-    ctx.fillStyle = "white";
-    ctx.font = "bold 22px Arial";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-
-    // Text center X
-    const textX = canvas.width / 2;
-    // Text center Y at bottom area
-    const textY = size + textHeight / 2;
-
-    ctx.fillText(machineNumber, textX, textY);
-
-    // Create a link and trigger download
-    canvas.toBlob(blob => {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `qr_code_${machineNumber.replace(/[^a-zA-Z0-9]/g, "_")}.png`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
+  function downloadQR() {
+    html2canvas(document.getElementById("qrcode"), { scale: 2 }).then(canvas => {
+      const link = document.createElement("a");
+      link.download = "machine_qrcode.png";
+      link.href = canvas.toDataURL();
+      link.click();
     });
   }
 
-  // Dark mode persistence on page load
-  window.addEventListener("load", () => {
+  // On load
+  document.addEventListener("DOMContentLoaded", () => {
+    fetchData();
     if (localStorage.getItem("darkMode") === "1") {
       document.body.classList.add("dark");
     }
   });
-
-  // Close modal on outside click or Escape key
-  qrModal.addEventListener("click", (e) => {
-    if (e.target === qrModal) closeQRModal();
-  });
-  window.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && qrModal.style.display === "flex") {
-      closeQRModal();
-    }
-  });
-</script>
-</body>
+</script></body>
 </html>
