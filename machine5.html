@@ -9,9 +9,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
-    /* Your existing styles here... (kept unchanged) */
 
-    :root {
+
+     :root {
       --header-font-size: 22px;
       --controls-font-size: 14px;
       --table-font-size: 14px;
@@ -329,394 +329,291 @@
       to { background-color: transparent; }
     }
 
-    /* QR Modal styles */
+
+
+
+    
+    /* QR Code Modal */
     #qrModal {
       display: none;
       position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.5);
-      z-index: 9999;
-      align-items: center;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.6);
       justify-content: center;
+      align-items: center;
+      z-index: 9999;
     }
-
     #qrModalContent {
       background: white;
       padding: 20px;
-      border-radius: 10px;
-      text-align: center;
-      /* border changed to black with rounded corners */
-      border: 3px solid black;
-      border-radius: 16px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.5);
-      max-width: 260px;
-      margin: 20px;
-      user-select: none;
-    }
-
-
-    #qrModalContent {
-  background: white;
-  padding: 20px;
-  border-radius: 16px;
-  text-align: center;
-  border: 2px solid #000;
-  box-shadow:
-    0 0 10px rgba(0, 153, 255, 0.7),
-    0 0 20px rgba(0, 153, 255, 0.5),
-    0 0 40px rgba(0, 153, 255, 0.3);
-  transition: box-shadow 0.3s ease;
-}
-
-    #qrTitle {
-      margin-top: 12px;
-      user-select: none;
-      /* text color white, black background with padding and round edges */
-      color: white;
-      background-color: black;
-      display: inline-block;
-      padding: 4px 12px;
       border-radius: 12px;
-      font-weight: bold;
-      font-size: 18px;
+      text-align: center;
+      border: 2px solid #000;
+      box-shadow: 0 0 20px rgba(0, 153, 255, 0.6);
     }
-
     #qrcode {
-      margin: 0 auto;
-      width: 180px;
-      height: 180px;
-      user-select: none;
+      padding: 10px;
+      border-radius: 12px;
+      border: 2px solid black;
+      background: #ffffff;
+      display: inline-block;
     }
-
-    #qrModal button {
-      margin: 5px;
-      padding: 8px 15px;
+    #qrTitle {
+      margin-top: 10px;
+      padding: 6px 12px;
+      font-weight: bold;
+      font-size: 16px;
+      color: white;
+      background: black;
+      border-radius: 6px;
+      display: inline-block;
+    }
+    .qr-buttons {
+      margin-top: 15px;
+    }
+    .qr-buttons button {
+      margin: 0 8px;
+      padding: 8px 16px;
+      font-size: 14px;
       border-radius: 6px;
       border: none;
-      background-color: var(--button-bg);
-      color: white;
-      font-size: 14px;
       cursor: pointer;
-      transition: background-color 0.3s ease;
-      user-select: none;
+      background-color: #005dbb;
+      color: white;
+      transition: background 0.3s ease;
     }
-
-    #qrModal button:hover {
-      background-color: var(--button-hover-bg);
+    .qr-buttons button:hover {
+      background-color: #003f88;
     }
   </style>
 </head>
 <body>
 
-<header>
-  <div class="logo">
-    <img src="logo.png" alt="Logo" />
-  </div>
-  <h1>SPECIAL MACHINE DATA</h1>
-</header>
-
-<div class="page-wrapper">
-  <div class="controls">
-    <button onclick="goHome()">🏠 Home</button>
-    <button id="qrButton" onclick="openQRModal()">QR 🔲</button>
-    <button onclick="exportTable()">⬇ Excel</button>
-    <button onclick="exportPDF()">🖨️ PDF</button>
-    <button onclick="toggleDark()">🌓 Dark/Light</button>
+  <!-- QR MODAL -->
+  <div id="qrModal">
+    <div id="qrModalContent">
+      <div id="qrcode"></div>
+      <div id="qrTitle"></div>
+      <div class="qr-buttons">
+        <button onclick="downloadQR()">Download</button>
+        <button onclick="closeQRModal()">Close</button>
+      </div>
+    </div>
   </div>
 
-  <div class="table-container" id="pdfArea">
-    <table id="machineTable">
-      <colgroup>
-        <col style="width: 8%;">
-        <col style="width: 36%;">
-        <col style="width: 16%;">
-        <col style="width: 16%;">
-        <col style="width: 24%;">
-      </colgroup>
+  <!-- Your existing page starts here -->
+  <header>
+    <div class="logo">
+      <img src="logo.png" alt="Logo" />
+    </div>
+    <h1>SPECIAL MACHINE DATA</h1>
+  </header>
 
-      <tbody class="thick-group">
-        <tr>
-          <th class="label-cell">Machine Number</th>
-          <td id="cell_b1"></td>
-          <th class="label-cell">Machine Type</th>
-          <td colspan="2" id="cell_d1"></td>
-        </tr>
-        <tr>
-          <th class="label-cell">Section</th>
-          <td id="cell_b2"></td>
-          <th class="label-cell">Line No</th>
-          <td colspan="2" id="cell_d2"></td>
-        </tr>
-      </tbody>
+  <div class="page-wrapper">
+    <div class="controls">
+      <button onclick="goHome()">🏠 Home</button>
+      <button onclick="generateQRCode()">🔗 QR</button>
+      <button onclick="exportTable()">⬇ Excel</button>
+      <button onclick="exportPDF()">🖨️ PDF</button>
+      <button onclick="toggleDark()">🌓 Dark/Light</button>
+    </div>
 
-      <tr><td colspan="5"></td></tr>
-
-      <tbody class="thick-group">
-        <tr>
-          <th class="label-cell">Style Number</th>
-          <td id="cell_b4"></td>
-          <th class="label-cell">Operation Name</th>
-          <td colspan="2" id="cell_d4"></td>
-        </tr>
-        <tr>
-          <th class="label-cell">Seam Width</th>
-          <td id="cell_b5"></td>
-          <th class="label-cell">Trim</th>
-          <td colspan="2" id="cell_d5"></td>
-        </tr>
-      </tbody>
-
-      <tr><td colspan="5"></td></tr>
-
-      <tbody class="thick-group">
-        <tr class="centered-header">
-          <th class="label-cell">No</th>
-          <th class="label-cell">Checking Point</th>
-          <th class="label-cell">Yes</th>
-          <th class="label-cell">No</th>
-          <th class="label-cell">Remarks</th>
-        </tr>
-        <tr class="check-row">
-          <td>1</td>
-          <td>All parts of the machines are tight?</td>
-          <td id="cell_c8"></td>
-          <td id="cell_d8"></td>
-          <td id="cell_e8"></td>
-        </tr>
-        <tr class="check-row">
-          <td>2</td>
-          <td>Machine table clean?</td>
-          <td id="cell_c9"></td>
-          <td id="cell_d9"></td>
-          <td id="cell_e9"></td>
-        </tr>
-        <tr class="check-row">
-          <td>3</td>
-          <td>All safety guard are available?</td>
-          <td id="cell_c10"></td>
-          <td id="cell_d10"></td>
-          <td id="cell_e10"></td>
-        </tr>
-        <tr class="check-row">
-          <td>4</td>
-          <td>All wire and pipes are arranged?</td>
-          <td id="cell_c11"></td>
-          <td id="cell_d11"></td>
-          <td id="cell_e11"></td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="table-container" id="pdfArea">
+      <table id="machineTable">
+        <tbody class="thick-group">
+          <tr>
+            <th class="label-cell">Machine Number</th>
+            <td id="cell_b1"></td>
+            <th class="label-cell">Machine Type</th>
+            <td colspan="2" id="cell_d1"></td>
+          </tr>
+          <tr>
+            <th class="label-cell">Section</th>
+            <td id="cell_b2"></td>
+            <th class="label-cell">Line No</th>
+            <td colspan="2" id="cell_d2"></td>
+          </tr>
+        </tbody>
+        <tr><td colspan="5"></td></tr>
+        <tbody class="thick-group">
+          <tr>
+            <th class="label-cell">Style Number</th>
+            <td id="cell_b4"></td>
+            <th class="label-cell">Operation Name</th>
+            <td colspan="2" id="cell_d4"></td>
+          </tr>
+          <tr>
+            <th class="label-cell">Seam Width</th>
+            <td id="cell_b5"></td>
+            <th class="label-cell">Trim</th>
+            <td colspan="2" id="cell_d5"></td>
+          </tr>
+        </tbody>
+        <tr><td colspan="5"></td></tr>
+        <tbody class="thick-group">
+          <tr class="centered-header">
+            <th class="label-cell">No</th>
+            <th class="label-cell">Checking Point</th>
+            <th class="label-cell">Yes</th>
+            <th class="label-cell">No</th>
+            <th class="label-cell">Remarks</th>
+          </tr>
+          <tr class="check-row">
+            <td>1</td>
+            <td>All parts of the machines are tight?</td>
+            <td id="cell_c8"></td>
+            <td id="cell_d8"></td>
+            <td id="cell_e8"></td>
+          </tr>
+          <tr class="check-row">
+            <td>2</td>
+            <td>Machine table clean?</td>
+            <td id="cell_c9"></td>
+            <td id="cell_d9"></td>
+            <td id="cell_e9"></td>
+          </tr>
+          <tr class="check-row">
+            <td>3</td>
+            <td>All safety guard are available?</td>
+            <td id="cell_c10"></td>
+            <td id="cell_d10"></td>
+            <td id="cell_e10"></td>
+          </tr>
+          <tr class="check-row">
+            <td>4</td>
+            <td>All wire and pipes are arranged?</td>
+            <td id="cell_c11"></td>
+            <td id="cell_d11"></td>
+            <td id="cell_e11"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
-</div>
 
-<footer>
-  &copy; 2025 Israjul Riad | Critical Machine Monitoring
-</footer>
+  <footer>
+    &copy; 2025 Israjul Riad | Critical Machine Monitoring
+  </footer>
 
-<!-- QR Modal -->
-<div id="qrModal">
-  <div id="qrModalContent">
-    <div id="qrcode"></div>
-    <div id="qrTitle"></div>
-    <button onclick="downloadQR()">Download</button>
-    <button onclick="closeQRModal()">Close</button>
-  </div>
-</div>
-
-<script>
-  // Navigation
-  function goHome() {
-    window.location.href = "dashboard.html";
-  }
-
-  // Export Excel
-  function exportTable() {
-    const table = document.getElementById("machineTable");
-    if (!table || !table.innerHTML.trim()) {
-      alert("No data to export!");
-      return;
+  <script>
+    function goHome() {
+      window.location.href = "dashboard.html";
     }
-    const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
-    const timestamp = new Date().toISOString().slice(0,19).replace(/:/g,"-");
-    XLSX.writeFile(wb, `machine_data_${timestamp}.xlsx`);
-  }
 
-  // Export PDF
-  async function exportPDF() {
-    const element = document.getElementById("pdfArea");
-    try {
-      const canvas = await html2canvas(element, { scale: 2, scrollY: -window.scrollY });
-      const imgData = canvas.toDataURL("image/png");
-
-      const pdf = new jspdf.jsPDF('l', 'pt', 'a4');
-      const margin = 20;
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * (pdfWidth - margin * 2)) / canvas.width;
-
-      pdf.addImage(imgData, 'PNG', margin, margin, pdfWidth - margin * 2, pdfHeight);
-      pdf.save(`machine_data_${new Date().toISOString().slice(0,19).replace(/:/g,"-")}.pdf`);
-    } catch (e) {
-      alert("Failed to export PDF. Try again.");
-      console.error(e);
-    }
-  }
-
-  // Dark mode toggle
-  function toggleDark() {
-    document.body.classList.toggle("dark");
-    localStorage.setItem("darkMode", document.body.classList.contains("dark") ? "1" : "0");
-  }
-
-  // Google Sheets data fetch
-  const sheetId = "1LI7h0CNeUryEtzPheWmZU_7BEGTUyPoZu5P5C2ywcrc";
-  const apiKey = "AIzaSyCDL6LnfaLdODmBJ3xVD-GlC4G1rHjsvII";
-  const ranges = {
-    cell_b1: "machine data!B1",
-    cell_b2: "machine data!B2",
-    cell_b4: "machine data!B4",
-    cell_b5: "machine data!B5",
-    cell_d1: "machine data!D1",
-    cell_d2: "machine data!D2",
-    cell_d4: "machine data!D4",
-    cell_d5: "machine data!D5",
-    cell_c8: "machine data!C8",
-    cell_d8: "machine data!D8",
-    cell_e8: "machine data!E8",
-    cell_c9: "machine data!C9",
-    cell_d9: "machine data!D9",
-    cell_e9: "machine data!E9",
-    cell_c10: "machine data!C10",
-    cell_d10: "machine data!D10",
-    cell_e10: "machine data!E10",
-    cell_c11: "machine data!C11",
-    cell_d11: "machine data!D11",
-    cell_e11: "machine data!E11"
-  };
-
-  async function fetchAndUpdateCells() {
-    const promises = Object.entries(ranges).map(async ([id, range]) => {
-      const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(range)}?key=${apiKey}`;
-      try {
-        const res = await fetch(url);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
-        const value = data.values?.[0]?.[0] ?? "";
-        const el = document.getElementById(id);
-        if (el) el.textContent = value;
-      } catch (err) {
-        console.error("Error loading range", range, err);
-      }
-    });
-    await Promise.all(promises);
-  }
-
-  window.onload = () => {
-    fetchAndUpdateCells();
-    if (localStorage.getItem("darkMode") === "1") {
-      document.body.classList.add("dark");
-    }
-  };
-
-  // QR Code Modal controls
-  const qrModal = document.getElementById("qrModal");
-  const qrTitle = document.getElementById("qrTitle");
-  const qrContainer = document.getElementById("qrcode");
-
-  function openQRModal() {
-    const url = window.location.href;
-    const machineNumber = document.getElementById("cell_b1").textContent.trim() || "QR Code";
-    qrTitle.textContent = machineNumber;
-    qrContainer.innerHTML = "";
-    new QRCode(qrContainer, {
-      text: url,
-      width: 180,
-      height: 180,
-      colorDark: "#000000",
-      colorLight: "#ffffff",
-      correctLevel: QRCode.CorrectLevel.H
-    });
-    qrModal.style.display = "flex";
-  }
-
-  function closeQRModal() {
-    qrModal.style.display = "none";
-    qrContainer.innerHTML = "";
-  }
-
-  async function downloadQR() {
-    try {
-      // Create a canvas that includes QR code, text, and border with rounded corners
-      const canvas = document.createElement("canvas");
-      const size = 220; // QR + padding
-      const textHeight = 30;
-      canvas.width = size;
-      canvas.height = size + textHeight;
-
-      const ctx = canvas.getContext("2d");
-
-      // White background
-      ctx.fillStyle = "white";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      // Rounded black border
-      const radius = 20;
-      ctx.lineWidth = 6;
-      ctx.strokeStyle = "black";
-
-      ctx.beginPath();
-      ctx.moveTo(radius, 0);
-      ctx.lineTo(canvas.width - radius, 0);
-      ctx.quadraticCurveTo(canvas.width, 0, canvas.width, radius);
-      ctx.lineTo(canvas.width, canvas.height - textHeight - radius);
-      ctx.quadraticCurveTo(canvas.width, canvas.height - textHeight, canvas.width - radius, canvas.height - textHeight);
-      ctx.lineTo(radius, canvas.height - textHeight);
-      ctx.quadraticCurveTo(0, canvas.height - textHeight, 0, canvas.height - textHeight - radius);
-      ctx.lineTo(0, radius);
-      ctx.quadraticCurveTo(0, 0, radius, 0);
-      ctx.closePath();
-      ctx.stroke();
-
-      // Draw QR code inside with some padding
-      const qrCanvas = qrContainer.querySelector("canvas");
-      if (!qrCanvas) {
-        alert("QR code not generated yet.");
+    function exportTable() {
+      const table = document.getElementById("machineTable");
+      if (!table || !table.innerHTML.trim()) {
+        alert("No data to export!");
         return;
       }
-      ctx.drawImage(qrCanvas, 20, 20, 180, 180);
-
-      // Draw black background block behind text
-      const text = qrTitle.textContent;
-      ctx.fillStyle = "black";
-      const paddingX = 14;
-      const paddingY = 6;
-      ctx.font = "bold 18px Segoe UI, Arial, sans-serif";
-      const textWidth = ctx.measureText(text).width;
-      const rectX = (canvas.width - textWidth) / 2 - paddingX / 2;
-      const rectY = canvas.height - textHeight + 6;
-      const rectWidth = textWidth + paddingX;
-      const rectHeight = 24;
-
-      ctx.fillRect(rectX, rectY, rectWidth, rectHeight);
-
-      // Draw white text
-      ctx.fillStyle = "white";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText(text, canvas.width / 2, rectY + rectHeight / 2);
-
-      // Save image
-      const link = document.createElement("a");
-      link.href = canvas.toDataURL("image/png");
-      link.download = (text.trim() || "qr_code") + ".png";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } catch (e) {
-      alert("Failed to download QR code.");
-      console.error(e);
+      const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
+      const timestamp = new Date().toISOString().slice(0,19).replace(/:/g,"-");
+      XLSX.writeFile(wb, `machine_data_${timestamp}.xlsx`);
     }
-  }
-</script>
 
+    async function exportPDF() {
+      const element = document.getElementById("pdfArea");
+      try {
+        const canvas = await html2canvas(element, { scale: 2, scrollY: -window.scrollY });
+        const imgData = canvas.toDataURL("image/png");
+
+        const pdf = new jspdf.jsPDF('l', 'pt', 'a4');
+        const margin = 20;
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (canvas.height * (pdfWidth - margin * 2)) / canvas.width;
+
+        pdf.addImage(imgData, 'PNG', margin, margin, pdfWidth - margin * 2, pdfHeight);
+        pdf.save(`machine_data_${new Date().toISOString().slice(0,19).replace(/:/g,"-")}.pdf`);
+      } catch (e) {
+        alert("Failed to export PDF. Try again.");
+        console.error(e);
+      }
+    }
+
+    function toggleDark() {
+      document.body.classList.toggle("dark");
+      localStorage.setItem("darkMode", document.body.classList.contains("dark") ? "1" : "0");
+    }
+
+    // QR Functions
+    function generateQRCode() {
+      const url = window.location.href;
+      const qrContainer = document.getElementById("qrcode");
+      qrContainer.innerHTML = "";
+      const titleText = document.getElementById("cell_b1").textContent || "QR Code";
+      document.getElementById("qrTitle").textContent = titleText;
+      new QRCode(qrContainer, {
+        text: url,
+        width: 180,
+        height: 180,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+      });
+      document.getElementById("qrModal").style.display = "flex";
+    }
+
+    function downloadQR() {
+      html2canvas(document.getElementById("qrModalContent")).then(canvas => {
+        const link = document.createElement("a");
+        link.href = canvas.toDataURL("image/png");
+        link.download = "qr_code.png";
+        link.click();
+      });
+    }
+
+    function closeQRModal() {
+      document.getElementById("qrModal").style.display = "none";
+    }
+
+    // Fetch Google Sheet data
+    const sheetId = "1LI7h0CNeUryEtzPheWmZU_7BEGTUyPoZu5P5C2ywcrc";
+    const apiKey = "AIzaSyCDL6LnfaLdODmBJ3xVD-GlC4G1rHjsvII";
+    const ranges = {
+      cell_b1: "machine data!B1",
+      cell_b2: "machine data!B2",
+      cell_b4: "machine data!B4",
+      cell_b5: "machine data!B5",
+      cell_d1: "machine data!D1",
+      cell_d2: "machine data!D2",
+      cell_d4: "machine data!D4",
+      cell_d5: "machine data!D5",
+      cell_c8: "machine data!C8",
+      cell_d8: "machine data!D8",
+      cell_e8: "machine data!E8",
+      cell_c9: "machine data!C9",
+      cell_d9: "machine data!D9",
+      cell_e9: "machine data!E9",
+      cell_c10: "machine data!C10",
+      cell_d10: "machine data!D10",
+      cell_e10: "machine data!E10",
+      cell_c11: "machine data!C11",
+      cell_d11: "machine data!D11",
+      cell_e11: "machine data!E11"
+    };
+
+    async function fetchAndUpdateCells() {
+      for (const [id, range] of Object.entries(ranges)) {
+        const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(range)}?key=${apiKey}`;
+        try {
+          const res = await fetch(url);
+          const data = await res.json();
+          document.getElementById(id).textContent = data.values?.[0]?.[0] || "";
+        } catch (err) {
+          console.error("Error loading range", range, err);
+        }
+      }
+    }
+
+    window.onload = function () {
+      fetchAndUpdateCells();
+      if (localStorage.getItem("darkMode") === "1") {
+        document.body.classList.add("dark");
+      }
+    };
+  </script>
 </body>
 </html>
