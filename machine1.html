@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+F<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -7,9 +7,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
+    /* Your existing styles here... (kept unchanged) */
 
-:root {
+    :root {
       --header-font-size: 22px;
       --controls-font-size: 14px;
       --table-font-size: 14px;
@@ -58,6 +60,24 @@
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+
+    header h1 {
+      text-shadow: 0 0 6px rgba(255,255,255,0.4);
+      animation: headerPulse 1.5s ease-in-out infinite;
+    }
+
+    body.dark header h1 {
+      text-shadow: 0 0 10px rgba(0, 153, 255, 0.6);
+    }
+
+    @keyframes headerPulse {
+      0%, 100% {
+        text-shadow: 0 0 3px #ffffff;
+      }
+      50% {
+        text-shadow: 0 0 10px #99ccff;
+      }
     }
 
     .logo {
@@ -110,11 +130,9 @@
       text-align: center;
     }
 
-    .controls button:hover,
-    .controls input[type="text"]:focus {
-      background-color: var(--button-hover-bg);
-      outline: none;
-      border-color: #888;
+    .controls button:hover {
+      box-shadow: 0 0 12px rgba(0, 153, 255, 0.4), 0 0 0 2px rgba(0, 153, 255, 0.15) inset;
+      background: linear-gradient(135deg, #66b2ff, #005dbb);
     }
 
     .controls button:active {
@@ -212,6 +230,12 @@
 
     /* 🔧 Mobile view with scale and centering */
     @media (max-width: 750px) {
+      header {
+        background: rgba(0, 64, 128, 0.75);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+      }
+
       html, body {
         margin: 0;
         padding: 0;
@@ -220,7 +244,7 @@
       }
 
       .page-wrapper {
-        padding-top: 85px;
+        padding-top: 60px;
         width: 214%;
         left: 50%;
         transform: translateX(-50%) scale(0.45);
@@ -264,41 +288,109 @@
         padding: 6px;
       }
     }
-  
+
     /* Center all cells that receive data from Google Sheets */
+    #cell_b1,
+    #cell_b2,
+    #cell_b4,
+    #cell_b5,
+    #cell_d1,
+    #cell_d2,
+    #cell_d4,
+    #cell_d5,
+    #cell_c8,
+    #cell_d8,
+    #cell_e8,
+    #cell_c9,
+    #cell_d9,
+    #cell_e9,
+    #cell_c10,
+    #cell_d10,
+    #cell_e10,
+    #cell_c11,
+    #cell_d11,
+    #cell_e11 {
+      text-align: center;
+    }
 
-#cell_b1,
-#cell_b2,
-#cell_b4,
-#cell_b5,
-#cell_d1,
-#cell_d2,
-#cell_d4,
-#cell_d5,
-#cell_c8,
-#cell_d8,
-#cell_e8,
-#cell_c9,
-#cell_d9,
-#cell_e9,
-#cell_c10,
-#cell_d10,
-#cell_e10,
-#cell_c11,
-#cell_d11,
-#cell_e11 {
-  text-align: center;
-}
+    #machineTable tbody tr:nth-child(2) td:first-child,
+    #machineTable tbody tr:nth-child(3) td:first-child,
+    #machineTable tbody tr:nth-child(4) td:first-child,
+    #machineTable tbody tr:nth-child(5) td:first-child {
+      text-align: center;
+    }
 
-#machineTable tbody tr:nth-child(2) td:first-child,
-#machineTable tbody tr:nth-child(3) td:first-child,
-#machineTable tbody tr:nth-child(4) td:first-child,
-#machineTable tbody tr:nth-child(5) td:first-child {
-  text-align: center;
-}
+    [id^="cell_"] {
+      animation: flashIn 0.4s ease-in;
+    }
 
+    @keyframes flashIn {
+      from { background-color: #ffffcc; }
+      to { background-color: transparent; }
+    }
 
-    /* existing CSS styles unchanged */
+    /* QR Modal styles */
+    #qrModal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #qrModalContent {
+      background: white;
+      padding: 20px;
+      border-radius: 16px;
+      text-align: center;
+      border: 2px solid #000;
+      box-shadow:
+        0 0 10px rgba(0, 153, 255, 0.7),
+        0 0 20px rgba(0, 153, 255, 0.5),
+        0 0 40px rgba(0, 153, 255, 0.3);
+      transition: box-shadow 0.3s ease;
+      user-select: none;
+      max-width: 260px;
+      margin: 20px;
+    }
+
+    #qrTitle {
+      margin-top: 12px;
+      user-select: none;
+      color: white;
+      background-color: black;
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    #qrcode {
+      margin: 0 auto;
+      width: 180px;
+      height: 180px;
+      user-select: none;
+    }
+
+    #qrModal button {
+      margin: 5px;
+      padding: 8px 15px;
+      border-radius: 6px;
+      border: none;
+      background-color: var(--button-bg);
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+
+    #qrModal button:hover {
+      background-color: var(--button-hover-bg);
+    }
   </style>
 </head>
 <body>
@@ -313,7 +405,7 @@
 <div class="page-wrapper">
   <div class="controls">
     <button onclick="goHome()">🏠 Home</button>
-    <input type="text" id="search" placeholder="Search Checking Point..." oninput="filterTable()" />
+    <button id="qrButton" onclick="openQRModal()">QR 🔲</button>
     <button onclick="exportTable()">⬇ Excel</button>
     <button onclick="exportPDF()">🖨️ PDF</button>
     <button onclick="toggleDark()">🌓 Dark/Light</button>
@@ -321,15 +413,14 @@
 
   <div class="table-container" id="pdfArea">
     <table id="machineTable">
-      
-    <colgroup>
-    <col style="width: 8%;">
-    <col style="width: 36%;">
-    <col style="width: 16%;">
-    <col style="width: 16%;">
-    <col style="width: 24%;">
-  </colgroup>
-      
+      <colgroup>
+        <col style="width: 8%;">
+        <col style="width: 36%;">
+        <col style="width: 16%;">
+        <col style="width: 16%;">
+        <col style="width: 24%;">
+      </colgroup>
+
       <tbody class="thick-group">
         <tr>
           <th class="label-cell">Machine Number</th>
@@ -409,21 +500,23 @@
   &copy; 2025 Israjul Riad | Critical Machine Monitoring
 </footer>
 
+<!-- QR Modal -->
+<div id="qrModal">
+  <div id="qrModalContent">
+    <div id="qrcode"></div>
+    <div id="qrTitle"></div>
+    <button onclick="downloadQR()">Download</button>
+    <button onclick="closeQRModal()">Close</button>
+  </div>
+</div>
+
 <script>
+  // Navigation
   function goHome() {
     window.location.href = "dashboard.html";
   }
 
-  function filterTable() {
-    const search = document.getElementById("search").value.toLowerCase();
-    const rows = document.querySelectorAll("#machineTable .check-row");
-    rows.forEach(row => {
-      const checkPointCell = row.cells[1];
-      const text = checkPointCell.textContent.toLowerCase();
-      row.style.display = text.includes(search) ? "" : "none";
-    });
-  }
-
+  // Export Excel
   function exportTable() {
     const table = document.getElementById("machineTable");
     if (!table || !table.innerHTML.trim()) {
@@ -435,6 +528,7 @@
     XLSX.writeFile(wb, `machine_data_${timestamp}.xlsx`);
   }
 
+  // Export PDF
   async function exportPDF() {
     const element = document.getElementById("pdfArea");
     try {
@@ -454,12 +548,13 @@
     }
   }
 
+  // Dark mode toggle
   function toggleDark() {
     document.body.classList.toggle("dark");
     localStorage.setItem("darkMode", document.body.classList.contains("dark") ? "1" : "0");
   }
 
-  
+  // Google Sheets data fetch
   const sheetId = "1LI7h0CNeUryEtzPheWmZU_7BEGTUyPoZu5P5C2ywcrc";
   const apiKey = "AIzaSyCDL6LnfaLdODmBJ3xVD-GlC4G1rHjsvII";
   const ranges = {
@@ -482,29 +577,134 @@
     cell_e10: "machine data!E10",
     cell_c11: "machine data!C11",
     cell_d11: "machine data!D11",
-    cell_e11: "machine data!E11"
+    cell_e11: "machine data!E11",
   };
 
-  async function fetchAndUpdateCells() {
-    for (const [id, range] of Object.entries(ranges)) {
-      const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(range)}?key=${apiKey}`;
-      try {
-        const res = await fetch(url);
-        const data = await res.json();
-        document.getElementById(id).textContent = data.values?.[0]?.[0] || "";
-      } catch (err) {
-        console.error("Error loading range", range, err);
-      }
-    }
+  async function fetchData() {
+    const rangeKeys = Object.keys(ranges);
+    const requests = rangeKeys.map(key =>
+      fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${ranges[key]}?key=${apiKey}`)
+        .then(res => res.json())
+        .then(data => {
+          const el = document.getElementById(key);
+          if (el && data.values && data.values[0]) {
+            el.textContent = data.values[0][0];
+          }
+        })
+        .catch(err => console.error("Error fetching", key, err))
+    );
+    await Promise.all(requests);
   }
 
-  window.onload = function () {
-    fetchAndUpdateCells();
+  // QR Modal
+  function openQRModal() {
+    document.getElementById("qrModal").style.display = "flex";
+    const qrContainer = document.getElementById("qrcode");
+    qrContainer.innerHTML = "";
+    const machineId = document.getElementById("cell_b1").textContent.trim() || "machine";
+    const currentUrl = window.location.href;
+    new QRCode(qrContainer, {
+      text: currentUrl,
+      width: 180,
+      height: 180,
+      colorDark: "#000",
+      colorLight: "#fff",
+      correctLevel: QRCode.CorrectLevel.H
+    });
+    document.getElementById("qrTitle").textContent = machineId;
+  }
+
+  function closeQRModal() {
+    document.getElementById("qrModal").style.display = "none";
+    document.getElementById("qrcode").innerHTML = "";
+  }
+
+  
+
+ 
+function downloadQR() {
+  const qrCanvas = document.querySelector("#qrcode canvas");
+  const title = document.getElementById("qrTitle").textContent.trim() || "QR Code";
+
+  if (!qrCanvas) {
+    alert("QR code not generated yet.");
+    return;
+  }
+
+  // 🔧 Sizes
+  const qrSize = 180;
+  const whiteBoxPadding = 20;
+  const outerPaddingX = 10; // left & right black area reduced
+  const outerPaddingY = 30; // top & bottom stays
+  const titleHeight = 40;
+
+  const canvasWidth = qrSize + whiteBoxPadding * 2 + outerPaddingX * 2;
+  const canvasHeight = qrSize + whiteBoxPadding * 2 + titleHeight + outerPaddingY * 2;
+
+  const canvas = document.createElement("canvas");
+  canvas.width = canvasWidth;
+  canvas.height = canvasHeight;
+
+  const ctx = canvas.getContext("2d");
+
+  // 🔲 Black background
+  ctx.fillStyle = "black";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // ⬜ White rounded box
+  const boxX = outerPaddingX;
+  const boxY = outerPaddingY;
+  const boxWidth = qrSize + whiteBoxPadding * 2;
+  const boxHeight = qrSize + whiteBoxPadding * 2;
+  const radius = 16;
+
+  ctx.fillStyle = "white";
+  ctx.beginPath();
+  ctx.moveTo(boxX + radius, boxY);
+  ctx.lineTo(boxX + boxWidth - radius, boxY);
+  ctx.quadraticCurveTo(boxX + boxWidth, boxY, boxX + boxWidth, boxY + radius);
+  ctx.lineTo(boxX + boxWidth, boxY + boxHeight - radius);
+  ctx.quadraticCurveTo(boxX + boxWidth, boxY + boxHeight, boxX + boxWidth - radius, boxY + boxHeight);
+  ctx.lineTo(boxX + radius, boxY + boxHeight);
+  ctx.quadraticCurveTo(boxX, boxY + boxHeight, boxX, boxY + boxHeight - radius);
+  ctx.lineTo(boxX, boxY + radius);
+  ctx.quadraticCurveTo(boxX, boxY, boxX + radius, boxY);
+  ctx.closePath();
+  ctx.fill();
+
+  // 🖼️ Draw QR
+  const qrX = boxX + whiteBoxPadding;
+  const qrY = boxY + whiteBoxPadding;
+  ctx.drawImage(qrCanvas, qrX, qrY, qrSize, qrSize);
+
+  // 🏷️ Draw title below
+  ctx.fillStyle = "white";
+  ctx.font = "bold 18px Segoe UI, Arial, sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(title, canvas.width / 2, boxY + boxHeight + titleHeight / 2);
+
+  // ⬇️ Download
+  const link = document.createElement("a");
+  link.href = canvas.toDataURL("image/png");
+  link.download = `${title}_qr.png`;
+  document.body.appendChild(link); // some browsers require it in DOM
+  link.click();
+  document.body.removeChild(link);
+
+  
+   
+
+}
+  
+
+
+  // On load
+  document.addEventListener("DOMContentLoaded", () => {
+    fetchData();
     if (localStorage.getItem("darkMode") === "1") {
       document.body.classList.add("dark");
     }
-  };
-</script>
-
-</body>
+  });
+</script></body>
 </html>
