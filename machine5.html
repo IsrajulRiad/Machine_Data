@@ -621,71 +621,77 @@ F<!DOCTYPE html>
 
   
 
-  function downloadQR() {
-    const qrCanvas = document.querySelector("#qrcode canvas");
-    const title = document.getElementById("qrTitle").textContent.trim() || "QR Code";
+ 
+function downloadQR() {
+  const qrCanvas = document.querySelector("#qrcode canvas");
+  const title = document.getElementById("qrTitle").textContent.trim() || "QR Code";
 
-    if (!qrCanvas) {
-      alert("QR code not generated yet.");
-      return;
-    }
+  if (!qrCanvas) {
+    alert("QR code not generated yet.");
+    return;
+  }
 
-    const qrSize = 180;
-    const whiteBoxPadding = 20;
-    const outerPaddingX = 10;  // 👈 horizontal (left & right)
-const outerPaddingY = 30;  // 👈 vertical (top & bottom)
-    const titleHeight = 40;
-    const canvasWidth = qrSize + whiteBoxPadding * 2 + outerPadding * 2;
-    const canvasHeight = qrSize + whiteBoxPadding * 2 + titleHeight + outerPadding * 2;
+  // 🔧 Sizes
+  const qrSize = 180;
+  const whiteBoxPadding = 20;
+  const outerPaddingX = 10; // left & right black area reduced
+  const outerPaddingY = 30; // top & bottom stays
+  const titleHeight = 40;
 
-    const canvas = document.createElement("canvas");
-    canvas.width = canvasWidth;
-    canvas.height = canvasHeight;
+  const canvasWidth = qrSize + whiteBoxPadding * 2 + outerPaddingX * 2;
+  const canvasHeight = qrSize + whiteBoxPadding * 2 + titleHeight + outerPaddingY * 2;
 
-    const ctx = canvas.getContext("2d");
+  const canvas = document.createElement("canvas");
+  canvas.width = canvasWidth;
+  canvas.height = canvasHeight;
 
-    // 1. Fill full canvas with black (background)
-    ctx.fillStyle = "black";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  const ctx = canvas.getContext("2d");
 
-    // 2. Draw white rounded rectangle for QR box
-    const boxX = outerPadding;
-    const boxY = outerPadding;
-    const boxWidth = qrSize + whiteBoxPadding * 2;
-    const boxHeight = qrSize + whiteBoxPadding * 2;
-    const radius = 16;
+  // 🔲 Black background
+  ctx.fillStyle = "black";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    ctx.fillStyle = "white";
-    ctx.beginPath();
-    ctx.moveTo(boxX + radius, boxY);
-    ctx.lineTo(boxX + boxWidth - radius, boxY);
-    ctx.quadraticCurveTo(boxX + boxWidth, boxY, boxX + boxWidth, boxY + radius);
-    ctx.lineTo(boxX + boxWidth, boxY + boxHeight - radius);
-    ctx.quadraticCurveTo(boxX + boxWidth, boxY + boxHeight, boxX + boxWidth - radius, boxY + boxHeight);
-    ctx.lineTo(boxX + radius, boxY + boxHeight);
-    ctx.quadraticCurveTo(boxX, boxY + boxHeight, boxX, boxY + boxHeight - radius);
-    ctx.lineTo(boxX, boxY + radius);
-    ctx.quadraticCurveTo(boxX, boxY, boxX + radius, boxY);
-    ctx.closePath();
-    ctx.fill();
+  // ⬜ White rounded box
+  const boxX = outerPaddingX;
+  const boxY = outerPaddingY;
+  const boxWidth = qrSize + whiteBoxPadding * 2;
+  const boxHeight = qrSize + whiteBoxPadding * 2;
+  const radius = 16;
 
-    // 3. Draw QR inside the white box
-    const qrX = boxX + whiteBoxPadding;
-    const qrY = boxY + whiteBoxPadding;
-    ctx.drawImage(qrCanvas, qrX, qrY, qrSize, qrSize);
+  ctx.fillStyle = "white";
+  ctx.beginPath();
+  ctx.moveTo(boxX + radius, boxY);
+  ctx.lineTo(boxX + boxWidth - radius, boxY);
+  ctx.quadraticCurveTo(boxX + boxWidth, boxY, boxX + boxWidth, boxY + radius);
+  ctx.lineTo(boxX + boxWidth, boxY + boxHeight - radius);
+  ctx.quadraticCurveTo(boxX + boxWidth, boxY + boxHeight, boxX + boxWidth - radius, boxY + boxHeight);
+  ctx.lineTo(boxX + radius, boxY + boxHeight);
+  ctx.quadraticCurveTo(boxX, boxY + boxHeight, boxX, boxY + boxHeight - radius);
+  ctx.lineTo(boxX, boxY + radius);
+  ctx.quadraticCurveTo(boxX, boxY, boxX + radius, boxY);
+  ctx.closePath();
+  ctx.fill();
 
-    // 4. Draw title below the white box
-    ctx.fillStyle = "white";
-    ctx.font = "bold 18px Segoe UI, Arial, sans-serif";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText(title, canvas.width / 2, boxY + boxHeight + titleHeight / 2);
+  // 🖼️ Draw QR
+  const qrX = boxX + whiteBoxPadding;
+  const qrY = boxY + whiteBoxPadding;
+  ctx.drawImage(qrCanvas, qrX, qrY, qrSize, qrSize);
 
-    // 5. Trigger download
-    const link = document.createElement("a");
-    link.href = canvas.toDataURL("image/png");
-    link.download = `${title}_qr.png`;
-    link.click();
+  // 🏷️ Draw title below
+  ctx.fillStyle = "white";
+  ctx.font = "bold 18px Segoe UI, Arial, sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(title, canvas.width / 2, boxY + boxHeight + titleHeight / 2);
+
+  // ⬇️ Download
+  const link = document.createElement("a");
+  link.href = canvas.toDataURL("image/png");
+  link.download = `${title}_qr.png`;
+  document.body.appendChild(link); // some browsers require it in DOM
+  link.click();
+  document.body.removeChild(link);
+
   
    
 
