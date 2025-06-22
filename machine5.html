@@ -530,35 +530,62 @@ function closeQRModal() {
 }
 
 function downloadQR() {
-  const qrCodeCanvas = document.querySelector("#qrcode canvas");
-  const qrTitle = document.getElementById("cell_b1").textContent.trim();
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
-  const size = 240;
-  canvas.width = size;
-  canvas.height = size + 40;
+  const qrText = document.getElementById("cell_b1").textContent || "QR";
+  const qrSize = 180;
+  const padding = 20;
+  const textHeight = 30;
+  const border = 10;
 
-  // Draw black background
+  const canvasSize = qrSize + padding * 2 + border * 2;
+  const totalHeight = canvasSize + textHeight + padding;
+
+  const canvas = document.createElement("canvas");
+  canvas.width = canvasSize;
+  canvas.height = totalHeight;
+
+  const ctx = canvas.getContext("2d");
+
+  // Black background
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // Draw white border and QR
+  // White QR background
   ctx.fillStyle = "white";
-  ctx.fillRect(30, 20, 180, 180);
-  ctx.drawImage(qrCodeCanvas, 30, 20);
+  ctx.fillRect(border + padding, border + padding, qrSize, qrSize);
 
-  // Add title text
-  ctx.fillStyle = "white";
-  ctx.font = "16px Arial";
-  ctx.textAlign = "center";
-  ctx.fillText(qrTitle, size / 2, size + 25);
+  // Generate QR into temporary div
+  const tempDiv = document.createElement("div");
+  document.body.appendChild(tempDiv);
+  const qr = new QRCode(tempDiv, {
+    text: qrText,
+    width: qrSize,
+    height: qrSize,
+    colorDark: "#000000",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.H
+  });
 
-  // Save PNG
-  const link = document.createElement("a");
-  link.download = `${qrTitle || 'qr_code'}.png`;
-  link.href = canvas.toDataURL("image/png");
-  link.click();
+  setTimeout(() => {
+    const qrImg = tempDiv.querySelector("img");
+    ctx.drawImage(qrImg, border + padding, border + padding, qrSize, qrSize);
+
+    // Draw text
+    ctx.fillStyle = "white";
+    ctx.font = "bold 16px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText(qrText, canvas.width / 2, canvas.height - 10);
+
+    // Clean up
+    tempDiv.remove();
+
+    // Download
+    const link = document.createElement("a");
+    link.download = `qr_${qrText}.png`;
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  }, 300); // Wait for QR image to render
 }
+ 
 
 const sheetId = "1LI7h0CNeUryEtzPheWmZU_7BEGTUyPoZu5P5C2ywcrc";
 const apiKey = "AIzaSyCDL6LnfaLdODmBJ3xVD-GlC4G1rHjsvII";
