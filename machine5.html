@@ -615,13 +615,11 @@ F<!DOCTYPE html>
   }
 
   function closeQRModal() {
-    
     document.getElementById("qrModal").style.display = "none";
     document.getElementById("qrcode").innerHTML = "";
   }
 
   
- 
   function downloadQR() {
     const qrCanvas = document.querySelector("#qrcode canvas");
     const title = document.getElementById("qrTitle").textContent.trim() || "QR Code";
@@ -630,55 +628,6 @@ F<!DOCTYPE html>
       alert("QR code not generated yet.");
       return;
     }
-
-    const qrSize = 180;
-    const padding = 20;
-    const borderRadius = 16;
-    const titleHeight = 40;
-    const canvasWidth = qrSize + padding * 2;
-    const canvasHeight = qrSize + padding * 2 + titleHeight;
-
-    const canvas = document.createElement("canvas");
-    canvas.width = canvasWidth;
-    canvas.height = canvasHeight;
-
-    const ctx = canvas.getContext("2d");
-
-    // Black full background
-    ctx.fillStyle = "black";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // White area with rounded border for QR
-    ctx.fillStyle = "white";
-    ctx.beginPath();
-    ctx.moveTo(padding + borderRadius, padding);
-    ctx.lineTo(canvasWidth - padding - borderRadius, padding);
-    ctx.quadraticCurveTo(canvasWidth - padding, padding, canvasWidth - padding, padding + borderRadius);
-    ctx.lineTo(canvasWidth - padding, padding + qrSize - borderRadius);
-    ctx.quadraticCurveTo(canvasWidth - padding, padding + qrSize, canvasWidth - padding - borderRadius, padding + qrSize);
-    ctx.lineTo(padding + borderRadius, padding + qrSize);
-    ctx.quadraticCurveTo(padding, padding + qrSize, padding, padding + qrSize - borderRadius);
-    ctx.lineTo(padding, padding + borderRadius);
-    ctx.quadraticCurveTo(padding, padding, padding + borderRadius, padding);
-    ctx.closePath();
-    ctx.fill();
-
-    // Draw QR code on top of white rounded area
-    ctx.drawImage(qrCanvas, padding, padding, qrSize, qrSize);
-
-    // Title (under QR block, outside the border)
-    ctx.fillStyle = "white";
-    ctx.font = "bold 18px Segoe UI, Arial";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText(title, canvas.width / 2, canvas.height - titleHeight / 2);
-
-    // Download
-    const link = document.createElement("a");
-    link.href = canvas.toDataURL("image/png");
-    link.download = `${title}_qr.png`;
-    link.click();
-  }  
 
     // Create a new canvas to draw QR + border + title
     const canvasSize = 260;
