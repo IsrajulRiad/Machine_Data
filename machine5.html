@@ -620,65 +620,59 @@ F<!DOCTYPE html>
   }
 
   
-  function downloadQR() {
-    const qrCanvas = document.querySelector("#qrcode canvas");
-    const title = document.getElementById("qrTitle").textContent.trim() || "QR Code";
+ function downloadQR() {
+  const qrCanvas = document.querySelector("#qrcode canvas");
+  const title = document.getElementById("qrTitle").textContent.trim() || "QR Code";
 
-    if (!qrCanvas) {
-      alert("QR code not generated yet.");
-      return;
-    }
-
-    // Create a new canvas to draw QR + border + title
-    const canvasSize = 260;
-    const titleHeight = 40;
-    const canvas = document.createElement("canvas");
-    canvas.width = canvasSize;
-    canvas.height = canvasSize + titleHeight;
-
-    const ctx = canvas.getContext("2d");
-
-    // Background white
-    ctx.fillStyle = "white";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Black border with rounded corners
-    const radius = 16;
-    ctx.lineWidth = 4;
-    ctx.strokeStyle = "black";
-    ctx.beginPath();
-    ctx.moveTo(radius, 0);
-    ctx.lineTo(canvas.width - radius, 0);
-    ctx.quadraticCurveTo(canvas.width, 0, canvas.width, radius);
-    ctx.lineTo(canvas.width, canvas.height - titleHeight - radius);
-    ctx.quadraticCurveTo(canvas.width, canvas.height - titleHeight, canvas.width - radius, canvas.height - titleHeight);
-    ctx.lineTo(radius, canvas.height - titleHeight);
-    ctx.quadraticCurveTo(0, canvas.height - titleHeight, 0, canvas.height - titleHeight - radius);
-    ctx.lineTo(0, radius);
-    ctx.quadraticCurveTo(0, 0, radius, 0);
-    ctx.closePath();
-    ctx.stroke();
-
-    // Draw the QR image
-    ctx.drawImage(qrCanvas, 40, 40, 180, 180);
-
-    // Draw title background
-    ctx.fillStyle = "black";
-    ctx.fillRect(20, canvas.height - titleHeight + 10, canvas.width - 40, 28);
-
-    // Draw title text
-    ctx.fillStyle = "white";
-    ctx.font = "bold 16px Segoe UI";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText(title, canvas.width / 2, canvas.height - titleHeight / 2 + 6);
-
-    // Trigger download
-    const link = document.createElement("a");
-    link.href = canvas.toDataURL("image/png");
-    link.download = `${title}_qr.png`;
-    link.click();
+  if (!qrCanvas) {
+    alert("QR code not generated yet.");
+    return;
   }
+
+  const qrSize = 180;
+  const padding = 20;
+  const borderRadius = 16;
+  const titleHeight = 40;
+  const canvasWidth = qrSize + padding * 2;
+  const canvasHeight = qrSize + padding * 2 + titleHeight;
+
+  const canvas = document.createElement("canvas");
+  canvas.width = canvasWidth;
+  canvas.height = canvasHeight;
+
+  const ctx = canvas.getContext("2d");
+
+  ctx.fillStyle = "black";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.fillStyle = "white";
+  ctx.beginPath();
+  ctx.moveTo(padding + borderRadius, padding);
+  ctx.lineTo(canvasWidth - padding - borderRadius, padding);
+  ctx.quadraticCurveTo(canvasWidth - padding, padding, canvasWidth - padding, padding + borderRadius);
+  ctx.lineTo(canvasWidth - padding, padding + qrSize - borderRadius);
+  ctx.quadraticCurveTo(canvasWidth - padding, padding + qrSize, canvasWidth - padding - borderRadius, padding + qrSize);
+  ctx.lineTo(padding + borderRadius, padding + qrSize);
+  ctx.quadraticCurveTo(padding, padding + qrSize, padding, padding + qrSize - borderRadius);
+  ctx.lineTo(padding, padding + borderRadius);
+  ctx.quadraticCurveTo(padding, padding, padding + borderRadius, padding);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.drawImage(qrCanvas, padding, padding, qrSize, qrSize);
+
+  ctx.fillStyle = "white";
+  ctx.font = "bold 18px Segoe UI, Arial";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(title, canvas.width / 2, canvas.height - titleHeight / 2);
+
+  const link = document.createElement("a");
+  link.href = canvas.toDataURL("image/png");
+  link.download = `${title}_qr.png`;
+  link.click();
+}
+  
 
 
   // On load
