@@ -530,60 +530,74 @@ function closeQRModal() {
 }
 
 function downloadQR() {
-  const qrText = document.getElementById("cell_b1").textContent || "QR";
-  const qrSize = 180;
-  const padding = 20;
-  const textHeight = 30;
-  const border = 10;
+  const qrCanvas = document.querySelector("#qrcode canvas");
+  const title = document.getElementById("qrTitle").textContent.trim() || "QR Code";
 
-  const canvasSize = qrSize + padding * 2 + border * 2;
-  const totalHeight = canvasSize + textHeight + padding;
+  if (!qrCanvas) {
+    alert("QR code not generated yet.");
+    return;
+  }
+
+  // 🔧 Sizes
+  const qrSize = 180;
+  const whiteBoxPadding = 20;
+  const outerPaddingX = 10; // left & right black area reduced
+  const outerPaddingY = 30; // top & bottom stays
+  const titleHeight = 40;
+
+  const canvasWidth = qrSize + whiteBoxPadding * 2 + outerPaddingX * 2;
+  const canvasHeight = qrSize + whiteBoxPadding * 2 + titleHeight + outerPaddingY * 2;
 
   const canvas = document.createElement("canvas");
-  canvas.width = canvasSize;
-  canvas.height = totalHeight;
+  canvas.width = canvasWidth;
+  canvas.height = canvasHeight;
 
   const ctx = canvas.getContext("2d");
 
-  // Black background
+  // 🔲 Black background
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // White QR background
+  // ⬜ White rounded box
+  const boxX = outerPaddingX;
+  const boxY = outerPaddingY;
+  const boxWidth = qrSize + whiteBoxPadding * 2;
+  const boxHeight = qrSize + whiteBoxPadding * 2;
+  const radius = 16;
+
   ctx.fillStyle = "white";
-  ctx.fillRect(border + padding, border + padding, qrSize, qrSize);
+  ctx.beginPath();
+  ctx.moveTo(boxX + radius, boxY);
+  ctx.lineTo(boxX + boxWidth - radius, boxY);
+  ctx.quadraticCurveTo(boxX + boxWidth, boxY, boxX + boxWidth, boxY + radius);
+  ctx.lineTo(boxX + boxWidth, boxY + boxHeight - radius);
+  ctx.quadraticCurveTo(boxX + boxWidth, boxY + boxHeight, boxX + boxWidth - radius, boxY + boxHeight);
+  ctx.lineTo(boxX + radius, boxY + boxHeight);
+  ctx.quadraticCurveTo(boxX, boxY + boxHeight, boxX, boxY + boxHeight - radius);
+  ctx.lineTo(boxX, boxY + radius);
+  ctx.quadraticCurveTo(boxX, boxY, boxX + radius, boxY);
+  ctx.closePath();
+  ctx.fill();
 
-  // Generate QR into temporary div
-  const tempDiv = document.createElement("div");
-  document.body.appendChild(tempDiv);
-  const qr = new QRCode(tempDiv, {
-    text: qrText,
-    width: qrSize,
-    height: qrSize,
-    colorDark: "#000000",
-    colorLight: "#ffffff",
-    correctLevel: QRCode.CorrectLevel.H
-  });
+  // 🖼️ Draw QR
+  const qrX = boxX + whiteBoxPadding;
+  const qrY = boxY + whiteBoxPadding;
+  ctx.drawImage(qrCanvas, qrX, qrY, qrSize, qrSize);
 
-  setTimeout(() => {
-    const qrImg = tempDiv.querySelector("img");
-    ctx.drawImage(qrImg, border + padding, border + padding, qrSize, qrSize);
+  // 🏷️ Draw title below
+  ctx.fillStyle = "white";
+  ctx.font = "bold 18px Segoe UI, Arial, sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(title, canvas.width / 2, boxY + boxHeight + titleHeight / 2);
 
-    // Draw text
-    ctx.fillStyle = "white";
-    ctx.font = "bold 16px Arial";
-    ctx.textAlign = "center";
-    ctx.fillText(qrText, canvas.width / 2, canvas.height - 10);
-
-    // Clean up
-    tempDiv.remove();
-
-    // Download
-    const link = document.createElement("a");
-    link.download = `qr_${qrText}.png`;
-    link.href = canvas.toDataURL("image/png");
-    link.click();
-  }, 300); // Wait for QR image to render
+  // ⬇️ Download
+  const link = document.createElement("a");
+  link.href = canvas.toDataURL("image/png");
+  link.download = `${title}_qr.png`;
+  document.body.appendChild(link); // some browsers require it in DOM
+  link.click();
+  document.body.removeChild(link);
 }
  
 
