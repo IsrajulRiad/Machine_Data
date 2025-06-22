@@ -508,21 +508,27 @@ function toggleDark() {
 }
 
 function openQRModal() {
-  const modal = document.getElementById("qrModal");
-  const qrCodeDiv = document.getElementById("qrcode");
-  const title = document.getElementById("qrTitle");
-  qrCodeDiv.innerHTML = "";
-  const data = document.getElementById("cell_b1").textContent.trim() || "N/A";
-  new QRCode(qrCodeDiv, {
-    text: data,
+  const currentUrl = window.location.href;
+
+  const qrDiv = document.getElementById("qrcode");
+  qrDiv.innerHTML = ""; // Clear previous QR
+
+  new QRCode(qrDiv, {
+    text: currentUrl,
     width: 180,
     height: 180,
-    colorDark : "#000000",
-    colorLight : "#ffffff",
-    correctLevel : QRCode.CorrectLevel.H
+    colorDark: "#000000",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.H
   });
-  title.textContent = data;
-  modal.style.display = "flex";
+
+  // Title below QR
+  const title = document.getElementById("qrTitle");
+  const titleText = document.getElementById("cell_b1")?.textContent || "Machine Data";
+  title.innerText = titleText;
+
+  // Show modal
+  document.getElementById("qrModal").style.display = "flex";
 }
 
 function closeQRModal() {
