@@ -219,9 +219,11 @@ footer {
 /* 🔧 Mobile view with scale and centering */
 @media (max-width: 750px) {
   header {
-    background: rgba(0, 64, 128, 0.75);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    background: rgba(0, 64, 128, 0.35); /* More transparent */
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.18); /* soft white border */
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* subtle depth */
   }
 
   html, body {
