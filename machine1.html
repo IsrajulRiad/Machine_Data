@@ -219,11 +219,13 @@ footer {
 /* 🔧 Mobile view with scale and centering */
 @media (max-width: 750px) {
   header {
-    background: rgba(0, 64, 128, 0.35); /* More transparent */
-    backdrop-filter: blur(12px) saturate(180%);
-    -webkit-backdrop-filter: blur(12px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.18); /* soft white border */
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* subtle depth */
+    header {
+    background: rgba(0, 32, 64, 0.7); /* darker, more contrast */
+    backdrop-filter: blur(10px) saturate(160%);
+    -webkit-backdrop-filter: blur(10px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    color: white;
   }
 
   html, body {
