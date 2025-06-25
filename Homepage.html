@@ -95,16 +95,24 @@
       transform: scale(1.00);
     }
 
-    .controls input[type="text"] {
-      padding: 10px;
-      font-size: 14px;
-      border: 2px solid var(--button-bg);
-      border-radius: 6px;
-      min-width: 200px;
-      color: var(--text);
-      background-color: white;
-    }
+   .controls input[type="text"] {
+  padding: 10px;
+  font-size: 14px;
+  border: 2px solid var(--button-bg);
+  border-radius: 6px;
+  color: var(--text);
+  background-color: white;
+  min-width: 100px;
+  width: 160px;
+  transition: width 0.3s ease;
+  flex-shrink: 1;
+}
 
+.controls input[type="text"]:focus {
+  width: 220px;
+}
+
+    
     .dashboard {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -150,19 +158,17 @@
     }
 
     @media (max-width: 700px) {
-      h1 {
-        font-size: 20px;
-      }
-      .card {
-        font-size: 14px;
-        height: 80px;
-      }
-      .controls button,
-      .controls input[type="text"] {
-        min-width: 60px;
-        font-size: 13px;
-        padding: 8px 12px;
-      }
+    .controls input[type="text"] {
+  width: 90px;
+  min-width: unset;
+  font-size: 13px;
+  padding: 8px 12px;
+}
+
+.controls input[type="text"]:focus {
+  width: 130px;
+}
+
     }
   </style>
 </head>
