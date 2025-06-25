@@ -3,37 +3,37 @@
 <head>
   <meta charset="UTF-8" />
   <title>Machine Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root {
-      --bg: #f4f8fc;
-      --text: #222;
-      --card: #ffffff;
-      --accent: #004080;
-      --btn-bg: #004080;
-      --btn-text: white;
+      --bg: #f9f9f9;
+      --text: #333;
+      --header: #004080;
+      --button-bg: #005dbb;
+      --button-hover-bg: #99ccff;
+      --button-active-bg: #66b2ff;
     }
 
     body.dark {
       --bg: #121212;
       --text: #f0f0f0;
-      --card: #1e1e1e;
-      --accent: #00bfff;
-      --btn-bg: #00bfff;
-      --btn-text: black;
+      --header: #1a1a1a;
+      --button-bg: #334466;
+      --button-hover-bg: #556688;
+      --button-active-bg: #7799aa;
     }
 
     body {
-      margin: 0;
-      padding: 0;
+      font-family: "Segoe UI", sans-serif;
       background-color: var(--bg);
       color: var(--text);
-      font-family: "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 0;
       transition: background 0.3s, color 0.3s;
     }
 
     header {
-      background: var(--accent);
+      background: var(--header);
       color: white;
       text-align: center;
       padding: 30px 10px 50px;
@@ -53,35 +53,46 @@
     h1 {
       margin: 0;
       font-size: 28px;
+      text-shadow: 0 0 6px rgba(255,255,255,0.4);
+      animation: headerPulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes headerPulse {
+      0%, 100% { text-shadow: 0 0 3px #ffffff; }
+      50% { text-shadow: 0 0 10px #99ccff; }
     }
 
     .controls {
       display: flex;
       justify-content: center;
-      gap: 12px;
+      gap: 10px;
       padding: 10px 0;
-      margin-top: 40px;
+      margin-top: 20px;
       margin-bottom: 10px;
       flex-wrap: wrap;
     }
 
-    .control-btn {
-      background-color: var(--btn-bg);
-      color: var(--btn-text);
-      border: none;
-      padding: 10px 18px;
-      border-radius: 10px;
-      font-weight: 600;
+    .controls button {
+      padding: 10px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background-color: var(--button-bg);
+      color: white;
       cursor: pointer;
-      font-size: 15px;
-      transition: all 0.3s ease;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      transition: all 0.2s ease;
+      min-width: 150px;
+      text-align: center;
     }
 
-    .control-btn:hover {
-      transform: scale(1.05);
-      background-color: var(--text);
-      color: var(--bg);
+    .controls button:hover {
+      background: linear-gradient(135deg, #66b2ff, #005dbb);
+      box-shadow: 0 0 12px rgba(0, 153, 255, 0.4), 0 0 0 2px rgba(0, 153, 255, 0.15) inset;
+    }
+
+    .controls button:active {
+      background-color: var(--button-active-bg);
+      transform: scale(1.00);
     }
 
     .dashboard {
@@ -94,8 +105,8 @@
     }
 
     .card {
-      background: var(--card);
-      border: 2px solid var(--accent);
+      background: white;
+      border: 2px solid var(--header);
       border-radius: 12px;
       height: 96px;
       display: flex;
@@ -103,14 +114,14 @@
       justify-content: center;
       font-size: 16px;
       font-weight: 600;
-      color: var(--accent);
+      color: var(--header);
       text-decoration: none;
       transition: 0.3s ease;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
 
     .card:hover {
-      background-color: var(--accent);
+      background-color: var(--header);
       color: white;
       transform: scale(1.05);
     }
@@ -120,6 +131,7 @@
       padding: 20px;
       font-size: 13px;
       color: #999;
+      margin-top: 20px;
     }
 
     @media (max-width: 700px) {
@@ -130,9 +142,10 @@
         font-size: 14px;
         height: 80px;
       }
-      .control-btn {
+      .controls button {
+        min-width: 90px;
         font-size: 13px;
-        padding: 8px 14px;
+        padding: 8px 12px;
       }
     }
   </style>
@@ -146,11 +159,11 @@
     <h1>MACHINE DASHBOARD</h1>
   </header>
 
-  <!-- Control Buttons -->
+  <!-- Controls -->
   <div class="controls">
-    <button class="control-btn" onclick="location.href='index.html'">Home</button>
-    <button class="control-btn" onclick="location.href='category.html'">Category</button>
-    <button class="control-btn" onclick="toggleDark()">Dark / Light</button>
+    <button onclick="location.href='index.html'">🏠 Home</button>
+    <button onclick="location.href='category.html'">🧩 Category</button>
+    <button onclick="toggleDark()">🌓 Dark/Light</button>
   </div>
 
   <!-- Dashboard Grid -->
@@ -165,7 +178,6 @@
     <a href="machine8.html" class="card">Machine 08</a>
     <a href="machine9.html" class="card">Machine 09</a>
     <a href="machine10.html" class="card">Machine 10</a>
-    <!-- Add more cards if needed -->
   </main>
 
   <footer>
@@ -175,8 +187,14 @@
   <script>
     function toggleDark() {
       document.body.classList.toggle("dark");
+      localStorage.setItem("darkMode", document.body.classList.contains("dark") ? "1" : "0");
     }
-  </script>
 
+    window.onload = () => {
+      if (localStorage.getItem("darkMode") === "1") {
+        document.body.classList.add("dark");
+      }
+    };
+  </script>
 </body>
 </html>
