@@ -38,6 +38,7 @@
       text-align: center;
       padding: 30px 10px 50px;
       position: relative;
+      z-index: 10;
     }
 
     .logo {
@@ -60,6 +61,22 @@
     @keyframes headerPulse {
       0%, 100% { text-shadow: 0 0 3px #ffffff; }
       50% { text-shadow: 0 0 10px #99ccff; }
+    }
+
+    /* 📸 Background Image Behind Content */
+    .page-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .page-content::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: url('image.jpg') no-repeat center center / cover;
+      opacity: 0.5;
+      z-index: -1;
+      pointer-events: none;
     }
 
     .controls {
@@ -95,24 +112,23 @@
       transform: scale(1.00);
     }
 
-   .controls input[type="text"] {
-  padding: 10px;
-  font-size: 14px;
-  border: 2px solid var(--button-bg);
-  border-radius: 6px;
-  color: var(--text);
-  background-color: white;
-  min-width: 100px;
-  width: 160px;
-  transition: width 0.3s ease;
-  flex-shrink: 1;
-}
+    .controls input[type="text"] {
+      padding: 10px;
+      font-size: 14px;
+      border: 2px solid var(--button-bg);
+      border-radius: 6px;
+      color: var(--text);
+      background-color: white;
+      min-width: 100px;
+      width: 160px;
+      transition: width 0.3s ease;
+      flex-shrink: 1;
+    }
 
-.controls input[type="text"]:focus {
-  width: 220px;
-}
+    .controls input[type="text"]:focus {
+      width: 220px;
+    }
 
-    
     .dashboard {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -158,17 +174,31 @@
     }
 
     @media (max-width: 700px) {
-    .controls input[type="text"] {
-  width: 90px;
-  min-width: unset;
-  font-size: 13px;
-  padding: 8px 12px;
-}
+      .controls input[type="text"] {
+        width: 90px;
+        min-width: unset;
+        font-size: 13px;
+        padding: 8px 12px;
+      }
 
-.controls input[type="text"]:focus {
-  width: 130px;
-}
+      .controls input[type="text"]:focus {
+        width: 130px;
+      }
 
+      .controls button {
+        min-width: 90px;
+        font-size: 13px;
+        padding: 8px 12px;
+      }
+
+      h1 {
+        font-size: 20px;
+      }
+
+      .card {
+        font-size: 14px;
+        height: 80px;
+      }
     }
   </style>
 </head>
@@ -181,26 +211,28 @@
     <h1>CRITICAL OPERATION MACHINES</h1>
   </header>
 
-  <!-- Controls -->
-  <div class="controls">
-    <button onclick="location.href='Homepage.html'">🏠 Home</button>
-    <input type="text" id="searchInput" placeholder="🔍 Search..." onkeyup="filterCards()" />
-    <button onclick="location.href='category.html'">🧩 Category</button>
-    <button onclick="toggleDark()">🌓 Dark/Light</button>
+  <div class="page-content">
+    <!-- Controls -->
+    <div class="controls">
+      <button onclick="location.href='Homepage.html'">🏠 Home</button>
+      <input type="text" id="searchInput" placeholder="🔍 Search..." onkeyup="filterCards()" />
+      <button onclick="location.href='category.html'">🧩 Category</button>
+      <button onclick="toggleDark()">🌓 Dark/Light</button>
+    </div>
+
+    <!-- Dashboard Grid -->
+    <main class="dashboard">
+      <a href="FS.html" class="card">FS</a>
+      <a href="PULLOUT OL.html" class="card">PULLOUT OL</a>
+      <a href="FL RINGER.html" class="card">FL RINGER</a>
+      <a href="OL RINGER.html" class="card">OL RINGER</a>
+      <a href="2NL.html" class="card">2NL</a>
+    </main>
+
+    <footer>
+      &copy; 2025 Israjul Riad | Critical O/P Machines Monitoring
+    </footer>
   </div>
-
-  <!-- Dashboard Grid -->
-  <main class="dashboard">
-    <a href="FS.html" class="card">FS</a>
-    <a href="PULLOUT OL.html" class="card">PULLOUT OL</a>
-    <a href="FL RINGER.html" class="card">FL RINGER</a>
-    <a href="OL RINGER.html" class="card">OL RINGER</a>
-    <a href="2NL.html" class="card">2NL</a>
-  </main>
-
-  <footer>
-    &copy; 2025 Israjul Riad | Critical O/P Machines Monitoring
-  </footer>
 
   <script>
     function toggleDark() {
@@ -220,7 +252,7 @@
       cards.forEach(card => {
         const originalText = card.getAttribute('data-original') || card.textContent;
         if (!card.getAttribute('data-original')) {
-          card.setAttribute('data-original', originalText); // store original
+          card.setAttribute('data-original', originalText);
         }
 
         const text = originalText.toLowerCase();
