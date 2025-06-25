@@ -72,7 +72,8 @@
       flex-wrap: wrap;
     }
 
-    .controls button {
+    .controls button,
+    .controls input[type="text"] {
       padding: 10px;
       font-size: 14px;
       border: 1px solid #ccc;
@@ -93,6 +94,12 @@
     .controls button:active {
       background-color: var(--button-active-bg);
       transform: scale(1.00);
+    }
+
+    .controls input[type="text"] {
+      background-color: white;
+      color: black;
+      min-width: 200px;
     }
 
     .dashboard {
@@ -126,6 +133,11 @@
       transform: scale(1.05);
     }
 
+    .highlight {
+      background-color: yellow !important;
+      color: black !important;
+    }
+
     footer {
       text-align: center;
       padding: 20px;
@@ -142,7 +154,8 @@
         font-size: 14px;
         height: 80px;
       }
-      .controls button {
+      .controls button,
+      .controls input[type="text"] {
         min-width: 90px;
         font-size: 13px;
         padding: 8px 12px;
@@ -162,18 +175,18 @@
   <!-- Controls -->
   <div class="controls">
     <button onclick="location.href='Homepage.html'">🏠 Home</button>
+    <input type="text" id="searchInput" placeholder="🔍 Search..." oninput="filterCards()" />
     <button onclick="location.href='category.html'">🧩 Category</button>
     <button onclick="toggleDark()">🌓 Dark/Light</button>
   </div>
 
   <!-- Dashboard Grid -->
-  <main class="dashboard">
+  <main class="dashboard" id="dashboard">
     <a href="FS.html" class="card">FS</a>
     <a href="PULLOUT OL.html" class="card">PULLOUT OL</a>
     <a href="FL RINGER.html" class="card">FL RINGER</a>
     <a href="OL RINGER.html" class="card">OL RINGER</a>
     <a href="2NL.html" class="card">2NL</a>
-
   </main>
 
   <footer>
@@ -184,6 +197,27 @@
     function toggleDark() {
       document.body.classList.toggle("dark");
       localStorage.setItem("darkMode", document.body.classList.contains("dark") ? "1" : "0");
+    }
+
+    function filterCards() {
+      const input = document.getElementById('searchInput');
+      const filter = input.value.toLowerCase();
+      const cards = document.querySelectorAll('.dashboard .card');
+
+      cards.forEach(card => {
+        const text = card.textContent.toLowerCase();
+        if (text.includes(filter)) {
+          card.style.display = "flex";
+          if (filter) {
+            card.classList.add("highlight");
+          } else {
+            card.classList.remove("highlight");
+          }
+        } else {
+          card.style.display = "none";
+          card.classList.remove("highlight");
+        }
+      });
     }
 
     window.onload = () => {
