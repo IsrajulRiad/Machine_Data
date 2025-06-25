@@ -72,8 +72,7 @@
       flex-wrap: wrap;
     }
 
-    .controls button,
-    .controls input[type="text"] {
+    .controls button {
       padding: 10px;
       font-size: 14px;
       border: 1px solid #ccc;
@@ -97,9 +96,13 @@
     }
 
     .controls input[type="text"] {
-      background-color: white;
-      color: black;
+      padding: 10px;
+      font-size: 14px;
+      border: 2px solid var(--button-bg);
+      border-radius: 6px;
       min-width: 200px;
+      color: var(--text);
+      background-color: white;
     }
 
     .dashboard {
@@ -133,9 +136,9 @@
       transform: scale(1.05);
     }
 
-    .highlight {
-      background-color: yellow !important;
-      color: black !important;
+    .highlight-text {
+      background-color: yellow;
+      color: black;
     }
 
     footer {
@@ -175,13 +178,13 @@
   <!-- Controls -->
   <div class="controls">
     <button onclick="location.href='Homepage.html'">🏠 Home</button>
-    <input type="text" id="searchInput" placeholder="🔍 Search..." oninput="filterCards()" />
+    <input type="text" id="searchInput" placeholder="🔍 Search..." onkeyup="filterCards()" />
     <button onclick="location.href='category.html'">🧩 Category</button>
     <button onclick="toggleDark()">🌓 Dark/Light</button>
   </div>
 
   <!-- Dashboard Grid -->
-  <main class="dashboard" id="dashboard">
+  <main class="dashboard">
     <a href="FS.html" class="card">FS</a>
     <a href="PULLOUT OL.html" class="card">PULLOUT OL</a>
     <a href="FL RINGER.html" class="card">FL RINGER</a>
@@ -199,23 +202,35 @@
       localStorage.setItem("darkMode", document.body.classList.contains("dark") ? "1" : "0");
     }
 
+    function escapeRegex(text) {
+      return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
     function filterCards() {
       const input = document.getElementById('searchInput');
       const filter = input.value.toLowerCase();
       const cards = document.querySelectorAll('.dashboard .card');
 
       cards.forEach(card => {
-        const text = card.textContent.toLowerCase();
+        const originalText = card.getAttribute('data-original') || card.textContent;
+        if (!card.getAttribute('data-original')) {
+          card.setAttribute('data-original', originalText); // store original
+        }
+
+        const text = originalText.toLowerCase();
         if (text.includes(filter)) {
           card.style.display = "flex";
+
           if (filter) {
-            card.classList.add("highlight");
+            const regex = new RegExp(`(${escapeRegex(filter)})`, 'gi');
+            card.innerHTML = originalText.replace(regex, `<span class="highlight-text">$1</span>`);
           } else {
-            card.classList.remove("highlight");
+            card.innerHTML = originalText;
           }
+
         } else {
           card.style.display = "none";
-          card.classList.remove("highlight");
+          card.innerHTML = originalText;
         }
       });
     }
