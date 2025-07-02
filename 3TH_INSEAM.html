@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Machine Data</title>
+  <title>3TH_INSEAM</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -610,14 +610,30 @@ function downloadQR() {
 const sheetId = "1LI7h0CNeUryEtzPheWmZU_7BEGTUyPoZu5P5C2ywcrc";
 const apiKey = "AIzaSyCDL6LnfaLdODmBJ3xVD-GlC4G1rHjsvII";
 const rangesMap = {
-  cell_b1: "machine data!B1", cell_b2: "machine data!B2",
-  cell_b4: "machine data!B4", cell_b5: "machine data!B5",
-  cell_d1: "machine data!D1", cell_d2: "machine data!D2",
-  cell_d4: "machine data!D4", cell_d5: "machine data!D5",
-  cell_c8: "machine data!C8", cell_d8: "machine data!D8", cell_e8: "machine data!E8",
-  cell_c9: "machine data!C9", cell_d9: "machine data!D9", cell_e9: "machine data!E9",
-  cell_c10: "machine data!C10", cell_d10: "machine data!D10", cell_e10: "machine data!E10",
-  cell_c11: "machine data!C11", cell_d11: "machine data!D11", cell_e11: "machine data!E11"
+  cell_b1: "machine data!H3", 
+  cell_b2: "machine data!H4",
+  cell_b4: "machine data!H5", 
+  cell_b5: "machine data!H6",
+  
+  cell_c8: "machine data!C8", 
+  cell_c9: "machine data!C9",
+  cell_c10: "machine data!C10", 
+  cell_c11: "machine data!C11",
+
+  cell_d1: "machine data!J3", 
+  cell_d2: "machine data!J4",
+  cell_d4: "machine data!J5", 
+  cell_d5: "machine data!J6",
+  
+  cell_d8: "machine data!D8",
+  cell_d9: "machine data!D9",
+  cell_d10: "machine data!D10", 
+  cell_d11: "machine data!D11", 
+  
+  cell_e8: "machine data!E8",
+  cell_e9: "machine data!E9",
+  cell_e10: "machine data!E10",
+  cell_e11: "machine data!E11"
 };
 
 async function fetchAndUpdateCells() {
