@@ -1,1 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>FLATLOCK MACHINES</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #f9f9f9;
+      --text: #333;
+      --header: #004080;
+      --button-bg: #005dbb;
+      --button-hover-bg: #99ccff;
+      --button-active-bg: #66b2ff;
+    }
 
+    body.dark {
+      --bg: #121212;
+      --text: #f0f0f0;
+      --header: #1a1a1a;
+      --button-bg: #334466;
+      --button-hover-bg: #556688;
+      --button-active-bg: #7799aa;
+    }
+
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    header {
+      background: var(--header);
+      color: white;
+      text-align: center;
+      padding: 30px 10px 50px;
+      position: relative;
+    }
+
+    .logo {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+    }
+
+    .logo img {
+      height: 30px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      text-shadow: 0 0 6px rgba(255,255,255,0.4);
+      animation: headerPulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes headerPulse {
+      0%, 100% { text-shadow: 0 0 3px #ffffff; }
+      50% { text-shadow: 0 0 10px #99ccff; }
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      padding: 10px 0;
+      margin-top: 5px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .controls button {
+      padding: 10px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background-color: var(--button-bg);
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      min-width: 150px;
+      text-align: center;
+    }
+
+    .controls button:hover {
+      background: linear-gradient(135deg, #66b2ff, #005dbb);
+      box-shadow: 0 0 12px rgba(0, 153, 255, 0.4), 0 0 0 2px rgba(0, 153, 255, 0.15) inset;
+    }
+
+    .controls button:active {
+      background-color: var(--button-active-bg);
+      transform: scale(1.00);
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      padding: 30px;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    .card {
+      background: white;
+      border: 2px solid var(--header);
+      border-radius: 12px;
+      height: 96px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--header);
+      text-decoration: none;
+      transition: 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .card:hover {
+      background-color: var(--header);
+      color: white;
+      transform: scale(1.05);
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 13px;
+      color: #999;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 700px) {
+      h1 {
+        font-size: 20px;
+      }
+      .card {
+        font-size: 14px;
+        height: 80px;
+      }
+      .controls button {
+        min-width: 90px;
+        font-size: 13px;
+        padding: 8px 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <img src="logo.png" alt="Logo" />
+    </div>
+    <h1>FLATLOCK MACHINES</h1>
+  </header>
+
+  <!-- Controls -->
+  <div class="controls">
+    <button onclick="location.href='Homepage.html'">🏠 Home</button>
+    <button onclick="location.href='category.html'">🧩 Category</button>
+    <button onclick="toggleDark()">🌓 Dark/Light</button>
+  </div>
+
+  <!-- Dashboard Grid -->
+  <main class="dashboard">
+    <a href="RINGER.html" class="card">RINGER WAIST</a>
+    <a href="machine2.html" class="card">OL 02</a>
+    <a href="machine3.html" class="card">OL 03</a>
+    <a href="machine4.html" class="card">OL 04</a>
+    <a href="machine5.html" class="card">OL 05</a>
+    <a href="machine6.html" class="card">OL 06</a>
+    <a href="machine7.html" class="card">OL 07</a>
+    <a href="machine8.html" class="card">OL 08</a>
+    <a href="machine9.html" class="card">OL 09</a>
+    <a href="machine10.html" class="card">OL 10</a>
+  </main>
+
+  <footer>
+    &copy; 2025 Israjul Riad | Critical Machine Monitoring
+  </footer>
+
+  <script>
+    function toggleDark() {
+      document.body.classList.toggle("dark");
+      localStorage.setItem("darkMode", document.body.classList.contains("dark") ? "1" : "0");
+    }
+
+    window.onload = () => {
+      if (localStorage.getItem("darkMode") === "1") {
+        document.body.classList.add("dark");
+      }
+    };
+  </script>
+</body>
+</html>
