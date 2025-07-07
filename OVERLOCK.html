@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -95,6 +95,23 @@
       transform: scale(1.00);
     }
 
+    .controls input[type="text"] {
+      padding: 10px;
+      font-size: 14px;
+      border: 2px solid var(--button-bg);
+      border-radius: 6px;
+      color: var(--text);
+      background-color: white;
+      min-width: 100px;
+      width: 160px;
+      transition: width 0.3s ease;
+      flex-shrink: 1;
+    }
+
+    .controls input[type="text"]:focus {
+      width: 220px;
+    }
+
     .dashboard {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -126,6 +143,11 @@
       transform: scale(1.05);
     }
 
+    .highlight-text {
+      background-color: yellow;
+      color: black;
+    }
+
     footer {
       text-align: center;
       padding: 20px;
@@ -147,6 +169,15 @@
         font-size: 13px;
         padding: 8px 12px;
       }
+      .controls input[type="text"] {
+        width: 90px;
+        min-width: unset;
+        font-size: 13px;
+        padding: 8px 12px;
+      }
+      .controls input[type="text"]:focus {
+        width: 130px;
+      }
     }
   </style>
 </head>
@@ -162,7 +193,7 @@
   <!-- Controls -->
   <div class="controls">
     <button onclick="location.href='Homepage.html'">🏠 Home</button>
-  
+    <input type="text" id="searchInput" placeholder="🔍 Search..." onkeyup="filterCards()" />
     <button onclick="toggleDark()">🌓 Dark/Light</button>
   </div>
 
@@ -171,7 +202,6 @@
     <a href="3TH_INSEAM.html" class="card">3TH INSEAM</a>
     <a href="4TH_INSEAM.html" class="card">4TH INSEAM</a>
     <a href="OVERLOCK_MOBILON.html" class="card">OVERLOCK MOBILON</a>
-
   </main>
 
   <footer>
@@ -182,6 +212,37 @@
     function toggleDark() {
       document.body.classList.toggle("dark");
       localStorage.setItem("darkMode", document.body.classList.contains("dark") ? "1" : "0");
+    }
+
+    function escapeRegex(text) {
+      return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    function filterCards() {
+      const input = document.getElementById('searchInput');
+      const filter = input.value.toLowerCase();
+      const cards = document.querySelectorAll('.dashboard .card');
+
+      cards.forEach(card => {
+        const originalText = card.getAttribute('data-original') || card.textContent;
+        if (!card.getAttribute('data-original')) {
+          card.setAttribute('data-original', originalText);
+        }
+
+        const text = originalText.toLowerCase();
+        if (text.includes(filter)) {
+          card.style.display = "flex";
+          if (filter) {
+            const regex = new RegExp(`(${escapeRegex(filter)})`, 'gi');
+            card.innerHTML = originalText.replace(regex, `<span class="highlight-text">$1</span>`);
+          } else {
+            card.innerHTML = originalText;
+          }
+        } else {
+          card.style.display = "none";
+          card.innerHTML = originalText;
+        }
+      });
     }
 
     window.onload = () => {
