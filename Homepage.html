@@ -10,7 +10,12 @@
       --text: #333;
       --header: #004080;
       --button-bg: #005dbb;
-      --button-hover-bg: #66b2ff;
+      --button-hover-bg: #2674ff;
+      --button-active-bg: #003f8a;
+      --card-bg: #005dbb;
+      --card-hover-bg: #2674ff;
+      --shadow-dark: #004a99;
+      --shadow-light: #66aaff;
     }
 
     body.dark {
@@ -18,7 +23,12 @@
       --text: #f0f0f0;
       --header: #1a1a1a;
       --button-bg: #334466;
-      --button-hover-bg: #7799aa;
+      --button-hover-bg: #556688;
+      --button-active-bg: #223344;
+      --card-bg: #334466;
+      --card-hover-bg: #556688;
+      --shadow-dark: #223344;
+      --shadow-light: #556688;
     }
 
     body {
@@ -86,40 +96,62 @@
       flex-wrap: wrap;
     }
 
+    /* Neumorphic Button */
     .controls button {
-      padding: 10px;
-      font-size: 14px;
+      background-color: var(--button-bg);
       border: none;
       border-radius: 12px;
-      background: var(--button-bg);
+      box-shadow:
+        8px 8px 15px var(--shadow-dark),
+        -8px -8px 15px var(--shadow-light);
       color: white;
-      box-shadow: 6px 6px 12px rgba(0,0,0,0.1), -6px -6px 12px rgba(255,255,255,0.5);
-      transition: all 0.3s ease;
+      cursor: pointer;
+      font-size: 14px;
       min-width: 150px;
+      padding: 10px;
       text-align: center;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      user-select: none;
     }
 
     .controls button:hover {
-      background: linear-gradient(135deg, var(--button-hover-bg), var(--button-bg));
-      box-shadow: inset 4px 4px 8px rgba(0,0,0,0.1), inset -4px -4px 8px rgba(255,255,255,0.5);
-      transform: scale(1.03);
+      background-color: var(--button-hover-bg);
+      box-shadow:
+        4px 4px 10px var(--shadow-dark),
+        -4px -4px 10px var(--shadow-light);
     }
 
+    .controls button:active {
+      background-color: var(--button-active-bg);
+      box-shadow:
+        inset 4px 4px 6px var(--shadow-dark),
+        inset -4px -4px 6px var(--shadow-light);
+      transform: scale(0.97);
+    }
+
+    /* Search input with subtle neumorphism */
     .controls input[type="text"] {
-      padding: 10px;
-      font-size: 14px;
-      border: 2px solid var(--button-bg);
+      background-color: var(--bg);
+      border: none;
       border-radius: 12px;
-      background: var(--bg);
+      box-shadow:
+        inset 6px 6px 10px #d1d9e6,
+        inset -6px -6px 10px #ffffff;
       color: var(--text);
+      font-size: 14px;
       min-width: 100px;
+      padding: 10px 15px;
+      transition: width 0.3s ease, box-shadow 0.3s ease;
       width: 160px;
-      box-shadow: inset 4px 4px 8px rgba(0,0,0,0.1), inset -4px -4px 8px rgba(255,255,255,0.5);
-      transition: width 0.3s ease;
+      flex-shrink: 1;
     }
 
     .controls input[type="text"]:focus {
+      outline: none;
       width: 220px;
+      box-shadow:
+        inset 2px 2px 5px #a6b1c6,
+        inset -2px -2px 5px #f0f5ff;
     }
 
     .dashboard {
@@ -131,31 +163,40 @@
       margin: auto;
     }
 
+    /* Neumorphic Cards */
     .card {
+      background-color: var(--card-bg);
       border-radius: 12px;
-      box-shadow: 6px 6px 12px rgba(0,0,0,0.1), -6px -6px 12px rgba(255,255,255,0.5);
-      font-weight: 600;
+      height: 96px;
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 96px;
       font-size: 16px;
+      font-weight: 600;
+      color: white;
       text-decoration: none;
-      transition: all 0.3s ease;
-      background: white;
+      box-shadow:
+        8px 8px 15px var(--shadow-dark),
+        -8px -8px 15px var(--shadow-light);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+      user-select: none;
     }
 
-    .card:nth-child(1) { border: 3px solid #ff4d4d; color: #ff4d4d; }
-    .card:nth-child(1):hover { background-color: #ff4d4d; color: white; }
+    .card:hover {
+      background-color: var(--card-hover-bg);
+      box-shadow:
+        4px 4px 10px var(--shadow-dark),
+        -4px -4px 10px var(--shadow-light);
+      color: white;
+      cursor: pointer;
+      transform: scale(1.05);
+    }
 
-    .card:nth-child(2) { border: 3px solid #4da6ff; color: #4da6ff; }
-    .card:nth-child(2):hover { background-color: #4da6ff; color: white; }
-
-    .card:nth-child(3) { border: 3px solid #4dff88; color: #4dff88; }
-    .card:nth-child(3):hover { background-color: #4dff88; color: black; }
-
-    .card:nth-child(4) { border: 3px solid #ffb84d; color: #ff9900; }
-    .card:nth-child(4):hover { background-color: #ffb84d; color: white; }
+    /* Highlight text on search */
+    .highlight-text {
+      background-color: yellow;
+      color: black;
+    }
 
     footer {
       text-align: center;
@@ -168,6 +209,9 @@
     @media (max-width: 700px) {
       .controls input[type="text"] {
         width: 90px;
+        min-width: unset;
+        font-size: 13px;
+        padding: 8px 12px;
       }
 
       .controls input[type="text"]:focus {
