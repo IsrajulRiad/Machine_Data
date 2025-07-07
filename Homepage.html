@@ -6,21 +6,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root {
-      --bg: #f9f9f9;
+      --bg: #e0e0e0;
       --text: #333;
       --header: #004080;
-      --button-bg: #005dbb;
+      --button-bg: #e0e0e0;
       --button-hover-bg: #99ccff;
       --button-active-bg: #66b2ff;
+      --shadow-light: #ffffff;
+      --shadow-dark: #a3a3a3;
     }
 
     body.dark {
-      --bg: #121212;
+      --bg: #2b2b2b;
       --text: #f0f0f0;
       --header: #1a1a1a;
-      --button-bg: #334466;
-      --button-hover-bg: #556688;
-      --button-active-bg: #7799aa;
+      --button-bg: #2b2b2b;
+      --button-hover-bg: #3a3a3a;
+      --button-active-bg: #444;
+      --shadow-light: #3a3a3a;
+      --shadow-dark: #1a1a1a;
     }
 
     body {
@@ -88,44 +92,36 @@
       flex-wrap: wrap;
     }
 
-    .controls button {
+    .controls button, .controls input[type="text"] {
       padding: 10px;
       font-size: 14px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      background-color: var(--button-bg);
-      color: white;
-      cursor: pointer;
-      transition: all 0.2s ease;
+      border-radius: 12px;
+      background-color: #66b2ff;
+      border: none;
+      color: var(--text);
+      box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
+      transition: all 0.3s ease;
       min-width: 150px;
       text-align: center;
     }
 
     .controls button:hover {
-      background: linear-gradient(135deg, #66b2ff, #005dbb);
-      box-shadow: 0 0 12px rgba(0, 153, 255, 0.4), 0 0 0 2px rgba(0, 153, 255, 0.15) inset;
+      background-color: var(--button-hover-bg);
     }
 
     .controls button:active {
-      background-color: var(--button-active-bg);
-      transform: scale(1.00);
+      background-color: #66b2ff;
+      box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
     }
 
     .controls input[type="text"] {
-      padding: 10px;
-      font-size: 14px;
-      border: 2px solid var(--button-bg);
-      border-radius: 6px;
-      color: var(--text);
-      background-color: white;
-      min-width: 100px;
+      border: none;
       width: 160px;
-      transition: width 0.3s ease;
-      flex-shrink: 1;
     }
 
     .controls input[type="text"]:focus {
       width: 220px;
+      outline: none;
     }
 
     .dashboard {
@@ -138,8 +134,9 @@
     }
 
     .card {
-      background: white;
-      border-radius: 12px;
+      border-radius: 20px;
+      background: #66b2ff;
+      box-shadow: 8px 8px 15px var(--shadow-dark), -8px -8px 15px var(--shadow-light);
       height: 96px;
       display: flex;
       align-items: center;
@@ -147,59 +144,18 @@
       font-size: 16px;
       font-weight: 600;
       text-decoration: none;
+      color: var(--text);
       transition: 0.3s ease;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .card:hover {
+      box-shadow: inset 8px 8px 15px var(--shadow-dark), inset -8px -8px 15px var(--shadow-light);
+      transform: scale(1.05);
     }
 
     .highlight-text {
       background-color: yellow;
       color: black;
-    }
-
-    /* 🎨 Unique Borders + Hover Effects */
-    .card:nth-child(1) {
-      border: 3px solid #ff4d4d;
-      color: #ff4d4d;
-    }
-    .card:nth-child(1):hover {
-      background-color: #ff4d4d;
-      color: white;
-    }
-
-    .card:nth-child(2) {
-      border: 3px solid #4da6ff;
-      color: #4da6ff;
-    }
-    .card:nth-child(2):hover {
-      background-color: #4da6ff;
-      color: white;
-    }
-
-    .card:nth-child(3) {
-      border: 3px solid #4dff88;
-      color: #4dff88;
-    }
-    .card:nth-child(3):hover {
-      background-color: #4dff88;
-      color: black;
-    }
-
-    .card:nth-child(4) {
-      border: 3px solid #ffb84d;
-      color: #ff9900;
-    }
-    .card:nth-child(4):hover {
-      background-color: #ffb84d;
-      color: white;
-    }
-
-    .card:nth-child(5) {
-      border: 3px solid #cc66ff;
-      color: #cc66ff;
-    }
-    .card:nth-child(5):hover {
-      background-color: #cc66ff;
-      color: white;
     }
 
     footer {
@@ -213,9 +169,7 @@
     @media (max-width: 700px) {
       .controls input[type="text"] {
         width: 90px;
-        min-width: unset;
         font-size: 13px;
-        padding: 8px 12px;
       }
 
       .controls input[type="text"]:focus {
@@ -225,7 +179,6 @@
       .controls button {
         min-width: 90px;
         font-size: 13px;
-        padding: 8px 12px;
       }
 
       h1 {
@@ -240,7 +193,6 @@
   </style>
 </head>
 <body>
-
   <header>
     <div class="logo">
       <img src="logo.png" alt="Logo" />
@@ -252,7 +204,7 @@
     <div class="controls">
       <button onclick="location.href='Homepage.html'">🏠 Home</button>
       <input type="text" id="searchInput" placeholder="🔍 Search..." onkeyup="filterCards()" />
-  
+      <button onclick="location.href='category.html'">🧩 Category</button>
       <button onclick="toggleDark()">🌓 Dark/Light</button>
     </div>
 
@@ -260,12 +212,11 @@
       <a href="FLATSEAM.html" class="card">FLATSEAM</a>
       <a href="OVERLOCK.html" class="card">OVERLOCK</a>
       <a href="FLATLOCK.html" class="card">FLATLOCK</a>
-      <a href="BARTACK.html" class="card">BARTACK</a>
-      <a href="2NL.html" class="card">2NL</a>
+      <a href="ZIGZAG.html" class="card">ZIGZAG</a>
     </main>
 
     <footer>
-      &copy; 2025 Israjul Riad | Critical O/P Machines Monitoring
+      &copy; 2025 Israjul Riad | Critical O/P Machines Monitoring.
     </footer>
   </div>
 
