@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Machine Data</title>
+  <title>HOOK & EYE</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -382,7 +382,7 @@ footer {
   <div class="logo">
     <img src="logo.png" alt="Logo" />
   </div>
-  <h1>CRITICAL MACHINE DATA</h1>
+  <h1>HOOK & EYE</h1>
 </header><div class="page-wrapper">
   <div class="controls">
     <button onclick="goHome()">🏠 Home</button>
@@ -471,7 +471,7 @@ footer {
 </div><script>
 <!-- FULL HTML DOCUMENT UPDATED WITH QR FUNCTIONALITY --><!-- PARTIAL SNIPPET BELOW; SCRIPT CONTINUATION AT BOTTOM --><!-- ... (existing unchanged HTML code above) ... --><script>
 function goHome() {
-  window.location.href = "dashboard.html";
+  window.location.href = "Homepage.html";
 }
 
 function exportTable() {
@@ -610,14 +610,30 @@ function downloadQR() {
 const sheetId = "1LI7h0CNeUryEtzPheWmZU_7BEGTUyPoZu5P5C2ywcrc";
 const apiKey = "AIzaSyCDL6LnfaLdODmBJ3xVD-GlC4G1rHjsvII";
 const rangesMap = {
-  cell_b1: "machine data!B1", cell_b2: "machine data!B2",
-  cell_b4: "machine data!B4", cell_b5: "machine data!B5",
-  cell_d1: "machine data!D1", cell_d2: "machine data!D2",
-  cell_d4: "machine data!D4", cell_d5: "machine data!D5",
-  cell_c8: "machine data!C8", cell_d8: "machine data!D8", cell_e8: "machine data!E8",
-  cell_c9: "machine data!C9", cell_d9: "machine data!D9", cell_e9: "machine data!E9",
-  cell_c10: "machine data!C10", cell_d10: "machine data!D10", cell_e10: "machine data!E10",
-  cell_c11: "machine data!C11", cell_d11: "machine data!D11", cell_e11: "machine data!E11"
+  cell_b1: "machine data!T13", 
+  cell_b2: "machine data!T14",
+  cell_b4: "machine data!T15", 
+  cell_b5: "machine data!T16",
+  
+  cell_c8: "machine data!U18", 
+  cell_c9: "machine data!U19",
+  cell_c10: "machine data!U20", 
+  cell_c11: "machine data!U21",
+
+  cell_d1: "machine data!V13", 
+  cell_d2: "machine data!V14",
+  cell_d4: "machine data!V15", 
+  cell_d5: "machine data!V16",
+  
+  cell_d8: "machine data!V18",
+  cell_d9: "machine data!V19",
+  cell_d10: "machine data!V20", 
+  cell_d11: "machine data!V21", 
+  
+  cell_e8: "machine data!W8",
+  cell_e9: "machine data!W9",
+  cell_e10: "machine data!W10",
+  cell_e11: "machine data!W11"
 };
 
 async function fetchAndUpdateCells() {
