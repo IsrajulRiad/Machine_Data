@@ -1,0 +1,663 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>TOP STITCH</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <!-- Your CSS goes here -->
+  <style>:root { --header-font-size: 22px; --controls-font-size: 14px; --table-font-size: 14px; --bg: #f9f9f9; --text: #333; --header: #004080; --table-header: #036; --highlight: #e6f0fa; --button-bg: #005dbb; --button-hover-bg: #99ccff; --button-active-bg: #66b2ff; }
+
+body.dark {
+  --bg: #121212;
+  --text: #f0f0f0;
+  --header: #1a1a1a;
+  --table-header: #1a3a5a;
+  --highlight: #1e2b40;
+  --button-bg: #334466;
+  --button-hover-bg: #556688;
+  --button-active-bg: #7799aa;
+}
+
+body {
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  margin: 0;
+  padding: 0;
+  transition: background 0.3s, color 0.3s;
+}
+
+header {
+  background: var(--header);
+  color: white;
+  padding: 10px 20px;
+  box-sizing: border-box;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  font-size: var(--header-font-size);
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+header h1 {
+  text-shadow: 0 0 6px rgba(255,255,255,0.4);
+  animation: headerPulse 1.5s ease-in-out infinite;
+}
+
+body.dark header h1 {
+  text-shadow: 0 0 10px rgba(0, 153, 255, 0.6);
+}
+
+@keyframes headerPulse {
+  0%, 100% {
+    text-shadow: 0 0 3px #ffffff;
+  }
+  50% {
+    text-shadow: 0 0 10px #99ccff;
+  }
+}
+
+.logo {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+.logo img {
+  height: 100px;
+  user-select: none;
+  pointer-events: none;
+}
+
+.page-wrapper {
+  padding-top: 80px; /* header height + 20px gap */
+  width: 900px;
+  margin: 0 auto;
+  transform: none;
+}
+
+.controls {
+  position: sticky;
+  top: 80px;
+  background: var(--bg);
+  z-index: 19;
+  padding: 10px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+  font-size: var(--controls-font-size);
+  width: 100%;
+  justify-content: center;
+  user-select: none;
+}
+
+.controls button,
+.controls input[type="text"] {
+  padding: 10px;
+  font-size: inherit;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: var(--button-bg);
+  color: white;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s ease;
+  min-width: 150px;
+  text-align: center;
+}
+
+.controls button:hover {
+  box-shadow: 0 0 12px rgba(0, 153, 255, 0.4), 0 0 0 2px rgba(0, 153, 255, 0.15) inset;
+  background: linear-gradient(135deg, #66b2ff, #005dbb);
+}
+
+.controls button:active {
+  background-color: var(--button-active-bg);
+  transform: scale(1.00);
+}
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.075);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  font-size: var(--table-font-size);
+}
+
+th, td {
+  padding: 10px;
+  border: 1px solid #ccc;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.label-cell {
+  background-color: #eef4fb;
+  font-weight: bold;
+  user-select: none;
+}
+
+.thick-group {
+  border: 2px solid #333;
+}
+
+.thick-group td, .thick-group th {
+  border: 1px solid #ccc;
+}
+
+.centered-header th {
+  text-align: center;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #f8f8f8;
+}
+
+tbody tr:hover {
+  background-color: var(--highlight);
+}
+
+body.dark table,
+body.dark th,
+body.dark td {
+  color: white;
+  background-color: #1e1e1e;
+  border-color: #444;
+}
+
+body.dark .label-cell {
+  background-color: #2a3b4d;
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  font-size: 13px;
+  color: #999;
+  margin-top: 40px;
+  user-select: none;
+}
+
+@media print {
+  header, footer, .controls {
+    display: none;
+  }
+
+  .page-wrapper {
+    padding-top: 20px;
+  }
+
+  body {
+    background: white;
+    color: black;
+  }
+
+  table {
+    width: 100%;
+    border: 1px solid black;
+  }
+}
+
+/* 🔧 Mobile view with scale and centering */
+@media (max-width: 750px) {
+  header {
+    background: rgba(0, 64, 128, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    width: 100vw;
+  }
+
+  .page-wrapper {
+    padding-top: 85px;
+    width: 214%;
+    left: 50%;
+    transform: translateX(-50%) scale(0.45);
+    transform-origin: top center;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  header {
+    height: 40px;
+    font-size: 20px;
+  }
+
+  .logo img {
+    height: 30px;
+  }
+
+  .controls {
+    font-size: 20px;
+  }
+
+  .controls button,
+  .controls input[type="text"] {
+    min-width: 90px;
+    padding: 10px;
+    font-size: 20px;
+  }
+
+  h1 {
+    font-size: 16px;
+    text-align: center;
+  }
+
+  table {
+    font-size: 12px;
+  }
+
+  th, td {
+    padding: 6px;
+  }
+}
+
+/* Center all cells that receive data from Google Sheets */
+#cell_b1,
+#cell_b2,
+#cell_b4,
+#cell_b5,
+#cell_d1,
+#cell_d2,
+#cell_d4,
+#cell_d5,
+#cell_c8,
+#cell_d8,
+#cell_e8,
+#cell_c9,
+#cell_d9,
+#cell_e9,
+#cell_c10,
+#cell_d10,
+#cell_e10,
+#cell_c11,
+#cell_d11,
+#cell_e11 {
+  text-align: center;
+}
+
+#machineTable tbody tr:nth-child(2) td:first-child,
+#machineTable tbody tr:nth-child(3) td:first-child,
+#machineTable tbody tr:nth-child(4) td:first-child,
+#machineTable tbody tr:nth-child(5) td:first-child {
+  text-align: center;
+}
+
+[id^="cell_"] {
+  animation: flashIn 0.4s ease-in;
+}
+
+@keyframes flashIn {
+  from { background-color: #ffffcc; }
+  to { background-color: transparent; }
+}
+
+/* QR Modal styles */
+#qrModal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+}
+
+#qrModalContent {
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  text-align: center;
+  border: 2px solid #000;
+  box-shadow:
+    0 0 10px rgba(0, 153, 255, 0.7),
+    0 0 20px rgba(0, 153, 255, 0.5),
+    0 0 40px rgba(0, 153, 255, 0.3);
+  transition: box-shadow 0.3s ease;
+  user-select: none;
+  max-width: 260px;
+  margin: 20px;
+}
+
+#qrTitle {
+  margin-top: 12px;
+  user-select: none;
+  color: white;
+  background-color: black;
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+#qrcode {
+  margin: 0 auto;
+  width: 180px;
+  height: 180px;
+  user-select: none;
+}
+
+#qrModal button {
+  margin: 5px;
+  padding: 8px 15px;
+  border-radius: 6px;
+  border: none;
+  background-color: var(--button-bg);
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  user-select: none;
+}
+
+#qrModal button:hover {
+  background-color: var(--button-hover-bg);
+}
+
+  </style></head>
+<body><header>
+  <div class="logo">
+    <img src="logo.png" alt="Logo" />
+  </div>
+  <h1>TOP STITCH</h1>
+</header><div class="page-wrapper">
+  <div class="controls">
+    <button onclick="goHome()">🏠 Home</button>
+    <button id="qrButton" onclick="openQRModal()">QR 🔲</button>
+    <button onclick="exportTable()">⬇ Excel</button>
+    <button onclick="exportPDF()">🖨️ PDF</button>
+    <button onclick="toggleDark()">🌓 Dark/Light</button>
+  </div>  <div class="table-container" id="pdfArea">
+    <table id="machineTable">
+      <tbody class="thick-group">
+        <tr>
+          <th>Machine Number</th>
+          <td id="cell_b1"></td>
+          <th>Machine Type</th>
+          <td colspan="2" id="cell_d1"></td>
+        </tr>
+        <tr>
+          <th>Section</th>
+          <td id="cell_b2"></td>
+          <th>Line No</th>
+          <td colspan="2" id="cell_d2"></td>
+        </tr>
+      </tbody>
+      <tbody class="thick-group">
+        <tr>
+          <th>Style Number</th>
+          <td id="cell_b4"></td>
+          <th>Operation Name</th>
+          <td colspan="2" id="cell_d4"></td>
+        </tr>
+        <tr>
+          <th>Seam Width</th>
+          <td id="cell_b5"></td>
+          <th>Trim</th>
+          <td colspan="2" id="cell_d5"></td>
+        </tr>
+      </tbody>
+      <tbody class="thick-group">
+        <tr class="centered-header">
+          <th>No</th>
+          <th>Checking Point</th>
+          <th>Yes</th>
+          <th>No</th>
+          <th>Remarks</th>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>All parts of the machines are tight?</td>
+          <td id="cell_c8"></td>
+          <td id="cell_d8"></td>
+          <td id="cell_e8"></td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>Machine table clean?</td>
+          <td id="cell_c9"></td>
+          <td id="cell_d9"></td>
+          <td id="cell_e9"></td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>All safety guard are available?</td>
+          <td id="cell_c10"></td>
+          <td id="cell_d10"></td>
+          <td id="cell_e10"></td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>All wire and pipes are arranged?</td>
+          <td id="cell_c11"></td>
+          <td id="cell_d11"></td>
+          <td id="cell_e11"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div><footer>
+  &copy; 2025 Israjul Riad | Critical Machine Monitoring
+</footer><div id="qrModal">
+  <div id="qrModalContent">
+    <div id="qrcode"></div>
+    <div id="qrTitle"></div>
+    <button onclick="downloadQR()">Download</button>
+    <button onclick="closeQRModal()">Close</button>
+  </div>
+</div><script>
+<!-- FULL HTML DOCUMENT UPDATED WITH QR FUNCTIONALITY --><!-- PARTIAL SNIPPET BELOW; SCRIPT CONTINUATION AT BOTTOM --><!-- ... (existing unchanged HTML code above) ... --><script>
+function goHome() {
+  window.location.href = "Homepage.html";
+}
+
+function exportTable() {
+  const table = document.getElementById("machineTable");
+  if (!table || !table.innerHTML.trim()) {
+    alert("No data to export!");
+    return;
+  }
+  const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
+  const timestamp = new Date().toISOString().slice(0,19).replace(/:/g,"-");
+  XLSX.writeFile(wb, `machine_data_${timestamp}.xlsx`);
+}
+
+async function exportPDF() {
+  const element = document.getElementById("pdfArea");
+  try {
+    const canvas = await html2canvas(element, { scale: 2, scrollY: -window.scrollY });
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jspdf.jsPDF('l', 'pt', 'a4');
+    const margin = 20;
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (canvas.height * (pdfWidth - margin * 2)) / canvas.width;
+    pdf.addImage(imgData, 'PNG', margin, margin, pdfWidth - margin * 2, pdfHeight);
+    pdf.save(`machine_data_${new Date().toISOString().slice(0,19).replace(/:/g,"-")}.pdf`);
+  } catch (e) {
+    alert("Failed to export PDF. Try again.");
+    console.error(e);
+  }
+}
+
+function toggleDark() {
+  document.body.classList.toggle("dark");
+  localStorage.setItem("darkMode", document.body.classList.contains("dark") ? "1" : "0");
+}
+
+function openQRModal() {
+  const currentUrl = window.location.href;
+
+  const qrDiv = document.getElementById("qrcode");
+  qrDiv.innerHTML = ""; // Clear previous QR
+
+  new QRCode(qrDiv, {
+    text: currentUrl,
+    width: 180,
+    height: 180,
+    colorDark: "#000000",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.H
+  });
+
+  // Title below QR
+  const title = document.getElementById("qrTitle");
+  const titleText = document.getElementById("cell_b1")?.textContent || "Machine Data";
+  title.innerText = titleText;
+
+  // Show modal
+  document.getElementById("qrModal").style.display = "flex";
+}
+
+function closeQRModal() {
+  document.getElementById("qrModal").style.display = "none";
+}
+
+function downloadQR() {
+  const qrCanvas = document.querySelector("#qrcode canvas");
+  const title = document.getElementById("qrTitle").textContent.trim() || "QR Code";
+
+  if (!qrCanvas) {
+    alert("QR code not generated yet.");
+    return;
+  }
+
+  // 🔧 Sizes
+  const qrSize = 180;
+  const whiteBoxPadding = 20;
+  const outerPaddingX = 10; // left & right black area reduced
+  const outerPaddingY = 30; // top & bottom stays
+  const titleHeight = 40;
+
+  const canvasWidth = qrSize + whiteBoxPadding * 2 + outerPaddingX * 2;
+  const canvasHeight = qrSize + whiteBoxPadding * 2 + titleHeight + outerPaddingY * 2;
+
+  const canvas = document.createElement("canvas");
+  canvas.width = canvasWidth;
+  canvas.height = canvasHeight;
+
+  const ctx = canvas.getContext("2d");
+
+  // 🔲 Black background
+  ctx.fillStyle = "black";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // ⬜ White rounded box
+  const boxX = outerPaddingX;
+  const boxY = outerPaddingY;
+  const boxWidth = qrSize + whiteBoxPadding * 2;
+  const boxHeight = qrSize + whiteBoxPadding * 2;
+  const radius = 16;
+
+  ctx.fillStyle = "white";
+  ctx.beginPath();
+  ctx.moveTo(boxX + radius, boxY);
+  ctx.lineTo(boxX + boxWidth - radius, boxY);
+  ctx.quadraticCurveTo(boxX + boxWidth, boxY, boxX + boxWidth, boxY + radius);
+  ctx.lineTo(boxX + boxWidth, boxY + boxHeight - radius);
+  ctx.quadraticCurveTo(boxX + boxWidth, boxY + boxHeight, boxX + boxWidth - radius, boxY + boxHeight);
+  ctx.lineTo(boxX + radius, boxY + boxHeight);
+  ctx.quadraticCurveTo(boxX, boxY + boxHeight, boxX, boxY + boxHeight - radius);
+  ctx.lineTo(boxX, boxY + radius);
+  ctx.quadraticCurveTo(boxX, boxY, boxX + radius, boxY);
+  ctx.closePath();
+  ctx.fill();
+
+  // 🖼️ Draw QR
+  const qrX = boxX + whiteBoxPadding;
+  const qrY = boxY + whiteBoxPadding;
+  ctx.drawImage(qrCanvas, qrX, qrY, qrSize, qrSize);
+
+  // 🏷️ Draw title below
+  ctx.fillStyle = "white";
+  ctx.font = "bold 18px Segoe UI, Arial, sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(title, canvas.width / 2, boxY + boxHeight + titleHeight / 2);
+
+  // ⬇️ Download
+  const link = document.createElement("a");
+  link.href = canvas.toDataURL("image/png");
+  link.download = `${title}_qr.png`;
+  document.body.appendChild(link); // some browsers require it in DOM
+  link.click();
+  document.body.removeChild(link);
+}
+ 
+
+const sheetId = "1LI7h0CNeUryEtzPheWmZU_7BEGTUyPoZu5P5C2ywcrc";
+const apiKey = "AIzaSyCDL6LnfaLdODmBJ3xVD-GlC4G1rHjsvII";
+const rangesMap = {
+  cell_b1: "machine data!N23", 
+  cell_b2: "machine data!N24",
+  cell_b4: "machine data!N25", 
+  cell_b5: "machine data!N26",
+  
+  cell_c8: "machine data!O28", 
+  cell_c9: "machine data!O29",
+  cell_c10: "machine data!O30", 
+  cell_c11: "machine data!O31",
+
+  cell_d1: "machine data!P23", 
+  cell_d2: "machine data!P24",
+  cell_d4: "machine data!P25", 
+  cell_d5: "machine data!P26",
+  
+  cell_d8: "machine data!P28",
+  cell_d9: "machine data!P29",
+  cell_d10: "machine data!P30", 
+  cell_d11: "machine data!P31", 
+  
+  cell_e8: "machine data!Q28",
+  cell_e9: "machine data!Q29",
+  cell_e10: "machine data!Q30",
+  cell_e11: "machine data!Q31"
+};
+
+async function fetchAndUpdateCells() {
+  const ranges = Object.values(rangesMap);
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values:batchGet?ranges=${ranges.map(r => encodeURIComponent(r)).join('&ranges=')}&key=${apiKey}`;
+  try {
+    const res = await fetch(url);
+    const json = await res.json();
+    json.valueRanges.forEach((entry, index) => {
+      const id = Object.keys(rangesMap)[index];
+      const value = entry.values?.[0]?.[0] || "";
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    });
+  } catch (e) {
+    console.error("Failed to fetch Google Sheets data:", e);
+  }
+}
+
+window.onload = () => {
+  fetchAndUpdateCells();
+  if (localStorage.getItem("darkMode") === "1") {
+    document.body.classList.add("dark");
+  }
+};
+</script></body>
+</html>
