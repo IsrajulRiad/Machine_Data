@@ -10,8 +10,8 @@
       --text: #333;
       --header: #004080;
       --button-bg: #e0e0e0;
-      --button-hover-bg: #99ccff;
-      --button-active-bg: #66b2ff;
+      --button-hover-bg: #d1d1d1;
+      --button-active-bg: #c1c1c1;
       --shadow-light: #ffffff;
       --shadow-dark: #a3a3a3;
     }
@@ -96,7 +96,7 @@
       padding: 10px;
       font-size: 14px;
       border-radius: 12px;
-      background-color:#eff7ff;
+      background-color: var(--button-bg);
       border: none;
       color: var(--text);
       box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
@@ -105,14 +105,12 @@
       text-align: center;
     }
 
-     .controls button:hover {
-      background: linear-gradient(135deg, #66b2ff, #005dbb);
-      box-shadow: 0 0 12px rgba(0, 153, 255, 0.4), 0 0 0 2px rgba(0, 153, 255, 0.15) inset;
+    .controls button:hover {
+      background-color: var(--button-hover-bg);
     }
 
-
     .controls button:active {
-      background-color: #66b2ff;
+      background-color: var(--button-active-bg);
       box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
     }
 
@@ -137,7 +135,7 @@
 
     .card {
       border-radius: 20px;
-      background:#eff7ff;
+      background: var(--button-bg);
       box-shadow: 8px 8px 15px var(--shadow-dark), -8px -8px 15px var(--shadow-light);
       height: 96px;
       display: flex;
