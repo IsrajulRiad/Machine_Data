@@ -140,9 +140,12 @@
     }
 
     .card:hover {
-      box-shadow: inset 8px 8px 15px var(--shadow-dark), inset -8px -8px 15px var(--shadow-light);
-      transform: scale(1.05);
-    }
+  background-color: inherit; /* default, overwritten by nth-child */
+  box-shadow: none;
+  transform: none;
+  color: white;
+}
+
 
     .card:nth-child(1):hover { background-color: #ff4d4d; }
     .card:nth-child(2):hover { background-color: #4da6ff; }
