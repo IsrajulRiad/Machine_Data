@@ -72,16 +72,6 @@
       z-index: 1;
     }
 
-    .page-content::before {
-      content: "";
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: url('Motion.mp4') no-repeat center center / cover;
-      opacity: 0.3;
-      z-index: -1;
-      pointer-events: none;
-    }
-
     .controls {
       display: flex;
       justify-content: center;
@@ -150,48 +140,16 @@
     }
 
     .card:hover {
-      box-shadow: inset 8px 8px 15px var(--shadow-dark), inset -8px -8px 15px var(--shadow-light)
+      box-shadow: inset 8px 8px 15px var(--shadow-dark), inset -8px -8px 15px var(--shadow-light);
       transform: scale(1.05);
     }
 
-
-
-    
-     .card:nth-child(1):hover {
-      background-color: #ff4d4d;
-      
-    }
-
-    .card:nth-child(2):hover {
-      background-color: #4da6ff;
-    
-    }
-
-
-    .card:nth-child(3):hover {
-      background-color: #4dff88;
- 
-    }
-
-
-    .card:nth-child(4):hover {
-      background-color: #800080;
-    }
-    
-     .card:nth-child(5):hover {
-      background-color: #ffb84d;
-
-    }
-
-     .card:nth-child(6):hover {
-      background-color: #ffb84d;
-
-    }
-
-
-
-
-    
+    .card:nth-child(1):hover { background-color: #ff4d4d; }
+    .card:nth-child(2):hover { background-color: #4da6ff; }
+    .card:nth-child(3):hover { background-color: #4dff88; }
+    .card:nth-child(4):hover { background-color: #800080; }
+    .card:nth-child(5):hover { background-color: #ffb84d; }
+    .card:nth-child(6):hover { background-color: #ffb84d; }
 
     .highlight-text {
       background-color: yellow;
@@ -230,9 +188,27 @@
         height: 80px;
       }
     }
+
+    /* Video background styling */
+    .video-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.25;
+      z-index: -1;
+    }
   </style>
 </head>
 <body>
+
+  <!-- 🔥 Motion.mp4 video background -->
+  <video autoplay muted loop playsinline class="video-background">
+    <source src="Motion.mp4" type="video/mp4">
+  </video>
+
   <header>
     <div class="logo">
       <img src="logo.png" alt="Logo" />
